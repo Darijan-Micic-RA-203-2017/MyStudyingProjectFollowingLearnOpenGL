@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+const int window_width = 800;
+const int window_height = 600;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -21,7 +24,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a window and make the context of created window the main context on the current thread.
-	GLFWwindow* window = glfwCreateWindow(800, 600, "StudyingProject", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "StudyingProject", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!";
