@@ -46,6 +46,23 @@ int main()
 		return 3;
 	}
 
+	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f
+	};
+
+	// Create memory on the GPU where vertex data will be stored. 
+	// Vertex buffer object will be used to handle said data.
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	// Bind (assign) the newly created VBO to OpenGL's context.
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// Copy user-defined data into the currently bound buffer.
+	// Vertex data is now stored on the graphics card's memory.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
 	{
