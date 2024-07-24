@@ -54,6 +54,25 @@ int main()
 		return 3;
 	}
 
+	// Create the vertex shader object.
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	// Attach the vertex shader's source code to the vertex shader object.
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	// Dynamically compile the vertex shader at run-time.
+	glCompileShader(vertexShader);
+
+	int success;
+	char infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "Compilation of vertex shader has failed!\n" << infoLog << std::endl;
+		glfwTerminate();
+
+		return 4;
+	}
+
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
