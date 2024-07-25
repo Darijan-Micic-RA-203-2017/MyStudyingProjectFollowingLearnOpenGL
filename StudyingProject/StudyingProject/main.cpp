@@ -1,5 +1,6 @@
 #include "1_Getting_started/hello_window.h"
 #include "1_Getting_started/hello_triangle.h"
+#include "1_Getting_started/hello_triangle_indexed.h"
 
 int main()
 {
@@ -15,6 +16,10 @@ int main()
 			break;
 		case 2:
 			draw_hello_triangle();
+
+			break;
+		case 3:
+			draw_hello_triangle_indexed();
 
 			break;
 		default:
