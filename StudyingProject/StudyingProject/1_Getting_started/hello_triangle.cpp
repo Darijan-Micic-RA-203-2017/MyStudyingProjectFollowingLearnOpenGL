@@ -4,14 +4,14 @@ const int window_width = 800;
 const int window_height = 600;
 
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char *vertexShaderSource_for_2_4_1 = "#version 330 core\n\n" 
+const char* vertexShaderSource_for_2_4_1 = "#version 330 core\n\n" 
 "layout (location = 0) in vec3 aPos;\n\n" 
 "void main()\n"
 "{\n"
 "	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char *fragmentShaderSource_for_2_4_1 = "#version 330 core\n\n"
+const char* fragmentShaderSource_for_2_4_1 = "#version 330 core\n\n"
 "out vec4 FragColor;\n\n"
 "void main()\n"
 "{\n"
@@ -120,19 +120,22 @@ int draw_hello_triangle()
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f
+		 0.5f, -0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f
 	};
 
 	// Create memory on the GPU where vertex data will be stored.
-	// Said data will be handled by vertex array object and vertex buffer objects inside that VAO.
+	// Said data will be handled by VAO and vertex buffer objects inside that VAO.
 	// Core OpenGL REQUIRES the use of VAOs!
 	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
+
 	// Bind (assign) the newly created VBO to OpenGL's context.
 	glBindVertexArray(VAO);
+
+	// Bind (assign) the newly created VBO to OpenGL's context.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Copy user-defined data into the currently bound buffer.
 	// Vertex data is now stored on the graphics card's memory.
@@ -156,6 +159,7 @@ int draw_hello_triangle()
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
