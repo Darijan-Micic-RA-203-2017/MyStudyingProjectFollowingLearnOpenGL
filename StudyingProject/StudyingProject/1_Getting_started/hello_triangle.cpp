@@ -165,6 +165,8 @@ int main()
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
