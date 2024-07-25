@@ -132,7 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="1_Getting_started\hello_window.h" />
+    <ClInclude Include="1_Getting_started\hello_triangle.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="1_Getting_started\hello_window.cpp" />
     <ClCompile Include="1_Getting_started\hello_triangle.cpp" />
   </ItemGroup>

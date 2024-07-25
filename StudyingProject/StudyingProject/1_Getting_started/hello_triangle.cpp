@@ -1,7 +1,4 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
+#include "hello_triangle.h"
 
 const int window_width = 800;
 const int window_height = 600;
@@ -21,10 +18,7 @@ const char *fragmentShaderSource = "#version 330 core\n\n"
 "	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\0";
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-
-int main()
+int draw_hello_triangle()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -50,7 +44,7 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_hello_triangle);
 
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -157,7 +151,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		// First part: Process the user's input.
-		processInput(window);
+		processInput_for_hello_triangle(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -185,13 +179,13 @@ int main()
 }
 
 // Callback function.
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_hello_triangle(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Input processing function.
-void processInput(GLFWwindow* window)
+void processInput_for_hello_triangle(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{

@@ -15,7 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="1_Getting_started\hello_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="1_Getting_started\hello_triangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\hello_window.cpp">
