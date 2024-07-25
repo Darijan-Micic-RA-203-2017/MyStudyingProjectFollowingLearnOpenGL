@@ -123,10 +123,6 @@ int main()
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	// Activate the shader program.
-	// Every shader and rendering call from now on will use this shader program object.
-	glUseProgram(shaderProgram);
-
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
@@ -158,11 +154,18 @@ int main()
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		// Activate the shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		glUseProgram(shaderProgram);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	// De-allocate all resources once they're no longer needed.
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProgram);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
 	glfwTerminate();
