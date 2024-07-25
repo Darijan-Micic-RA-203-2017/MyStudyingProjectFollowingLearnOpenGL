@@ -7,11 +7,18 @@ const int window_width = 800;
 const int window_height = 600;
 
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char *vertexShaderSource = "#version 330 core\n" 
+const char *vertexShaderSource = "#version 330 core\n\n" 
 "layout (location = 0) in vec3 aPos;\n\n" 
 "void main()\n"
 "{\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
+"}\0";
+// Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
+const char *fragmentShaderSource = "#version 330 core\n\n"
+"out vec4 FragColor;\n\n"
+"void main()\n"
+"{\n"
+"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -61,6 +68,7 @@ int main()
 	// Dynamically compile the vertex shader at run-time.
 	glCompileShader(vertexShader);
 
+	// Check whether the compilation of vertex shader succeeded and print out the error if it didn't.
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -71,6 +79,24 @@ int main()
 		glfwTerminate();
 
 		return 4;
+	}
+
+	// Create the fragment shader object.
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	// Attach the fragment shader's source code to the fragment shader object.
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	// Dynamically compile the fragment shader at run-time.
+	glCompileShader(fragmentShader);
+
+	// Check whether the compilation of fragment shader succeeded and print out the error if it didn't.
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "Compilation of fragment shader has failed!\n" << infoLog << std::endl;
+		glfwTerminate();
+
+		return 5;
 	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
