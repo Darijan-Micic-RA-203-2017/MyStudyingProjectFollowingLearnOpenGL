@@ -14,7 +14,7 @@ int main()
 	// Initialize the GLFW library.
 	if (!glfwInit())
 	{
-		std::cout << "GLFW library failed to initialize!";
+		std::cout << "GLFW library failed to initialize!" << std::endl;
 
 		return 1;
 	}
@@ -27,7 +27,7 @@ int main()
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "StudyingProject", NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout << "Window was not created!";
+		std::cout << "Window was not created!" << std::endl;
 		glfwTerminate();
 
 		return 2;
@@ -40,7 +40,7 @@ int main()
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
 	{
-		std::cout << "GLAD library failed to initialize!";
+		std::cout << "GLAD library failed to initialize!" << std::endl;
 		glfwTerminate();
 
 		return 3;
