@@ -99,6 +99,34 @@ int main()
 		return 5;
 	}
 
+	// Create the shader program object.
+	unsigned int shaderProgram = glCreateProgram();
+	// Attach the previously compiled shaders to shader program.
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	// Link previously compiled shaders into a program.
+	// The outputs of each shader are linked to the inputs of next shader.
+	glLinkProgram(shaderProgram);
+
+	// Check whether the linking of shader program succeeded and print out the error if it didn't.
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cout << "Linking of shader program has failed!\n" << infoLog << std::endl;
+		glfwTerminate();
+
+		return 6;
+	}
+
+	// Delete shader objects after linking, we no longer need them.
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	// Activate the shader program.
+	// Every shader and rendering call from now on will use this shader program object.
+	glUseProgram(shaderProgram);
+
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
@@ -106,7 +134,7 @@ int main()
 		0.0f, 0.5f, 0.0f
 	};
 
-	// Create memory on the GPU where vertex data will be stored. 
+	// Create memory on the GPU where vertex data will be stored.
 	// Vertex buffer object will be used to handle said data.
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
