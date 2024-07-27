@@ -1,24 +1,24 @@
-#include "hello_triangle_indexed.h"
+#include "hello_triangle_exercise2.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char* vertexShaderSource_for_2_4_2 = "#version 330 core\n\n"
+const char* vertexShaderSource_for_2_4_4 = "#version 330 core\n\n"
 "layout (location = 0) in vec3 aPos;\n\n"
 "void main()\n"
 "{\n"
 "	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char* fragmentShaderSource_for_2_4_2 = "#version 330 core\n\n"
+const char* fragmentShaderSource_for_2_4_4 = "#version 330 core\n\n"
 "out vec4 FragColor;\n\n"
 "void main()\n"
 "{\n"
 "	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\0";
 
-int draw_hello_triangle_indexed()
+int draw_hello_triangle_exercise2()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -44,7 +44,7 @@ int draw_hello_triangle_indexed()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_hello_triangle_indexed);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_hello_triangle_exercise2);
 
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -58,7 +58,7 @@ int draw_hello_triangle_indexed()
 	// Create the vertex shader object.
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach the vertex shader's source code to the vertex shader object.
-	glShaderSource(vertexShader, 1, &vertexShaderSource_for_2_4_2, NULL);
+	glShaderSource(vertexShader, 1, &vertexShaderSource_for_2_4_4, NULL);
 	// Dynamically compile the vertex shader at run-time.
 	glCompileShader(vertexShader);
 
@@ -78,7 +78,7 @@ int draw_hello_triangle_indexed()
 	// Create the fragment shader object.
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Attach the fragment shader's source code to the fragment shader object.
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource_for_2_4_2, NULL);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource_for_2_4_4, NULL);
 	// Dynamically compile the fragment shader at run-time.
 	glCompileShader(fragmentShader);
 
@@ -168,12 +168,12 @@ int draw_hello_triangle_indexed()
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	
+
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
 	{
 		// First part: Process the user's input.
-		processInput_for_hello_triangle_indexed(window);
+		processInput_for_hello_triangle_exercise2(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -203,13 +203,13 @@ int draw_hello_triangle_indexed()
 }
 
 // Callback function.
-void framebuffer_size_callback_for_hello_triangle_indexed(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_hello_triangle_exercise2(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Input processing function.
-void processInput_for_hello_triangle_indexed(GLFWwindow* window)
+void processInput_for_hello_triangle_exercise2(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{

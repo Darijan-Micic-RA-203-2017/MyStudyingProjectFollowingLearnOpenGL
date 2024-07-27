@@ -135,6 +135,9 @@
     <ClInclude Include="1_Getting_started\hello_window.h" />
     <ClInclude Include="1_Getting_started\hello_triangle.h" />
     <ClInclude Include="1_Getting_started\hello_triangle_indexed.h" />
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise1.h" />
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise2.h" />
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -142,6 +145,9 @@
     <ClCompile Include="1_Getting_started\hello_window.cpp" />
     <ClCompile Include="1_Getting_started\hello_triangle.cpp" />
     <ClCompile Include="1_Getting_started\hello_triangle_indexed.cpp" />
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise1.cpp" />
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise2.cpp" />
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

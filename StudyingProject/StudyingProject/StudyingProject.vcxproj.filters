@@ -24,6 +24,15 @@
     <ClInclude Include="1_Getting_started\hello_triangle_indexed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="1_Getting_started\hello_triangle_exercise3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -39,6 +48,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\hello_triangle_indexed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\hello_triangle_exercise3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
