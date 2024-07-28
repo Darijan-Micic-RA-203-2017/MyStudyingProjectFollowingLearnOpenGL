@@ -33,7 +33,8 @@ int draw_hello_triangle_exercise2()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a window and make the context of created window the main context on the current thread.
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "StudyingProject", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
+		"StudyingProject - Hello Triangle, exercise 2", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
