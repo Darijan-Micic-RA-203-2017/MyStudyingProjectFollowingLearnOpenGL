@@ -119,15 +119,14 @@ int draw_hello_triangle_exercise1()
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, // top right
-		-0.5f,  0.5f, 0.0f  // top left
-	};
-	// Indices, which start at 0.
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		// first triangle
+		-0.9f,  -0.5f, 0.0f, // left
+		 0.0f,  -0.5f, 0.0f, // right
+		-0.45f,  0.5f, 0.0f, // top
+		// second triangle
+		 0.0f,  -0.5f, 0.0f, // left
+		 0.9f,  -0.5f, 0.0f, // right
+		 0.45f,  0.5f, 0.0f  // top
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -137,8 +136,6 @@ int draw_hello_triangle_exercise1()
 	glGenVertexArrays(1, &VAO);
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
 
 	// Bind (assign) the newly created VAO to OpenGL's context.
 	glBindVertexArray(VAO);
@@ -148,11 +145,6 @@ int draw_hello_triangle_exercise1()
 	// Copy user-defined data into the currently bound buffer.
 	// Vertex data is now stored on the graphics card's memory.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// Bind (assign) the newly created EBO to OpenGL's context.
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// Copy user-defined data into the currently bound buffer.
-	// Index data is now stored on the graphics card's memory.
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
@@ -183,7 +175,8 @@ int draw_hello_triangle_exercise1()
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// Count is set to 6, since two triangles will be drawn.
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
@@ -191,7 +184,6 @@ int draw_hello_triangle_exercise1()
 	}
 
 	// De-allocate all resources once they're no longer needed.
-	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteProgram(shaderProgram);
