@@ -118,12 +118,12 @@ int draw_hello_triangle_exercise2()
 	glDeleteShader(fragmentShader);
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
-	float vertices[] = {
-		// first triangle
+	float vertices_of_first_triangle[] = {
 		-0.9f,  -0.5f, 0.0f, // left
 		 0.0f,  -0.5f, 0.0f, // right
 		-0.45f,  0.5f, 0.0f, // top
-		// second triangle
+	};
+	float vertices_of_second_triangle[] = {
 		 0.0f,  -0.5f, 0.0f, // left
 		 0.9f,  -0.5f, 0.0f, // right
 		 0.45f,  0.5f, 0.0f  // top
@@ -132,19 +132,35 @@ int draw_hello_triangle_exercise2()
 	// Create memory on the GPU where vertex data and index data will be stored.
 	// Said data will be handled by VAO and vertex/element buffer objects inside that VAO.
 	// Core OpenGL REQUIRES the use of VAOs!
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
+	unsigned int VAOs[2];
+	glGenVertexArrays(2, VAOs);
+	unsigned int VBOs[2];
+	glGenBuffers(2, VBOs);
 
-	// Bind (assign) the newly created VAO to OpenGL's context.
-	glBindVertexArray(VAO);
+	// Bind (assign) the newly created VAO to OpenGL's context. Set up first triangle.
+	glBindVertexArray(VAOs[0]);
 
 	// Bind (assign) the newly created VBO to OpenGL's context.
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
 	// Copy user-defined data into the currently bound buffer.
 	// Vertex data is now stored on the graphics card's memory.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_of_first_triangle), vertices_of_first_triangle, 
+		GL_STATIC_DRAW);
+	
+	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	// Enable vertex attribute.
+	glEnableVertexAttribArray(0);
+
+	// Bind (assign) the newly created VAO to OpenGL's context. Set up second triangle.
+	glBindVertexArray(VAOs[1]);
+
+	// Bind (assign) the newly created VBO to OpenGL's context.
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	// Copy user-defined data into the currently bound buffer.
+	// Vertex data is now stored on the graphics card's memory.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_of_second_triangle), vertices_of_second_triangle, 
+		GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
@@ -174,9 +190,12 @@ int draw_hello_triangle_exercise2()
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		// Count is set to 6, since two triangles will be drawn.
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Draw first triangle, using data set up in first VAO.
+		glBindVertexArray(VAOs[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// Draw second triangle, using data set up in second VAO.
+		glBindVertexArray(VAOs[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
@@ -184,8 +203,8 @@ int draw_hello_triangle_exercise2()
 	}
 
 	// De-allocate all resources once they're no longer needed.
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(2, VBOs);
+	glDeleteVertexArrays(2, VAOs);
 	glDeleteProgram(shaderProgram);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
