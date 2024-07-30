@@ -5,11 +5,12 @@
 #include "1_Getting_started/hello_triangle_exercise2.h"
 #include "1_Getting_started/hello_triangle_exercise3.h"
 #include "1_Getting_started/shaders_uniform.h"
+#include "1_Getting_started/shaders_interpolation.h"
 
 int main()
 {
 	int argument = 0;
-	do
+	while (argument != -1)
 	{
 		std::cout << "Enter argument: ";
 		std::cin >> argument;
@@ -37,11 +38,13 @@ int main()
 			case 7:
 				draw_shaders_uniform();
 				break;
+			case 8:
+				draw_shaders_interpolation();
+				break;
 			default:
 				break;
 		}
 	}
-	while (argument != -1);
 
 	return 0;
 }
