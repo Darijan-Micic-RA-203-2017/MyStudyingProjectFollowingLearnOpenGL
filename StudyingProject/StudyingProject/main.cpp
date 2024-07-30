@@ -4,6 +4,7 @@
 #include "1_Getting_started/hello_triangle_exercise1.h"
 #include "1_Getting_started/hello_triangle_exercise2.h"
 #include "1_Getting_started/hello_triangle_exercise3.h"
+#include "1_Getting_started/shaders_uniform.h"
 
 int main()
 {
@@ -32,6 +33,9 @@ int main()
 				break;
 			case 6:
 				draw_hello_triangle_exercise3();
+				break;
+			case 7:
+				draw_shaders_uniform();
 				break;
 			default:
 				break;

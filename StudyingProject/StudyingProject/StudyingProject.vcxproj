@@ -138,6 +138,7 @@
     <ClInclude Include="1_Getting_started\hello_triangle_exercise1.h" />
     <ClInclude Include="1_Getting_started\hello_triangle_exercise2.h" />
     <ClInclude Include="1_Getting_started\hello_triangle_exercise3.h" />
+    <ClInclude Include="1_Getting_started\shaders_uniform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -148,6 +149,7 @@
     <ClCompile Include="1_Getting_started\hello_triangle_exercise1.cpp" />
     <ClCompile Include="1_Getting_started\hello_triangle_exercise2.cpp" />
     <ClCompile Include="1_Getting_started\hello_triangle_exercise3.cpp" />
+    <ClCompile Include="1_Getting_started\shaders_uniform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
