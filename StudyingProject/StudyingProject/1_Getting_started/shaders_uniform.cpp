@@ -6,22 +6,22 @@ const int window_height = 600;
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* vertexShaderSource_for_2_5_1 = "#version 330 core\n\n"
 "layout (location = 0) in vec3 aPos;\n\n"
-// Specify a color output to the fragment shader.
-"out vec4 vertexColor;\n\n"
 "void main()\n"
 "{\n"
 // GLSL allows passing vectors as arguments to different vectors constructor calls.
 "	gl_Position = vec4(aPos, 1.0f);\n"
-"	vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f);\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* fragmentShaderSource_for_2_5_1 = "#version 330 core\n\n"
-// The input variable from vertex shader. It has the same type nad name as output variable in vertex shader.
-"in vec4 vertexColor;\n\n"
 "out vec4 FragColor;\n\n"
+// Declaration of uniform variable. We set it in the OpenGL code. Uniform variables are global.
+// IMPORTANT NOTE: If a declared uniform variable isn't used anywhere in GLSL code, the compiler will silently
+// remove the variable from the compiled version. This is a cause for several frustrating errors, so
+// DO NOT declare a uniform variable that is not necessary in GLSL code!
+"uniform vec4 ourColor;\n\n"
 "void main()\n"
 "{\n"
-"	FragColor = vertexColor;\n"
+"	FragColor = ourColor;\n"
 "}\0";
 
 int draw_shaders_uniform()
@@ -120,6 +120,17 @@ int draw_shaders_uniform()
 		return 6;
 	}
 
+	// Retrieve location of uniform in shader program. This doesn't require activation of shader program.
+	int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (vertexColorLocation == -1)
+	{
+		std::cout << "Location of uniform variable wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 7;
+	}
+
 	// Delete shader objects after linking, we no longer need them.
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -170,6 +181,14 @@ int draw_shaders_uniform()
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
+
+		// Gradually change color that is being passed to fragment shader.
+		// Retrieve running time in seconds.
+		float timeValue = glfwGetTime();
+		float greenValue = sin(timeValue) / 2.0f + 0.5f;
+		// Set uniform variable on the currently active shader program.
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
