@@ -5,20 +5,19 @@ const int window_height = 600;
 
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* vertexShaderSource_for_2_5_2 = "#version 330 core\n\n"
-"layout (location = 0) in vec3 aPos;\n\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec4 aColor;\n\n"
+"out vec4 ourColor;\n\n"
 "void main()\n"
 "{\n"
 // GLSL allows passing vectors as arguments to different vectors constructor calls.
 "	gl_Position = vec4(aPos, 1.0f);\n"
+"	ourColor = aColor;\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* fragmentShaderSource_for_2_5_2 = "#version 330 core\n\n"
+"in vec4 ourColor;\n\n"
 "out vec4 FragColor;\n\n"
-// Declaration of uniform variable. We set it in the OpenGL code. Uniform variables are global.
-// IMPORTANT NOTE: If a declared uniform variable isn't used anywhere in GLSL code, the compiler will silently
-// remove the variable from the compiled version. This is a cause for several frustrating errors, so
-// DO NOT declare a uniform variable that is not necessary in GLSL code!
-"uniform vec4 ourColor;\n\n"
 "void main()\n"
 "{\n"
 "	FragColor = ourColor;\n"
@@ -120,26 +119,16 @@ int draw_shaders_interpolation()
 		return 6;
 	}
 
-	// Retrieve location of uniform in shader program. This doesn't require activation of shader program.
-	int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (vertexColorLocation == -1)
-	{
-		std::cout << "Location of uniform variable wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 7;
-	}
-
 	// Delete shader objects after linking, we no longer need them.
 	glDeleteShader(fragmentShader);
 	glDeleteShader(vertexShader);
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
+	// First three values represent position of vertex, while last four values represent color of vertex.
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 	};
 
 	// Create memory on the GPU where vertex data will be stored.
@@ -160,9 +149,14 @@ int draw_shaders_interpolation()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-	// Enable vertex attribute.
+	// Position attribute.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
+	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0);
+	// Color attribute.
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
+	// Enable vertex color attribute.
+	glEnableVertexAttribArray(1);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -181,14 +175,6 @@ int draw_shaders_interpolation()
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
-
-		// Gradually change color that is being passed to fragment shader.
-		// Retrieve running time in seconds.
-		float timeValue = glfwGetTime();
-		float greenValue = sin(timeValue) / 2.0f + 0.5f;
-		// Set uniform variable on the currently active shader program.
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
