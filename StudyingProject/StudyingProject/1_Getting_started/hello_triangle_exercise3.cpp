@@ -162,9 +162,9 @@ int draw_hello_triangle_exercise3()
 	}
 
 	// Delete shader objects after linking, we no longer need them.
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader1);
 	glDeleteShader(fragmentShader2);
+	glDeleteShader(fragmentShader1);
+	glDeleteShader(vertexShader);
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices_of_first_triangle[] = {

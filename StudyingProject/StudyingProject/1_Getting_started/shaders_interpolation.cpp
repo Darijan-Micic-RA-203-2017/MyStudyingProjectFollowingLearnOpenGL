@@ -132,8 +132,8 @@ int draw_shaders_interpolation()
 	}
 
 	// Delete shader objects after linking, we no longer need them.
-	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glDeleteShader(vertexShader);
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	float vertices[] = {
