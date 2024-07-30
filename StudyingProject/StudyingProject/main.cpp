@@ -6,6 +6,7 @@
 #include "1_Getting_started/hello_triangle_exercise3.h"
 #include "1_Getting_started/shaders_uniform.h"
 #include "1_Getting_started/shaders_interpolation.h"
+#include "1_Getting_started/shaders_class.h"
 
 int main()
 {
@@ -40,6 +41,9 @@ int main()
 				break;
 			case 8:
 				draw_shaders_interpolation();
+				break;
+			case 9:
+				draw_shaders_class();
 				break;
 			default:
 				break;

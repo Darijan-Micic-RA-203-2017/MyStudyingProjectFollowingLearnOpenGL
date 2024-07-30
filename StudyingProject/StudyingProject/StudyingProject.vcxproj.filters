@@ -39,6 +39,9 @@
     <ClInclude Include="1_Getting_started\shaders_interpolation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\shaders_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\shaders_interpolation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\shaders_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
