@@ -6,16 +6,22 @@ const int window_height = 600;
 // Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* vertexShaderSource_for_2_5_1 = "#version 330 core\n\n"
 "layout (location = 0) in vec3 aPos;\n\n"
+// Specify a color output to the fragment shader.
+"out vec4 vertexColor;\n\n"
 "void main()\n"
 "{\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
+// GLSL allows passing vectors as arguments to different vectors constructor calls.
+"	gl_Position = vec4(aPos, 1.0f);\n"
+"	vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f);\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* fragmentShaderSource_for_2_5_1 = "#version 330 core\n\n"
+// The input variable from vertex shader. It has the same type nad name as output variable in vertex shader.
+"in vec4 vertexColor;\n\n"
 "out vec4 FragColor;\n\n"
 "void main()\n"
 "{\n"
-"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"	FragColor = vertexColor;\n"
 "}\0";
 
 int draw_shaders_uniform()
