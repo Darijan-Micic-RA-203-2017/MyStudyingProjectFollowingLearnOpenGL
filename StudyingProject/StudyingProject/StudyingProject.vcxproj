@@ -140,6 +140,7 @@
     <ClInclude Include="1_Getting_started\hello_triangle_exercise3.h" />
     <ClInclude Include="1_Getting_started\shaders_uniform.h" />
     <ClInclude Include="1_Getting_started\shaders_interpolation.h" />
+    <ClInclude Include="shader_s.h" />
     <ClInclude Include="1_Getting_started\shaders_class.h" />
   </ItemGroup>
   <ItemGroup>
