@@ -45,6 +45,12 @@ int draw_shaders_class()
 	// Compile our shaders and link our shader program using helper class.
 	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_5_3.glsl", 
 		"1_Getting_started/fragment_shader_for_2_5_3.glsl");
+	if (ourShaderProgram.errorCode)
+	{
+		glfwTerminate();
+
+		return ourShaderProgram.errorCode;
+	}
 	
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// First three values represent position of vertex, while last four values represent color of vertex.

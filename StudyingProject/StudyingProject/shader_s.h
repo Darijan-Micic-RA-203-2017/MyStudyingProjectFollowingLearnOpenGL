@@ -26,6 +26,17 @@ private:
 			{
 				glGetShaderInfoLog(shaderOrProgram, 512, NULL, infoLog);
 				std::cout << "Compilation of " << type << " has failed!\n" << infoLog << std::endl;
+
+				if (type == "vertex shader")
+				{
+					errorCode = 4;
+				}
+				else
+				{
+					errorCode = 5;
+				}
+
+				return;
 			}
 		}
 		else
@@ -35,11 +46,18 @@ private:
 			{
 				glGetProgramInfoLog(shaderOrProgram, 512, NULL, infoLog);
 				std::cout << "Linking of " << type << " has failed!\n" << infoLog << std::endl;
+
+				errorCode = 6;
+
+				return;
 			}
 		}
+
+		errorCode = 0;
 	}
 public:
-	unsigned int shaderProgramId;
+	unsigned int shaderProgramId = 0;
+	int errorCode = 0;
 
 	Shader(const char* vertexShaderSourcePath, const char* fragmentShaderSourcePath)
 	{
@@ -89,11 +107,24 @@ public:
 		glShaderSource(vertexShader, 1, &vertexShaderSourceCode, NULL);
 		glCompileShader(vertexShader);
 		checkForCompilationOrLinkingErrors(vertexShader, "vertex shader");
+		if (errorCode == 4)
+		{
+			glDeleteShader(vertexShader);
+
+			return;
+		}
 
 		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentShader, 1, &fragmentShaderSourceCode, NULL);
 		glCompileShader(fragmentShader);
 		checkForCompilationOrLinkingErrors(fragmentShader, "fragment shader");
+		if (errorCode == 5)
+		{
+			glDeleteShader(fragmentShader);
+			glDeleteShader(vertexShader);
+
+			return;
+		}
 
 		// Create and link shader program.
 		shaderProgramId = glCreateProgram();
@@ -101,6 +132,10 @@ public:
 		glAttachShader(shaderProgramId, fragmentShader);
 		glLinkProgram(shaderProgramId);
 		checkForCompilationOrLinkingErrors(shaderProgramId, "shader program");
+		if (errorCode == 6)
+		{
+			glDeleteProgram(shaderProgramId);
+		}
 
 		glDeleteShader(fragmentShader);
 		glDeleteShader(vertexShader);
