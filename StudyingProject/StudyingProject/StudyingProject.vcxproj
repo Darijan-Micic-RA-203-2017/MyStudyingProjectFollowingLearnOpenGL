@@ -156,6 +156,10 @@
     <ClCompile Include="1_Getting_started\shaders_interpolation.cpp" />
     <ClCompile Include="1_Getting_started\shaders_class.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_5_3.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

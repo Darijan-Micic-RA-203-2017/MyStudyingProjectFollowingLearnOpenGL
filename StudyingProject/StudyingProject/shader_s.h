@@ -77,6 +77,8 @@ public:
 		catch (std::ifstream::failure& e)
 		{
 			std::cout << "File with shader source code was not successfully read!\n" << e.what() << std::endl;
+
+			return;
 		}
 
 		const char* vertexShaderSourceCode = vsSourceCode.c_str();
