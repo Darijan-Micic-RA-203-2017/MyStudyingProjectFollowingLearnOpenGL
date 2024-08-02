@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shader Files">
+      <Extensions>glsl</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="1_Getting_started\hello_window.h">
@@ -43,6 +46,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="1_Getting_started\shaders_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="1_Getting_started\textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -80,5 +86,16 @@
     <ClCompile Include="1_Getting_started\shaders_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="1_Getting_started\textures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="1_Getting_started\fragment_shader_for_2_5_3.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
