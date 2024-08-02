@@ -142,6 +142,7 @@
     <ClInclude Include="1_Getting_started\shaders_interpolation.h" />
     <ClInclude Include="shader_s.h" />
     <ClInclude Include="1_Getting_started\shaders_class.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="1_Getting_started\textures.h" />
   </ItemGroup>
   <ItemGroup>
@@ -156,11 +157,18 @@
     <ClCompile Include="1_Getting_started\shaders_uniform.cpp" />
     <ClCompile Include="1_Getting_started\shaders_interpolation.cpp" />
     <ClCompile Include="1_Getting_started\shaders_class.cpp" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="1_Getting_started\textures.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />
     <None Include="1_Getting_started\fragment_shader_for_2_5_3.glsl" />
+    <None Include="1_Getting_started\vertex_shader_for_2_6_1.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="1_Getting_started\brick_wall.jpg" />
+    <Image Include="1_Getting_started\wooden_container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

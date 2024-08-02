@@ -1,22 +1,9 @@
 #include "textures.h"
+#include "../shader_s.h"
+#include "../stb_image.h"
 
 const int window_width = 800;
 const int window_height = 600;
-
-// Vertex shader, the first stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char* vertexShaderSource_for_2_6_1 = "#version 330 core\n\n"
-"layout (location = 0) in vec3 aPos;\n\n"
-"void main()\n"
-"{\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
-"}\0";
-// Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
-const char* fragmentShaderSource_for_2_6_1 = "#version 330 core\n\n"
-"out vec4 FragColor;\n\n"
-"void main()\n"
-"{\n"
-"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\0";
 
 int draw_textures()
 {
@@ -56,74 +43,24 @@ int draw_textures()
 		return 3;
 	}
 
-	// Create the vertex shader object.
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	// Attach the vertex shader's source code to the vertex shader object.
-	glShaderSource(vertexShader, 1, &vertexShaderSource_for_2_6_1, NULL);
-	// Dynamically compile the vertex shader at run-time.
-	glCompileShader(vertexShader);
-
-	// Check whether the compilation of vertex shader succeeded and print out the error if it didn't.
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
+	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_6_1.glsl", 
+		"1_Getting_started/fragment_shader_for_2_6_1.glsl");
+	if (ourShaderProgram.errorCode)
 	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "Compilation of vertex shader has failed!\n" << infoLog << std::endl;
 		glfwTerminate();
 
-		return 4;
+		return ourShaderProgram.errorCode;
 	}
-
-	// Create the fragment shader object.
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	// Attach the fragment shader's source code to the fragment shader object.
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource_for_2_6_1, NULL);
-	// Dynamically compile the fragment shader at run-time.
-	glCompileShader(fragmentShader);
-
-	// Check whether the compilation of fragment shader succeeded and print out the error if it didn't.
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "Compilation of fragment shader has failed!\n" << infoLog << std::endl;
-		glfwTerminate();
-
-		return 5;
-	}
-
-	// Create the shader program object.
-	unsigned int shaderProgram = glCreateProgram();
-	// Attach the previously compiled shaders to shader program.
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	// Link previously compiled shaders into a program.
-	// The outputs of each shader are linked to the inputs of next shader.
-	glLinkProgram(shaderProgram);
-
-	// Check whether the linking of shader program succeeded and print out the error if it didn't.
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "Linking of shader program has failed!\n" << infoLog << std::endl;
-		glfwTerminate();
-
-		return 6;
-	}
-
-	// Delete shader objects after linking, we no longer need them.
-	glDeleteShader(fragmentShader);
-	glDeleteShader(vertexShader);
-
+	
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
+	// First three values represent position of vertex, middle four values represent color of vertex, while
+	// last two values represent texture coordinates (from 0.0f to 1.0f).
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, // top right
-		-0.5f,  0.5f, 0.0f  // top left
+		// position         // color                // texture coordinates
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
@@ -156,9 +93,18 @@ int draw_textures()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-	// Enable vertex attribute.
+	// Position attribute.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
+	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0);
+	// Color attribute.
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
+	// Enable vertex color attribute.
+	glEnableVertexAttribArray(1);
+	// Texture coordinate attribute.
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
+	// Enable vertex texture coordinate attribute.
+	glEnableVertexAttribArray(2);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -167,6 +113,55 @@ int draw_textures()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	// Create memory on the GPU where texture will be stored.
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	// Bind (assign) the newly created texture to OpenGL's context.
+	glBindTexture(GL_TEXTURE_2D, texture);
+	
+	// Set texture wrapping parameters. Texture coordinates are in range [0.0f, 1.0f]. If texture coordinates
+	// are specified outside of mentioned range, texture wrapping option determines the look.
+	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
+	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
+	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
+	// texture coordinate to. Nearest neighbour filtering is better suited for minifying operations,
+	// while (bi)linear filtering is better suited for magnifying operations.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// Mipmaps are used to improve minifying, not magnifying. Setting one of the mipmap filtering options as
+	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load the image that will be used as a texture.
+	int width;
+	int height;
+	int numberOfColorChannels;
+	unsigned char* pixels = stbi_load("1_Getting_started/wooden_container.jpg", &width, &height, 
+		&numberOfColorChannels, 0);
+	if (pixels)
+	{
+		// Generate a texture using the previously loaded image data (pixels).
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		// Automatically generate all the required mipmaps for the currently bound texture.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
+		stbi_image_free(pixels);
+		glfwTerminate();
+
+		return 7;
+	}
+	// Free the image memory.
+	stbi_image_free(pixels);
+
+	// Unbind texture for safety reasons. This is not neccessary.
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -182,7 +177,8 @@ int draw_textures()
 
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
-		glUseProgram(shaderProgram);
+		ourShaderProgram.useProgram();
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -195,7 +191,6 @@ int draw_textures()
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteProgram(shaderProgram);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
 	glfwTerminate();

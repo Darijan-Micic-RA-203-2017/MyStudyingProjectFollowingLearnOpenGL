@@ -55,9 +55,10 @@ int draw_shaders_class()
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// First three values represent position of vertex, while last four values represent color of vertex.
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+		// position         // color
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // bottom right
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f  // top
 	};
 
 	// Create memory on the GPU where vertex data will be stored.

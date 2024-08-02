@@ -7,6 +7,7 @@
 #include "1_Getting_started/shaders_uniform.h"
 #include "1_Getting_started/shaders_interpolation.h"
 #include "1_Getting_started/shaders_class.h"
+#include "1_Getting_started/textures.h"
 
 int main()
 {
@@ -44,6 +45,9 @@ int main()
 				break;
 			case 9:
 				draw_shaders_class();
+				break;
+			case 10:
+				draw_textures();
 				break;
 			default:
 				break;

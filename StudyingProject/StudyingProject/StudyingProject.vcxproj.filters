@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{31QEGG64-7T4M-4o21-U9CV-65JCXZ771OBH}</UniqueIdentifier>
+      <Extensions>glsl</Extensions>
+    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Shader Files">
-      <Extensions>glsl</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="1_Getting_started\shaders_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="1_Getting_started\textures.h">
@@ -86,6 +90,9 @@
     <ClCompile Include="1_Getting_started\shaders_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="1_Getting_started\textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -95,6 +102,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="1_Getting_started\fragment_shader_for_2_5_3.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="1_Getting_started\vertex_shader_for_2_6_1.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
