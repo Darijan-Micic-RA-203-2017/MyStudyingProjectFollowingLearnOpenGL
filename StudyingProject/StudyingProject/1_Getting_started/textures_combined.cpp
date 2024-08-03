@@ -135,6 +135,11 @@ int draw_textures_combined()
 	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	// Tell "stb_image.h" library to flip the y-axis during image loading. This call is necessary because
+	// OpenGL expects the 0.0f coordinate on the y-axis to be on the bottom side of the image, but images
+	// usually have 0.0f at the top of the y-axis.
+	stbi_set_flip_vertically_on_load(true);
+
 	// Load the image that will be used as a texture.
 	int width;
 	int height;
