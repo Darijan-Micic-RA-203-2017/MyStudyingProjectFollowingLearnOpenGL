@@ -144,6 +144,7 @@
     <ClInclude Include="1_Getting_started\shaders_class.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="1_Getting_started\textures.h" />
+    <ClInclude Include="1_Getting_started\textures_combined.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -159,6 +160,7 @@
     <ClCompile Include="1_Getting_started\shaders_class.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="1_Getting_started\textures.cpp" />
+    <ClCompile Include="1_Getting_started\textures_combined.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />

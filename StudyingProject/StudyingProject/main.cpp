@@ -8,6 +8,7 @@
 #include "1_Getting_started/shaders_interpolation.h"
 #include "1_Getting_started/shaders_class.h"
 #include "1_Getting_started/textures.h"
+#include "1_Getting_started/textures_combined.h"
 
 int main()
 {
@@ -48,6 +49,9 @@ int main()
 				break;
 			case 10:
 				draw_textures();
+				break;
+			case 11:
+				draw_textures_combined();
 				break;
 			default:
 				break;

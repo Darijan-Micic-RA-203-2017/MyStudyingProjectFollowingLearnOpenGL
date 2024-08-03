@@ -55,6 +55,9 @@
     <ClInclude Include="1_Getting_started\textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\textures_combined.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -96,6 +99,9 @@
     <ClCompile Include="1_Getting_started\textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="1_Getting_started\textures_combined.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl">
@@ -110,5 +116,13 @@
     <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="1_Getting_started\brick_wall.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="1_Getting_started\wooden_container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
