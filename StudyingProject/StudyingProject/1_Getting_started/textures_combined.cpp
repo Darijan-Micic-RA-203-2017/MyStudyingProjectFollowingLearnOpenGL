@@ -113,11 +113,11 @@ int draw_textures_combined()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	// Create memory on the GPU where texture will be stored.
-	unsigned int texture;
-	glGenTextures(1, &texture);
+	// Create memory on the GPU where first texture will be stored.
+	unsigned int texture1;
+	glGenTextures(1, &texture1);
 	// Bind (assign) the newly created texture to OpenGL's context.
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	// Set texture wrapping parameters. Texture coordinates are in range [0.0f, 1.0f]. If texture coordinates
 	// are specified outside of mentioned range, texture wrapping option determines the look.
@@ -144,6 +144,8 @@ int draw_textures_combined()
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
+		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGl, or
+		// it will incorrectly interpret the image data.
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -159,11 +161,54 @@ int draw_textures_combined()
 	// Free the image memory.
 	stbi_image_free(pixels);
 
+	// Create memory on the GPU where second texture will be stored.
+	unsigned int texture2;
+	glGenTextures(1, &texture2);
+	// Bind (assign) the newly created texture to OpenGL's context.
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	// Set texture wrapping parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load the image that will be used as a texture.
+	pixels = stbi_load("1_Getting_Started/awesome_face.png", &width, &height, &numberOfColorChannels, 0);
+	if (pixels)
+	{
+		// Generate a texture using the previously loaded image data (pixels).
+		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGl, or
+		// it will incorrectly interpret the image data.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		// Automatically generate all the required mipmaps for the currently bound texture.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
+		stbi_image_free(pixels);
+		glfwTerminate();
+
+		return 8;
+	}
+	// Free the image memory.
+	stbi_image_free(pixels);
+
 	// Unbind texture for safety reasons. This is not neccessary.
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Activate the shader program.
+	// Every shader and rendering call from now on will use this shader program object.
+	ourShaderProgram.useProgram();
+	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
+	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
+	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -175,10 +220,15 @@ int draw_textures_combined()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Activate the shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourShaderProgram.useProgram();
-		glBindTexture(GL_TEXTURE_2D, texture);
+		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
+		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
+		// always active by default, so it isn't necessary to manually activate any texture unit if only one
+		// texture is used (like in previous example).
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

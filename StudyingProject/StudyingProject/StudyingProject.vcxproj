@@ -167,10 +167,13 @@
     <None Include="1_Getting_started\fragment_shader_for_2_5_3.glsl" />
     <None Include="1_Getting_started\vertex_shader_for_2_6_1.glsl" />
     <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl" />
+    <None Include="1_Getting_started\vertex_shader_for_2_6_2.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_6_2.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="1_Getting_started\brick_wall.jpg" />
     <Image Include="1_Getting_started\wooden_container.jpg" />
+    <Image Include="1_Getting_started\awesome_face.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

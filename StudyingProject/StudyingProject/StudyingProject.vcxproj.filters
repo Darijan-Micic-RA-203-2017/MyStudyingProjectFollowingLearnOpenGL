@@ -116,12 +116,21 @@
     <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="1_Getting_started\vertex_shader_for_2_6_2.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="1_Getting_started\fragment_shader_for_2_6_2.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="1_Getting_started\brick_wall.jpg">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="1_Getting_started\wooden_container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="1_Getting_started\awesome_face.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

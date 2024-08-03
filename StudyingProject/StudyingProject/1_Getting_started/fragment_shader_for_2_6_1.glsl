@@ -10,7 +10,7 @@ uniform sampler2D ourTexture;
 
 void main()
 {
-	// Mix the resulting texture color with the vertex colors.
+	// Mix the resulting texture color with the vertex color.
 	// Mixing colors is achieved by multiplying vectors containing color data.
 	FragColor = texture(ourTexture, TexCoord) * ourColor;
 }
