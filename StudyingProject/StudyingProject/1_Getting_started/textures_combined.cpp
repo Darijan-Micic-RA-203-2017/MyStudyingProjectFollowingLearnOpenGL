@@ -56,11 +56,15 @@ int draw_textures_combined()
 	// First three values represent position of vertex, middle four values represent color of vertex, while
 	// last two values represent texture coordinates (from 0.0f to 1.0f).
 	float vertices[] = {
+		// We intentionally specified texture coordinates in range [0.0f, 2.0f]. If texture's wrapping
+		// parameters are set to "GL_REPEAT", texture will be repeated 2 times horizontally and vertically.
+		// If they're set to "GL_CLAMP_TO_EDGE", texture will occupate 1/2 of horizontal and vertical space of
+		// end vertices.
 		// position         // color                // texture coordinates
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 2.0f, 0.0f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 2.0f, 2.0f, // top right
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 2.0f  // top left
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
@@ -123,8 +127,10 @@ int draw_textures_combined()
 	// are specified outside of mentioned range, texture wrapping option determines the look.
 	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
 	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	// "GL_CLAMP_TO_EDGE" texture wrapping option clamps the texture coordinates between 0 and 1. The result is
+	// that higher coordinates become clamped to the edge, resulting in a stretched edge pattern.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
 	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
@@ -174,6 +180,7 @@ int draw_textures_combined()
 
 	// Set texture wrapping parameters.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	// We want to repeat the awesome face pattern, so we kept it at default option (GL_REPEAT).
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Set texture filtering parameters.
