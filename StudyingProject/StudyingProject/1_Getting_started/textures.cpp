@@ -56,11 +56,12 @@ int draw_textures()
 	// First three values represent position of vertex, middle four values represent color of vertex, while
 	// last two values represent texture coordinates (from 0.0f to 1.0f).
 	float vertices[] = {
+		// We intentionally changed texture coordinates to zoom in on texture image.
 		// position         // color                // texture coordinates
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.45f, 0.45f, // bottom left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.55f, 0.45f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.55f, 0.55f, // top right
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.45f, 0.55f  // top left
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
@@ -123,17 +124,20 @@ int draw_textures()
 	// are specified outside of mentioned range, texture wrapping option determines the look.
 	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
 	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	// We intentionally set texture wrapping to "GL_CLAMP_TO_EDGE".
 
 	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
 	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
 	// texture coordinate to. Nearest neighbour filtering is better suited for minifying operations,
 	// while (bi)linear filtering is better suited for magnifying operations.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	// Mipmaps are used to improve minifying, not magnifying. Setting one of the mipmap filtering options as
 	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// We intentionally set texture filtering to nearest neighbour filtering, so that individual texels
+	// could be seen.
 
 	// Load the image that will be used as a texture.
 	int width;
