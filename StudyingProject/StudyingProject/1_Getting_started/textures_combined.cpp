@@ -5,6 +5,8 @@
 const int window_width = 800;
 const int window_height = 600;
 
+float currentMixingFactor = 0.2f;
+
 int draw_textures_combined()
 {
 	// Initialize the GLFW library.
@@ -62,9 +64,9 @@ int draw_textures_combined()
 		// end vertices.
 		// position         // color                // texture coordinates
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 2.0f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 2.0f, 2.0f, // top right
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 2.0f  // top left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
@@ -127,10 +129,10 @@ int draw_textures_combined()
 	// are specified outside of mentioned range, texture wrapping option determines the look.
 	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
 	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	// "GL_CLAMP_TO_EDGE" texture wrapping option clamps the texture coordinates between 0 and 1. The result is
 	// that higher coordinates become clamped to the edge, resulting in a stretched edge pattern.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
 	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
@@ -221,6 +223,18 @@ int draw_textures_combined()
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
+	
+	// Retrieve location of uniform variable "mixingFactor" in shader program.
+	// This doesn't require activation of shader program.
+	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "mixingFactor");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (mixingFactorLocation == -1)
+	{
+		std::cout << "Location of uniform variable \"mixingFactor\" wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 9;
+	}
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -240,6 +254,9 @@ int draw_textures_combined()
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+
+		// Set the uniform variable "mixingFactor" in fragment shader.
+		glUniform1f(mixingFactorLocation, currentMixingFactor);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -272,5 +289,29 @@ void processInput_for_textures_combined(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+	}
+
+	// Change how much the wooden container and awesome face are visible.
+	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		currentMixingFactor += 0.01f;
+		// Prevent falling out of allowed range of mixing factor.
+		if (currentMixingFactor >= 1.0f)
+		{
+			currentMixingFactor = 1.0f;
+		}
+	}
+
+	// Change how much the wooden container and awesome face are visible.
+	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		currentMixingFactor -= 0.01f;
+		// Prevent falling out of allowed range of mixing factor.
+		if (currentMixingFactor <= 0.0f)
+		{
+			currentMixingFactor = 0.0f;
+		}
 	}
 }

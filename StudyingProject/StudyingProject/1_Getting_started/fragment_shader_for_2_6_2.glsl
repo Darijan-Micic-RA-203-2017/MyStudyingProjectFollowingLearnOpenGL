@@ -12,6 +12,8 @@ out vec4 FragColor;
 // is activated first.
 uniform sampler2D ourTexture1;
 uniform sampler2D ourTexture2;
+// This uniform is used as "mix" function's third argument.
+uniform float mixingFactor;
 
 void main()
 {
@@ -25,5 +27,5 @@ void main()
 	// 1.0f, it returns the second input value. A value of 0.2f will return 80 % of the first input color and
 	// 20 % of the second input color, resulting in a mixture of both textures.
 	FragColor = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, vec2(1.0f - TexCoord.x, TexCoord.y)), 
-			0.2f);
+		mixingFactor);
 }
