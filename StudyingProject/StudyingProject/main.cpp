@@ -12,6 +12,8 @@
 
 int main()
 {
+	int returnValue = 0;
+
 	int argument = 0;
 	while (argument != -1)
 	{
@@ -21,37 +23,59 @@ int main()
 		switch (argument)
 		{
 			case 1:
-				draw_hello_window();
+				returnValue = draw_hello_window();
+				std::cout << "\"StudyingProject - Hello Window\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 2:
-				draw_hello_triangle();
+				returnValue = draw_hello_triangle();
+				std::cout << "\"StudyingProject - Hello Triangle\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 3:
-				draw_hello_triangle_indexed();
+				returnValue = draw_hello_triangle_indexed();
+				std::cout << "\"StudyingProject - Hello Triangle, indexed\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 4:
-				draw_hello_triangle_exercise1();
+				returnValue = draw_hello_triangle_exercise1();
+				std::cout << "\"StudyingProject - Hello Triangle, exercise 1\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 5:
-				draw_hello_triangle_exercise2();
+				returnValue = draw_hello_triangle_exercise2();
+				std::cout << "\"StudyingProject - Hello Triangle, exercise 2\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 6:
-				draw_hello_triangle_exercise3();
+				returnValue = draw_hello_triangle_exercise3();
+				std::cout << "\"StudyingProject - Hello Triangle, exercise 3\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 7:
-				draw_shaders_uniform();
+				returnValue = draw_shaders_uniform();
+				std::cout << "\"StudyingProject - Shaders, uniform\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 8:
-				draw_shaders_interpolation();
+				returnValue = draw_shaders_interpolation();
+				std::cout << "\"StudyingProject - Shaders, interpolation\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 9:
-				draw_shaders_class();
+				returnValue = draw_shaders_class();
+				std::cout << "\"StudyingProject - Shaders, class\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 10:
-				draw_textures();
+				returnValue = draw_textures();
+				std::cout << "\"StudyingProject - Textures\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			case 11:
-				draw_textures_combined();
+				returnValue = draw_textures_combined();
+				std::cout << "\"StudyingProject - Textures, combined\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
 				break;
 			default:
 				break;
