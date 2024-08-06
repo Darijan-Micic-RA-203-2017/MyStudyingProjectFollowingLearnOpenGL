@@ -1,11 +1,9 @@
 #include "transformations.h"
-#include "../shader_s.h"
-#include "../stb_image.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
-float currentMixingFactor = 0.2f;
+float currentMixFactor = 0.2f;
 
 int draw_transformations()
 {
@@ -45,8 +43,8 @@ int draw_transformations()
 		return 3;
 	}
 
-	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_7_1.glsl",
-		"1_Getting_started/fragment_shader_for_2_7_1.glsl");
+	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_6_2.glsl",
+		"1_Getting_started/fragment_shader_for_2_6_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -256,7 +254,7 @@ int draw_transformations()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// Set the uniform variable "mixingFactor" in fragment shader.
-		glUniform1f(mixingFactorLocation, currentMixingFactor);
+		glUniform1f(mixingFactorLocation, currentMixFactor);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -295,11 +293,11 @@ void processInput_for_transformations(GLFWwindow* window)
 	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		currentMixingFactor += 0.01f;
+		currentMixFactor += 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor >= 1.0f)
+		if (currentMixFactor >= 1.0f)
 		{
-			currentMixingFactor = 1.0f;
+			currentMixFactor = 1.0f;
 		}
 	}
 
@@ -307,11 +305,11 @@ void processInput_for_transformations(GLFWwindow* window)
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		currentMixingFactor -= 0.01f;
+		currentMixFactor -= 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor <= 0.0f)
+		if (currentMixFactor <= 0.0f)
 		{
-			currentMixingFactor = 0.0f;
+			currentMixFactor = 0.0f;
 		}
 	}
 }
