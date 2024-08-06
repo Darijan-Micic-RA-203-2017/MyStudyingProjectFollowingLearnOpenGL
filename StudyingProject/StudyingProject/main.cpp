@@ -9,6 +9,7 @@
 #include "1_Getting_started/shaders_class.h"
 #include "1_Getting_started/textures.h"
 #include "1_Getting_started/textures_combined.h"
+#include "1_Getting_started/transformations.h"
 
 int main()
 {
@@ -75,6 +76,11 @@ int main()
 			case 11:
 				returnValue = draw_textures_combined();
 				std::cout << "\"StudyingProject - Textures, combined\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 12:
+				returnValue = draw_transformations();
+				std::cout << "\"StudyingProject - Transformations\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:

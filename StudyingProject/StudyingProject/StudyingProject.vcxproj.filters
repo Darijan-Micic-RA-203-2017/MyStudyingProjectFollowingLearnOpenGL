@@ -58,6 +58,9 @@
     <ClInclude Include="1_Getting_started\textures_combined.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\transformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -100,6 +103,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\textures_combined.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\transformations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
