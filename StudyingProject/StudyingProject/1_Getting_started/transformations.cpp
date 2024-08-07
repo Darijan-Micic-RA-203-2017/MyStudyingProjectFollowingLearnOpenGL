@@ -289,6 +289,21 @@ int draw_transformations()
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+		// Create a 4*4 matrix and initialize it with 1.0f on main diagonal, thus creating an identity matrix.
+		transformationalMatrix = glm::mat4(1.0f);
+		// Translate object to the top left corner of window.
+		transformationalMatrix = glm::translate(transformationalMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
+		// Scale object over time, using sin function.
+		float scalingFactor = static_cast<float>(sin(glfwGetTime()));
+		transformationalMatrix = glm::scale(transformationalMatrix, 
+			glm::vec3(scalingFactor, scalingFactor, scalingFactor));
+
+		// Pass the transformational matrix to vertex shader (1 matrix, doesn't need to be transposed).
+		glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, &transformationalMatrix[0][0]);
+
+		// Draw the second object, created using only transformations.
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
