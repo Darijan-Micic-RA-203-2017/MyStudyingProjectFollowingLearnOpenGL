@@ -212,22 +212,6 @@ int draw_transformations()
 	// Every shader and rendering call from now on will use this shader program object.
 	ourShaderProgram.useProgram();
 
-	// Create a 4*4 matrix and initialize it with 1.0f on main diagonal, thus creating an identity matrix.
-	glm::mat4 transformationalMatrix = glm::mat4(1.0f);
-	// Transformations are meant to be read from right to left, which corresponds to bottom to top in code.
-	// The order of transformations always has to be: scaling first, then rotation and finally translation.
-	// Because we will pass matrices to each of the GLM's functions, GLM will automatically multiply the
-	// matrices together, resulting in a transformational matrix that combines all the transformations.
-
-	// Rotate object 90 degrees (which means left) around z-axis. GLM's "rotate" function requires the provided
-	// angle to be specified in radians, so we use helper function to convert the angle's value from degrees.
-	// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
-	// representing the axis if we're not rotating around x, y or z-axis.
-	transformationalMatrix = glm::rotate(transformationalMatrix, glm::radians(90.0f), 
-		glm::vec3(0.0f, 0.0f, 1.0f));
-	// Scale object to half on each axis.
-	transformationalMatrix = glm::scale(transformationalMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-
 	// Retrieve location of uniform variable "transformationalMatrix" in shader program.
 	// This doesn't require activation of shader program.
 	int transformationalMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId,
@@ -240,8 +224,6 @@ int draw_transformations()
 
 		return 9;
 	}
-	// Pass the transformational matrix to shader program (1 matrix, doen't need to be transposed).
-	glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationalMatrix));
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
@@ -277,6 +259,29 @@ int draw_transformations()
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+
+		// Create a 4*4 matrix and initialize it with 1.0f on main diagonal, thus creating an identity matrix.
+		glm::mat4 transformationalMatrix = glm::mat4(1.0f);
+		// Transformations are meant to be read from right to left, which corresponds to bottom to top in code.
+		// The order of transformations always has to be: scaling first, then rotation and finally translation.
+		// Because we will pass matrices to each of the GLM's functions, GLM will automatically multiply the
+		// matrices together, resulting in a transformational matrix that combines all the transformations.
+
+		// Translate object to the bottom right corner of window.
+		transformationalMatrix = glm::translate(transformationalMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
+		// Rotate object over time around z-axis. GLM's "rotate" function requires the provided angle to be
+		// specified in radians, so we convert the angle's value from degrees.
+		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
+		// representing the axis if we're not rotating around x, y or z-axis.
+		transformationalMatrix = glm::rotate(transformationalMatrix, (float) glfwGetTime(), 
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		/*
+		transformationalMatrix = glm::rotate(transformationalMatrix, glm::radians(90.0f), 
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		*/
+
+		// Pass the transformational matrix to vertex shader (1 matrix, doesn't need to be transposed).
+		glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationalMatrix));
 
 		// Set the uniform variable "mixFactor" in fragment shader.
 		glUniform1f(mixFactorLocation, currentMixFactor);
