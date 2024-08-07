@@ -211,6 +211,38 @@ int draw_transformations()
 	// Activate the shader program.
 	// Every shader and rendering call from now on will use this shader program object.
 	ourShaderProgram.useProgram();
+
+	// Create a 4*4 matrix and initialize it with 1.0f on main diagonal, thus creating an identity matrix.
+	glm::mat4 transformationalMatrix = glm::mat4(1.0f);
+	// Transformations are meant to be read from right to left, which corresponds to bottom to top in code.
+	// The order of transformations always has to be: scaling first, then rotation and finally translation.
+	// Because we will pass matrices to each of the GLM's functions, GLM will automatically multiply the
+	// matrices together, resulting in a transformational matrix that combines all the transformations.
+
+	// Rotate object 90 degrees (which means left) around z-axis. GLM's "rotate" function requires the provided
+	// angle to be specified in radians, so we use helper function to convert the angle's value from degrees.
+	// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
+	// representing the axis if we're not rotating around x, y or z-axis.
+	transformationalMatrix = glm::rotate(transformationalMatrix, glm::radians(90.0f), 
+		glm::vec3(0.0f, 0.0f, 1.0f));
+	// Scale object to half on each axis.
+	transformationalMatrix = glm::scale(transformationalMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+
+	// Retrieve location of uniform variable "transformationalMatrix" in shader program.
+	// This doesn't require activation of shader program.
+	int transformationalMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId,
+		"transformationalMatrix");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (transformationalMatrixLocation == -1)
+	{
+		std::cout << "Location of uniform variable \"transformationalMatrix\" wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 9;
+	}
+	// Pass the transformational matrix to shader program (1 matrix, doen't need to be transposed).
+	glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationalMatrix));
+
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
@@ -224,7 +256,7 @@ int draw_transformations()
 		std::cout << "Location of uniform variable \"mixFactor\" wasn't found!" << std::endl;
 		glfwTerminate();
 
-		return 9;
+		return 10;
 	}
 
 	// Rendering loop.
