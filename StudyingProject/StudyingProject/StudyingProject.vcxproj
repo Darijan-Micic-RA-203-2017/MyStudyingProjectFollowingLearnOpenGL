@@ -171,6 +171,8 @@
     <None Include="1_Getting_started\fragment_shader_for_2_6_1.glsl" />
     <None Include="1_Getting_started\vertex_shader_for_2_6_2.glsl" />
     <None Include="1_Getting_started\fragment_shader_for_2_6_2.glsl" />
+    <None Include="1_Getting_started\vertex_shader_for_2_7_1.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_7_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="1_Getting_started\brick_wall.jpg" />
