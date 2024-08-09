@@ -146,6 +146,7 @@
     <ClInclude Include="1_Getting_started\textures.h" />
     <ClInclude Include="1_Getting_started\textures_combined.h" />
     <ClInclude Include="1_Getting_started\transformations.h" />
+    <ClInclude Include="1_Getting_started\coordinate_systems.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -163,6 +164,7 @@
     <ClCompile Include="1_Getting_started\textures.cpp" />
     <ClCompile Include="1_Getting_started\textures_combined.cpp" />
     <ClCompile Include="1_Getting_started\transformations.cpp" />
+    <ClCompile Include="1_Getting_started\coordinate_systems.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />
@@ -173,6 +175,8 @@
     <None Include="1_Getting_started\fragment_shader_for_2_6_2.glsl" />
     <None Include="1_Getting_started\vertex_shader_for_2_7_1.glsl" />
     <None Include="1_Getting_started\fragment_shader_for_2_7_1.glsl" />
+    <None Include="1_Getting_started\vertex_shader_for_2_8_1.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_8_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="1_Getting_started\brick_wall.jpg" />

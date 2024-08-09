@@ -10,6 +10,7 @@
 #include "1_Getting_started/textures.h"
 #include "1_Getting_started/textures_combined.h"
 #include "1_Getting_started/transformations.h"
+#include "1_Getting_started/coordinate_systems.h"
 
 int main()
 {
@@ -81,6 +82,11 @@ int main()
 			case 12:
 				returnValue = draw_transformations();
 				std::cout << "\"StudyingProject - Transformations\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 13:
+				returnValue = draw_coordinate_systems();
+				std::cout << "\"StudyingProject - Coordinate Systems\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:

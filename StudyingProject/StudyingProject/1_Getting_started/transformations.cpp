@@ -3,7 +3,7 @@
 const int window_width = 800;
 const int window_height = 600;
 
-float currentMixFactor = 0.2f;
+float currentMixingFactor_for_2_7_1 = 0.2f;
 
 int draw_transformations()
 {
@@ -229,13 +229,13 @@ int draw_transformations()
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
 
-	// Retrieve location of uniform variable "mixFactor" in shader program.
+	// Retrieve location of uniform variable "mixingFactor" in shader program.
 	// This doesn't require activation of shader program.
-	int mixFactorLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "mixFactor");
+	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "mixingFactor");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (mixFactorLocation == -1)
+	if (mixingFactorLocation == -1)
 	{
-		std::cout << "Location of uniform variable \"mixFactor\" wasn't found!" << std::endl;
+		std::cout << "Location of uniform variable \"mixingFactor\" wasn't found!" << std::endl;
 		glfwTerminate();
 
 		return 10;
@@ -283,8 +283,8 @@ int draw_transformations()
 		// Pass the transformational matrix to vertex shader (1 matrix, doesn't need to be transposed).
 		glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, glm::value_ptr(transformationalMatrix));
 
-		// Set the uniform variable "mixFactor" in fragment shader.
-		glUniform1f(mixFactorLocation, currentMixFactor);
+		// Set the uniform variable "mixingFactor" in fragment shader.
+		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_7_1);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -338,11 +338,11 @@ void processInput_for_transformations(GLFWwindow* window)
 	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		currentMixFactor += 0.01f;
+		currentMixingFactor_for_2_7_1 += 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixFactor >= 1.0f)
+		if (currentMixingFactor_for_2_7_1 >= 1.0f)
 		{
-			currentMixFactor = 1.0f;
+			currentMixingFactor_for_2_7_1 = 1.0f;
 		}
 	}
 
@@ -350,11 +350,11 @@ void processInput_for_transformations(GLFWwindow* window)
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		currentMixFactor -= 0.01f;
+		currentMixingFactor_for_2_7_1 -= 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixFactor <= 0.0f)
+		if (currentMixingFactor_for_2_7_1 <= 0.0f)
 		{
-			currentMixFactor = 0.0f;
+			currentMixingFactor_for_2_7_1 = 0.0f;
 		}
 	}
 }
