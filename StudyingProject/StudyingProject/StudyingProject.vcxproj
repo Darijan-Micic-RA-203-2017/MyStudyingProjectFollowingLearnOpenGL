@@ -147,6 +147,7 @@
     <ClInclude Include="1_Getting_started\textures_combined.h" />
     <ClInclude Include="1_Getting_started\transformations.h" />
     <ClInclude Include="1_Getting_started\coordinate_systems.h" />
+    <ClInclude Include="1_Getting_started\coordinate_systems_depth.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -165,6 +166,7 @@
     <ClCompile Include="1_Getting_started\textures_combined.cpp" />
     <ClCompile Include="1_Getting_started\transformations.cpp" />
     <ClCompile Include="1_Getting_started\coordinate_systems.cpp" />
+    <ClCompile Include="1_Getting_started\coordinate_systems_depth.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />

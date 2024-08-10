@@ -64,6 +64,9 @@
     <ClInclude Include="1_Getting_started\coordinate_systems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\coordinate_systems_depth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -112,6 +115,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\coordinate_systems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\coordinate_systems_depth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

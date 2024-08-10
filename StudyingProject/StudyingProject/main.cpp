@@ -11,6 +11,7 @@
 #include "1_Getting_started/textures_combined.h"
 #include "1_Getting_started/transformations.h"
 #include "1_Getting_started/coordinate_systems.h"
+#include "1_Getting_started/coordinate_systems_depth.h"
 
 int main()
 {
@@ -87,6 +88,11 @@ int main()
 			case 13:
 				returnValue = draw_coordinate_systems();
 				std::cout << "\"StudyingProject - Coordinate Systems\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 14:
+				returnValue = draw_coordinate_systems_depth();
+				std::cout << "\"StudyingProject - Coordinate Systems, depth\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:
