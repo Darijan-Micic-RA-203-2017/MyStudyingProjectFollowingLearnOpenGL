@@ -12,7 +12,8 @@ uniform mat4 transformationalMatrix;
 
 void main()
 {
-	gl_Position = transformationalMatrix * vec4(aPos, 1.0f);
 	ourColor = aColor;
 	TexCoord = aTexCoord;
+
+	gl_Position = transformationalMatrix * vec4(aPos, 1.0f);
 }

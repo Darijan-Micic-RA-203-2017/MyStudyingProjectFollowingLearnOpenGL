@@ -10,9 +10,9 @@ const char* vertexShaderSource_for_2_5_2 = "#version 330 core\n\n"
 "out vec4 ourColor;\n\n"
 "void main()\n"
 "{\n"
+"	ourColor = aColor;\n\n"
 // GLSL allows passing vectors as arguments to different vectors constructor calls.
 "	gl_Position = vec4(aPos.x, -aPos.y, aPos.z, 1.0f);\n"
-"	ourColor = aColor;\n"
 "}\0";
 // Fragment shader, the fifth stage of the graphics pipeline. Shaders are written in the GLSL language.
 const char* fragmentShaderSource_for_2_5_2 = "#version 330 core\n\n"
