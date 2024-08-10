@@ -43,6 +43,10 @@ int draw_coordinate_systems_depth()
 		return 3;
 	}
 
+	// Configure global OpenGL state.
+	// Enable depth testing.
+	glEnable(GL_DEPTH_TEST);
+	
 	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_8_1.glsl",
 		"1_Getting_started/fragment_shader_for_2_8_1.glsl");
 	if (ourShaderProgram.errorCode)
@@ -302,7 +306,9 @@ int draw_coordinate_systems_depth()
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		// Since we're now using a depth buffer, we also want to clear it before each rendering iteration.
+		// Otherwise, the depth information of the previous frame would remain in the buffer. 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
