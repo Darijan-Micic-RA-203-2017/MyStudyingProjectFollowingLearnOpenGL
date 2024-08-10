@@ -1,10 +1,8 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec4 aColor;
-layout (location = 2) in vec2 aTexCoord;
+layout (location = 1) in vec2 aTexCoord;
 
-out vec4 ourColor;
 out vec2 TexCoord;
 
 // Pass the transformational matrices to the vertex shader.
@@ -14,7 +12,6 @@ uniform mat4 projectionMatrix;
 
 void main()
 {
-	ourColor = aColor;
 	TexCoord = aTexCoord;
 
 	// Vclip = Mprojection * Mview * Mmodel * Vlocal. Matrix multiplication is meant to be read from right.

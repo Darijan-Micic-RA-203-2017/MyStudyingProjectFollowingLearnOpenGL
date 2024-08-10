@@ -53,19 +53,53 @@ int draw_coordinate_systems_depth()
 	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
-	// First three values represent position of vertex, middle four values represent color of vertex, while
-	// last two values represent texture coordinates (from 0.0f to 1.0f).
+	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
+	// (6 sides * 2 triangles per side * 3 vertices for each triangle).
+	// First three values represent position of vertex, while last two values represent texture coordinates
+	// (from 0.0f to 1.0f).
 	float vertices[] = {
-		// position         // color                // texture coordinates
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
-	};
-	// Indices, which start at 0.
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		// position          // texture coordinates
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 
+		 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
+		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 
+		
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
+		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
+		-0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		
+		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+		
+		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
+		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		 0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 
+		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
+		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		
+		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
+		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 
+		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -75,8 +109,6 @@ int draw_coordinate_systems_depth()
 	glGenVertexArrays(1, &VAO);
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
 
 	// Bind (assign) the newly created VAO to OpenGL's context.
 	glBindVertexArray(VAO);
@@ -86,25 +118,16 @@ int draw_coordinate_systems_depth()
 	// Copy user-defined data into the currently bound buffer.
 	// Vertex data is now stored on the graphics card's memory.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// Bind (assign) the newly created EBO to OpenGL's context.
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// Copy user-defined data into the currently bound buffer.
-	// Index data is now stored on the graphics card's memory.
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0);
-	// Color attribute.
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
-	// Enable vertex color attribute.
-	glEnableVertexAttribArray(1);
 	// Texture coordinate attribute.
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(1);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -291,22 +314,23 @@ int draw_coordinate_systems_depth()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform our plane by rotating it on the x-axis so it looks like it's laying on the floor.
+		// We will transform our cube by rotating it over time around the (0.6f, 0.8f, 0.0f) axis.
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert the
 		// angle's value from degrees.
 		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
 		// representing the axis if we're not rotating around x, y or z-axis.
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrix = glm::rotate(modelMatrix, (float) glfwGetTime() * glm::radians(50.0f), 
+			glm::vec3(0.6f, 0.8f, 0.0f));
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by translating it forward, which equals moving the camera
 		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
 		// camera to move.
 		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
-		// screen away form the user, while the positive z-axis is going through the screen towards the user.
+		// screen away from the user, while the positive z-axis is going through the screen towards the user.
 		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
-		// positive z-axis.We do this by translating the scene towards the negative z-axis. This gives the
+		// positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the
 		// impression that we are moving backwards.
 		glm::mat4 viewMatrix = glm::mat4(1.0f);
 		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -319,15 +343,22 @@ int draw_coordinate_systems_depth()
 		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_2);
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+		// Without the use of z-buffer, some sides of the cube will be drawn over other sides of the cube. This
+		// happens because when OpenGL draws our cube triangle by triangle, fragment by fragment, it will
+		// overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
+		// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn
+		// on top of each other even though one should clearly be in front of the other.
+		// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to
+		// decide when to draw over a pixel and when not to. Using the z-buffer we can configure OpenGL to
+		// do depth testing.
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	// De-allocate all resources once they're no longer needed.
-	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
 

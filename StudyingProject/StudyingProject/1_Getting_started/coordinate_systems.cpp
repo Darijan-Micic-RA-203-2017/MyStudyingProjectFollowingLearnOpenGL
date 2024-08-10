@@ -53,14 +53,14 @@ int draw_coordinate_systems()
 	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
-	// First three values represent position of vertex, middle four values represent color of vertex, while
-	// last two values represent texture coordinates (from 0.0f to 1.0f).
+	// First three values represent position of vertex, while last two values represent texture coordinates
+	// (from 0.0f to 1.0f).
 	float vertices[] = {
-		// position         // color                // texture coordinates
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
+		// position         // texture coordinates
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
@@ -94,17 +94,13 @@ int draw_coordinate_systems()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0);
-	// Color attribute.
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
-	// Enable vertex color attribute.
-	glEnableVertexAttribArray(1);
 	// Texture coordinate attribute.
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(1);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -304,9 +300,9 @@ int draw_coordinate_systems()
 		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
 		// camera to move.
 		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
-		// screen away form the user, while the positive z-axis is going through the screen towards the user.
+		// screen away from the user, while the positive z-axis is going through the screen towards the user.
 		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
-		// positive z-axis.We do this by translating the scene towards the negative z-axis. This gives the
+		// positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the
 		// impression that we are moving backwards.
 		glm::mat4 viewMatrix = glm::mat4(1.0f);
 		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
