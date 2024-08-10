@@ -211,6 +211,50 @@ int draw_coordinate_systems()
 	// Activate the shader program.
 	// Every shader and rendering call from now on will use this shader program object.
 	ourShaderProgram.useProgram();
+
+	// Retrieve location of uniform variable "modelMatrix" in shader program.
+	// This doesn't require activation of shader program.
+	int modelMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "modelMatrix");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (modelMatrixLocation == -1)
+	{
+		std::cout << "Location of uniform variable \"modelMatrix\" wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 9;
+	}
+
+	// Retrieve location of uniform variable "viewMatrix" in shader program.
+	// This doesn't require activation of shader program.
+	int viewMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "viewMatrix");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (viewMatrixLocation == -1)
+	{
+		std::cout << "Location of uniform variable \"viewMatrix\" wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 10;
+	}
+
+	// Retrieve location of uniform variable "projectionMatrix" in shader program.
+	// This doesn't require activation of shader program.
+	int projectionMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "projectionMatrix");
+	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
+	if (projectionMatrixLocation == -1)
+	{
+		std::cout << "Location of uniform variable \"projectionMatrix\" wasn't found!" << std::endl;
+		glfwTerminate();
+
+		return 11;
+	}
+	// The projection matrix transforms view space coordinates to clip space coordinates.
+	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
+	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 
+		(float) (window_width) / (float) (window_height), 0.1f, 100.0f);
+	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
+
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
@@ -222,8 +266,9 @@ int draw_coordinate_systems()
 	if (mixingFactorLocation == -1)
 	{
 		std::cout << "Location of uniform variable \"mixingFactor\" wasn't found!" << std::endl;
+		glfwTerminate();
 
-		return 9;
+		return 12;
 	}
 
 	// Rendering loop.
@@ -244,6 +289,31 @@ int draw_coordinate_systems()
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+		
+		// The model matrix transforms local space coordinates to world space coordinates.
+		// We will transform our plane by rotating it on the x-axis so it looks like it's laying on the floor.
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert the
+		// angle's value from degrees.
+		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
+		// representing the axis if we're not rotating around x, y or z-axis.
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		// The view matrix transforms world space coordinates to view space coordinates.
+		// We will transform our world (scene) by translating it forward, which equals moving the camera
+		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
+		// camera to move.
+		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
+		// screen away form the user, while the positive z-axis is going through the screen towards the user.
+		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
+		// positive z-axis.We do this by translating the scene towards the negative z-axis. This gives the
+		// impression that we are moving backwards.
+		glm::mat4 viewMatrix = glm::mat4(1.0f);
+		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+
+		// Set the model matrix and view matrix. These two matrices change each frame.
+		glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
 		// Set the uniform variable "mixingFactor" in fragment shader.
 		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_1);
