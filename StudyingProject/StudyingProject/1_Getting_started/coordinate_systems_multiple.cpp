@@ -44,7 +44,13 @@ int draw_coordinate_systems_multiple()
 	}
 
 	// Configure global OpenGL state.
-	// Enable depth testing.
+	// Enable depth testing. Without the use of z-buffer, some sides of the cube will be drawn over other sides
+	// of the cube. This happens because when OpenGL draws our cube triangle by triangle, fragment by fragment,
+	// it will overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
+	// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn on
+	// top of each other even though one should clearly be in front of the other.
+	// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to decide
+	// when to or not to draw over a pixel. Using the z-buffer we can configure OpenGL to do depth testing.
 	glEnable(GL_DEPTH_TEST);
 
 	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_8_1.glsl",
@@ -104,6 +110,19 @@ int draw_coordinate_systems_multiple()
 		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
 		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 
 		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f
+	};
+	// World space positions of our ten cubes.
+	glm::vec3 positionsOfCubes[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f), 
+		glm::vec3(2.0f,  5.0f, -15.0f), 
+		glm::vec3(-1.5f, -2.2f, -2.5f), 
+		glm::vec3(-3.8f, -2.0f, -12.3f), 
+		glm::vec3(2.4f, -0.4f, -3.5f), 
+		glm::vec3(-1.7f,  3.0f, -7.5f), 
+		glm::vec3(1.3f, -2.0f, -2.5f), 
+		glm::vec3(1.5f,  2.0f, -2.5f), 
+		glm::vec3(1.5f,  0.2f, -1.5f), 
+		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -319,16 +338,6 @@ int draw_coordinate_systems_multiple()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform our cube by rotating it over time around the (0.6f, 0.8f, 0.0f) axis.
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert the
-		// angle's value from degrees.
-		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
-		// representing the axis if we're not rotating around x, y or z-axis.
-		modelMatrix = glm::rotate(modelMatrix, (float) glfwGetTime() * glm::radians(50.0f),
-			glm::vec3(0.6f, 0.8f, 0.0f));
-
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by translating it forward, which equals moving the camera
 		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
@@ -341,23 +350,33 @@ int draw_coordinate_systems_multiple()
 		glm::mat4 viewMatrix = glm::mat4(1.0f);
 		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
-		// Set the model matrix and view matrix. These two matrices change each frame.
-		glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		// Set the view matrix. This matrix changes each frame.
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
 		// Set the uniform variable "mixingFactor" in fragment shader.
 		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_3);
 
 		glBindVertexArray(VAO);
-		// Without the use of z-buffer, some sides of the cube will be drawn over other sides of the cube. This
-		// happens because when OpenGL draws our cube triangle by triangle, fragment by fragment, it will
-		// overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
-		// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn
-		// on top of each other even though one should clearly be in front of the other.
-		// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to
-		// decide when to draw over a pixel and when not to. Using the z-buffer we can configure OpenGL to
-		// do depth testing.
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// We draw ten cubes.
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			// The model matrix transforms local space coordinates to world space coordinates.
+			// We will transform each of ten cubes by rotating it around the (1.0f, 0.3f, 0.5f) axis and
+			// translating it to corresponding specified position.
+			glm::mat4 modelMatrix = glm::mat4(1.0f);
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
+			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
+			// the angle's value from degrees.
+			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
+			// representing the axis if we're not rotating around x, y or z-axis.
+			float angle = 20.0f * i;
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+			// Set the model matrix. This matrix changes each frame.
+			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+			
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);

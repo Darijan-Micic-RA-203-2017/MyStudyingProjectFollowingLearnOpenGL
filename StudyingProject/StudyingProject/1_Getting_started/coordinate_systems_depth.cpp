@@ -44,7 +44,13 @@ int draw_coordinate_systems_depth()
 	}
 
 	// Configure global OpenGL state.
-	// Enable depth testing.
+	// Enable depth testing. Without the use of z-buffer, some sides of the cube will be drawn over other sides
+	// of the cube. This happens because when OpenGL draws our cube triangle by triangle, fragment by fragment,
+	// it will overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
+	// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn on
+	// top of each other even though one should clearly be in front of the other.
+	// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to decide
+	// when to or not to draw over a pixel. Using the z-buffer we can configure OpenGL to do depth testing.
 	glEnable(GL_DEPTH_TEST);
 	
 	Shader ourShaderProgram("1_Getting_started/vertex_shader_for_2_8_1.glsl",
@@ -349,14 +355,6 @@ int draw_coordinate_systems_depth()
 		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_2);
 
 		glBindVertexArray(VAO);
-		// Without the use of z-buffer, some sides of the cube will be drawn over other sides of the cube. This
-		// happens because when OpenGL draws our cube triangle by triangle, fragment by fragment, it will
-		// overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
-		// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn
-		// on top of each other even though one should clearly be in front of the other.
-		// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to
-		// decide when to draw over a pixel and when not to. Using the z-buffer we can configure OpenGL to
-		// do depth testing.
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		
 		// Third part: Swap buffers, check for events and call the events if they occured.
