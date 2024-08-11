@@ -375,7 +375,8 @@ int draw_coordinate_systems_multiple()
 			{
 				angle = (float) glfwGetTime() * 25.0f;
 			}
-			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), 
+				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
 
 			// Set the model matrix. This matrix changes each frame.
 			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
