@@ -361,8 +361,9 @@ int draw_coordinate_systems_multiple()
 		for (unsigned int i = 0; i < 10; i++)
 		{
 			// The model matrix transforms local space coordinates to world space coordinates.
-			// We will transform each of ten cubes by rotating it around the (1.0f, 0.3f, 0.5f) axis and
-			// translating it to corresponding specified position.
+			// We will transform every third cube (including the first one) by rotating it over time around the
+			// (1.0f, 0.3f, 0.5f) axis. The other cubes will only be rotated once over aforementioned axis.
+			// Finally, each of the ten cubes will be translated to its corresponding specified position.
 			glm::mat4 modelMatrix = glm::mat4(1.0f);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
 			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
@@ -370,6 +371,10 @@ int draw_coordinate_systems_multiple()
 			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
 			// representing the axis if we're not rotating around x, y or z-axis.
 			float angle = 20.0f * i;
+			if (i % 3 == 0)
+			{
+				angle = (float) glfwGetTime() * 25.0f;
+			}
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
 			// Set the model matrix. This matrix changes each frame.
