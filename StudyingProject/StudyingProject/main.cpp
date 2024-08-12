@@ -13,6 +13,7 @@
 #include "1_Getting_started/coordinate_systems.h"
 #include "1_Getting_started/coordinate_systems_depth.h"
 #include "1_Getting_started/coordinate_systems_multiple.h"
+#include "1_Getting_started/camera_circle.h"
 
 int main()
 {
@@ -99,6 +100,11 @@ int main()
 			case 15:
 				returnValue = draw_coordinate_systems_multiple();
 				std::cout << "\"StudyingProject - Coordinate Systems, multiple cubes\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 16:
+				returnValue = draw_camera_circle();
+				std::cout << "\"StudyingProject - Camera, circle\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:

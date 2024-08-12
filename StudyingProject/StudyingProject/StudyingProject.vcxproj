@@ -149,6 +149,7 @@
     <ClInclude Include="1_Getting_started\coordinate_systems.h" />
     <ClInclude Include="1_Getting_started\coordinate_systems_depth.h" />
     <ClInclude Include="1_Getting_started\coordinate_systems_multiple.h" />
+    <ClInclude Include="1_Getting_started\camera_circle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -169,6 +170,7 @@
     <ClCompile Include="1_Getting_started\coordinate_systems.cpp" />
     <ClCompile Include="1_Getting_started\coordinate_systems_depth.cpp" />
     <ClCompile Include="1_Getting_started\coordinate_systems_multiple.cpp" />
+    <ClCompile Include="1_Getting_started\camera_circle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />
@@ -181,6 +183,8 @@
     <None Include="1_Getting_started\fragment_shader_for_2_7_1.glsl" />
     <None Include="1_Getting_started\vertex_shader_for_2_8_1.glsl" />
     <None Include="1_Getting_started\fragment_shader_for_2_8_1.glsl" />
+    <None Include="1_Getting_started\vertex_shader_for_2_9_1.glsl" />
+    <None Include="1_Getting_started\fragment_shader_for_2_9_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="1_Getting_started\brick_wall.jpg" />
