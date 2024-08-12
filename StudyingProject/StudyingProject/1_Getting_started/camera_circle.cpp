@@ -332,7 +332,7 @@ int draw_camera_circle()
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
-		// texture is used (like in previous example).
+		// texture is used (like in examples previous to "Textures, combined").
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);

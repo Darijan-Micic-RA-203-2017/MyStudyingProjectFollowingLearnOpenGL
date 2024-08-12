@@ -195,7 +195,7 @@ int draw_coordinate_systems_multiple()
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
-		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGl, or
+		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
@@ -231,7 +231,7 @@ int draw_coordinate_systems_multiple()
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
-		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGl, or
+		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
@@ -297,7 +297,7 @@ int draw_coordinate_systems_multiple()
 	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
 	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f),
-		(float)(window_width) / (float)(window_height), 0.1f, 100.0f);
+		(float) (window_width) / (float) (window_height), 0.1f, 100.0f);
 	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
 
@@ -326,13 +326,13 @@ int draw_coordinate_systems_multiple()
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		// Since we're now using a depth buffer, we also want to clear it before each rendering iteration.
-		// Otherwise, the depth information of the previous frame would remain in the buffer. 
+		// Otherwise, the depth information of the previous frame would remain in the buffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
-		// texture is used (like in previous example).
+		// texture is used (like in examples previous to "Textures, combined").
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);

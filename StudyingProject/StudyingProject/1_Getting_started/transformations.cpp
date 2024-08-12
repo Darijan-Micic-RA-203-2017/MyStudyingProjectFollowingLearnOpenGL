@@ -149,7 +149,7 @@ int draw_transformations()
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
-		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGl, or
+		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
@@ -185,7 +185,7 @@ int draw_transformations()
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
-		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGl, or
+		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
@@ -254,7 +254,7 @@ int draw_transformations()
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
-		// texture is used (like in previous example).
+		// texture is used (like in examples previous to "Textures, combined").
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
