@@ -3,6 +3,14 @@
 const int window_width = 800;
 const int window_height = 600;
 
+glm::vec3 cameraPosition_for_2_9_2 = glm::vec3(0.0f, 0.0f, 3.0f);
+// This vector acts as insurance that however we move, camera keeps looking straight ahead. Math's explained below.
+// In 2. thing we need to manually create LookAt matrix ("camera's direction"):
+// glm::vec3 cameraTarget = cameraPosition + cameraFront;
+// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(cameraFront);
+glm::vec3 cameraFront_for_2_9_2 = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 upVector_for_2_9_2 = glm::vec3(0.0f, 1.0f, 0.0f);
+
 float currentMixingFactor_for_2_9_2 = 0.2f;
 
 int draw_camera_keyboard_dt()
@@ -339,19 +347,13 @@ int draw_camera_keyboard_dt()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
-		// We will transform our world (scene) by moving the camera around the scene over time. Each frame, we will
-		// create x-coordinate and z-coordinate that represent a point on a circle. Circle is enlargened to a
-		// pre-defined radius.
+		// We will transform our world (scene) by moving the camera using the keyboard.
 
 		// MANUALLY create the LookAt (view) matrix.
 
 		// 1. thing we need to create a LookAt matrix: the camera's position.
-		float time = (float) glfwGetTime();
-		// The smaller the circle is, the closer the camera is to the scene and vice-versa.
-		float radius = 10.0f;
-		float cameraPositionX = sin(time) * radius;
-		float cameraPositionZ = cos(time) * radius;
-		glm::vec3 cameraPosition = glm::vec3(cameraPositionX, 0.0f, cameraPositionZ);
+		// Camera's position is already set as the global variable and modified using WASD keys.
+
 		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
 		// actually need the direction TO camera.
 		// The camera's direction is counted by subtracting camera's position from the camera's target. However,
@@ -360,16 +362,15 @@ int draw_camera_keyboard_dt()
 		// order and subtract camera's target from camera's position. Vector visually ends at the minuend
 		// (first operand of subtraction) and starts at the subtrahend (second operand of subtraction). Therefore,
 		// we want it to end on camera's position, pointing to it.
-		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
+		glm::vec3 cameraTarget = cameraPosition_for_2_9_2 + cameraFront_for_2_9_2;
+		glm::vec3 cameraDirection = glm::normalize(cameraPosition_for_2_9_2 - cameraTarget);
 		// 3. thing we need to create a LookAt matrix: the camera's right vector. This vector points right from
 		// camera and is perpendicular to "camera's direction".
 		// We can create it with the following trick. We first create an "up" vector, that's pointing upwards in
 		// the global space (0.0f, 1.0f, 0.0f). Then, we create camera's right vector by doing a cross product
 		// between "up" vector and "camera's direction". Result of a cross product is a vector perpendicular to
 		// both vectors and we will get a vector that points in the positive x-axis' direction.
-		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 cameraRight = glm::normalize(glm::cross(upVector, cameraDirection));
+		glm::vec3 cameraRight = glm::normalize(glm::cross(upVector_for_2_9_2, cameraDirection));
 		// 4. and final thing we need to create a LookAt matrix: the camera's up vector.
 		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
 		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
@@ -393,7 +394,7 @@ int draw_camera_keyboard_dt()
 			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 
 				0.0f, 1.0f, 0.0f, 0.0f, 
 				0.0f, 0.0f, 1.0f, 0.0f, 
-				-cameraPosition.x, -cameraPosition.y, -cameraPosition.z, 1.0f);
+				-cameraPosition_for_2_9_2.x, -cameraPosition_for_2_9_2.y, -cameraPosition_for_2_9_2.z, 1.0f);
 
 		// Set the view matrix. This matrix changes each frame.
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -458,11 +459,12 @@ void processInput_for_camera_keyboard_dt(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
+	const float mixingFactorChangeSpeed = 0.01f;
 	// Change how much the wooden container and awesome face are visible.
 	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_9_2 += 0.01f;
+		currentMixingFactor_for_2_9_2 += mixingFactorChangeSpeed;
 		// Prevent falling out of allowed range of mixing factor.
 		if (currentMixingFactor_for_2_9_2 >= 1.0f)
 		{
@@ -474,11 +476,44 @@ void processInput_for_camera_keyboard_dt(GLFWwindow* window)
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_9_2 -= 0.01f;
+		currentMixingFactor_for_2_9_2 -= mixingFactorChangeSpeed;
 		// Prevent falling out of allowed range of mixing factor.
 		if (currentMixingFactor_for_2_9_2 <= 0.0f)
 		{
 			currentMixingFactor_for_2_9_2 = 0.0f;
 		}
+	}
+
+	const float cameraSpeed = 0.01f;
+	// Move camera forward (away from yourself, in negative z-axis' direction) by adding scaled camera's direction
+	// to camera's position.
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		cameraPosition_for_2_9_2 += cameraFront_for_2_9_2 * cameraSpeed;
+	}
+
+	// Move camera backwards (towards yourself, in positive z-axis' direction) by subtracting scaled camera's
+	// direction from camera's position.
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		cameraPosition_for_2_9_2 -= cameraFront_for_2_9_2 * cameraSpeed;
+	}
+
+	// Move camera to the left (in negative x-axis' direction) by subtracting scaled right vector (cross product of
+	// camera's front vector and "up" vector) from camera's position. We have to normalize that right vector,
+	// because cross product could return differently sized vectors depending on the value of "cameraFront". Also,
+	// we would move slow or fast depending on camera's orientation, instead of at a consistent speed.
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		cameraPosition_for_2_9_2 -= glm::normalize(glm::cross(cameraFront_for_2_9_2, upVector_for_2_9_2)) * cameraSpeed;
+	}
+
+	// Move camera to the right (in positive x-axis' direction) by adding scaled right vector (cross product of
+	// camera's front vector and "up" vector) to camera's position. We have to normalize that right vector,
+	// because cross product could return differently sized vectors depending on the value of "cameraFront". Also,
+	// we would move slow or fast depending on camera's orientation, instead of at a consistent speed.
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		cameraPosition_for_2_9_2 += glm::normalize(glm::cross(cameraFront_for_2_9_2, upVector_for_2_9_2)) * cameraSpeed;
 	}
 }
