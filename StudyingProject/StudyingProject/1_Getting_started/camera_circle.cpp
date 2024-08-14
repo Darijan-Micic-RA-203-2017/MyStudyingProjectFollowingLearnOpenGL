@@ -339,12 +339,19 @@ int draw_camera_circle()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
-		// We will transform our world (scene) by moving the camera backwards, in positive z-axis's direction.
+		// We will transform our world (scene) by moving the camera around the scene over time. Each frame, we will
+		// create x-coordinate and z-coordinate that represent a point on a circle. Circle is enlargened to a
+		// pre-defined radius.
 
 		// MANUALLY create the LookAt (view) matrix.
 		
 		// 1. thing we need to create a LookAt matrix: the camera's position.
-		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+		float time = (float) glfwGetTime();
+		// The smaller the circle is, the closer the camera is to the scene and vice-versa.
+		float radius = 10.0f;
+		float cameraPositionX = sin(time) * radius;
+		float cameraPositionZ = cos(time) * radius;
+		glm::vec3 cameraPosition = glm::vec3(cameraPositionX, 0.0f, cameraPositionZ);
 		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
 		// actually need the direction TO camera.
 		// The camera's direction is counted by subtracting camera's position from the camera's target. However,
@@ -380,12 +387,12 @@ int draw_camera_circle()
 		*   [Dx   Dy   Dz   -Dx*Px - Dy*Py - Dz*Pz]
 		*   [0.0f 0.0f 0.0f 1.0f                  ]
 		*/
-		glm::mat4 viewMatrix = glm::mat4(cameraRight.x, cameraUp.x, cameraDirection.x, 0.0f,
-			cameraRight.y, cameraUp.y, cameraDirection.y, 0.0f,
-			cameraRight.z, cameraUp.z, cameraDirection.z, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 1.0f, 0.0f,
+		glm::mat4 viewMatrix = glm::mat4(cameraRight.x, cameraUp.x, cameraDirection.x, 0.0f, 
+			cameraRight.y, cameraUp.y, cameraDirection.y, 0.0f, 
+			cameraRight.z, cameraUp.z, cameraDirection.z, 0.0f, 
+			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 
+				0.0f, 1.0f, 0.0f, 0.0f, 
+				0.0f, 0.0f, 1.0f, 0.0f, 
 				-cameraPosition.x, -cameraPosition.y, -cameraPosition.z, 1.0f);
 
 		// Set the view matrix. This matrix changes each frame.
