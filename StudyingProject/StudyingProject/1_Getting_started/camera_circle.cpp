@@ -339,16 +339,54 @@ int draw_camera_circle()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
-		// We will transform our world (scene) by translating it forward, which equals moving the camera
-		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
-		// camera to move.
-		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
-		// screen away from the user, while the positive z-axis is going through the screen towards the user.
-		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
-		// positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the
-		// impression that we are moving backwards.
-		glm::mat4 viewMatrix = glm::mat4(1.0f);
-		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+		// We will transform our world (scene) by moving the camera backwards, in positive z-axis's direction.
+
+		// MANUALLY create the LookAt (view) matrix.
+		
+		// 1. thing we need to create a LookAt matrix: the camera's position.
+		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
+		// actually need the direction TO camera.
+		// The camera's direction is counted by subtracting camera's position from the camera's target. However,
+		// the camera in the OpenGL by convention points towards the negative z-axis and we want the z-axis in the
+		// view matrix's coordinate system to be positive. Because of those two reasons, we switch the subtraction
+		// order and subtract camera's target from camera's position. Vector visually ends at the minuend
+		// (first operand of subtraction) and starts at the subtrahend (second operand of subtraction). Therefore,
+		// we want it to end on camera's position, pointing to it.
+		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
+		// 3. thing we need to create a LookAt matrix: the camera's right vector. This vector points right from
+		// camera and is perpendicular to "camera's direction".
+		// We can create it with the following trick. We first create an "up" vector, that's pointing upwards in
+		// the global space (0.0f, 1.0f, 0.0f). Then, we create camera's right vector by doing a cross product
+		// between "up" vector and "camera's direction". Result of a cross product is a vector perpendicular to
+		// both vectors and we will get a vector that points in the positive x-axis' direction.
+		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 cameraRight = glm::normalize(glm::cross(upVector, cameraDirection));
+		// 4. and final thing we need to create a LookAt matrix: the camera's up vector.
+		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
+		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
+		// pointing in the positive y-axis's direction (camera's up vector).
+		glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+
+		// Form the manually made LookAt (view) matrix. We transform world coordinates to view coordinates.
+		/* LookAt matrix:
+		* ([Rx   Ux    Dx    0.0f])T * [1.0f 0.0f 0.0f -(Px)] = [Rx   Ry   Rz   0.0f] * [1.0f 0.0f 0.0f -Px ] =
+		* ([Ry   Uy    Dy    0.0f])    [0.0f 1.0f 0.0f -(Py)]   [Ux   Uy   Uz   0.0f]   [0.0f 1.0f 0.0f -Py ]
+		* ([Rz   Uz    Dz    0.0f])    [0.0f 0.0f 1.0f -(Pz)]   [Dx   Dy   Dz   0.0f]   [0.0f 0.0f 1.0f -Pz ]
+		* ([0.0f 0.0f  0.0f  1.0f])    [0.0f 0.0f 0.0f  1.0f]   [0.0f 0.0f 0.0f 1.0f]   [0.0f 0.0f 0.0f 1.0f]
+		* = [Rx   Ry   Rz   -Rx*Px - Ry*Py - Rz*Pz]
+		*   [Ux   Uy   Uz   -Ux*Px - Uy*Py - Uz*Pz]
+		*   [Dx   Dy   Dz   -Dx*Px - Dy*Py - Dz*Pz]
+		*   [0.0f 0.0f 0.0f 1.0f                  ]
+		*/
+		glm::mat4 viewMatrix = glm::mat4(cameraRight.x, cameraUp.x, cameraDirection.x, 0.0f,
+			cameraRight.y, cameraUp.y, cameraDirection.y, 0.0f,
+			cameraRight.z, cameraUp.z, cameraDirection.z, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				-cameraPosition.x, -cameraPosition.y, -cameraPosition.z, 1.0f);
 
 		// Set the view matrix. This matrix changes each frame.
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
