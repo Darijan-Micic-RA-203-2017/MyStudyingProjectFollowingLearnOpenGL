@@ -73,6 +73,9 @@
     <ClInclude Include="1_Getting_started\camera_circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\camera_keyboard_dt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -130,6 +133,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\camera_circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\camera_keyboard_dt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,6 +14,7 @@
 #include "1_Getting_started/coordinate_systems_depth.h"
 #include "1_Getting_started/coordinate_systems_multiple.h"
 #include "1_Getting_started/camera_circle.h"
+#include "1_Getting_started/camera_keyboard_dt.h"
 
 int main()
 {
@@ -105,6 +106,11 @@ int main()
 			case 16:
 				returnValue = draw_camera_circle();
 				std::cout << "\"StudyingProject - Camera, circle\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 17:
+				returnValue = draw_camera_keyboard_dt();
+				std::cout << "\"StudyingProject - Camera, keyboard movement\" exited with return value "
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:
