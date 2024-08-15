@@ -7,9 +7,22 @@ glm::vec3 cameraPosition_for_2_9_3 = glm::vec3(0.0f, 0.0f, 3.0f);
 // This vector acts as insurance that however we move, camera keeps looking straight ahead. Math's explained below.
 // In 2. thing we need to manually create LookAt matrix - "camera's direction":
 // glm::vec3 cameraTarget = cameraPosition + cameraFront;
-// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(cameraFront);
-const glm::vec3 cameraFront_for_2_9_3 = glm::vec3(0.0f, 0.0f, -1.0f);
+// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
+glm::vec3 cameraFront_for_2_9_3 = glm::vec3(0.0f, 0.0f, -1.0f);
 const glm::vec3 upVector_for_2_9_3 = glm::vec3(0.0f, 1.0f, 0.0f);
+
+// We present camera's movement with Euler angles - 3 values that can represent any rotation in a 3D space.
+// We will use first two of Eurler angles: pitch (top/bottom, movement around a fixed x-axis) and yaw (left/right,
+// movement around a fixed y-axis). We won't calculate third's Euler angle, roll (movement around a fixed z-axis),
+// because we won't rotate camera like a mobile phone, bending it to left or right or turning it upside-down.
+float pitch_for_2_9_3 = 0.0f;
+// Yaw is initialized to -90.0f, because a 0.0f value would result in "camera's direction" vector pointing to the
+// right, towards the positive z-axis (on a xz plane). We don't want that, because we set up our camera to look
+// away from user, towards the negative z-axis. Therefore, we initialize yaw Euler angle with a negative value,
+// which means clockwise rotation.
+float yaw_for_2_9_3 = -90.0f;
+float previousCursorPosX_for_2_9_3 = (float) window_width / 2.0f;
+float previousCursorPosY_for_2_9_3 = (float) window_height / 2.0f;
 
 float currentMixingFactor_for_2_9_3 = 0.2f;
 
@@ -18,9 +31,9 @@ float currentMixingFactor_for_2_9_3 = 0.2f;
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
 // balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
 // of the camera will be balanced out accordingly so each user will have the same experience. 
-float deltaTime = 0.0f;
+float deltaTime_for_2_9_3 = 0.0f;
 // The time it took to render the previous frame.
-float previousFrameTime = 0.0f;
+float previousFrameTime_for_2_9_3 = 0.0f;
 
 int draw_camera_mouse_zoom()
 {
@@ -50,6 +63,11 @@ int draw_camera_mouse_zoom()
 
 	// Register the callback functions after the window is created and before the render loop is started.
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_camera_mouse_zoom);
+	glfwSetCursorPosCallback(window, cursor_pos_callback_for_camera_mouse_zoom);
+
+	// Tell GLFW library to capture and hide our mouse cursor. Capturing the mouse cursor means fixating it to the
+	// center of application's window and only letting it move if application loses focus or quits.
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -339,8 +357,8 @@ int draw_camera_mouse_zoom()
 	{
 		// Nullth part: Calculate the new delta time and assign the current frame time to the previous frame time.
 		float currentFrameTime = static_cast<float>(glfwGetTime());
-		deltaTime = currentFrameTime - previousFrameTime;
-		previousFrameTime = currentFrameTime;
+		deltaTime_for_2_9_3 = currentFrameTime - previousFrameTime_for_2_9_3;
+		previousFrameTime_for_2_9_3 = currentFrameTime;
 
 		// First part: Process the user's input.
 		processInput_for_camera_mouse_zoom(window);
@@ -459,10 +477,54 @@ int draw_camera_mouse_zoom()
 	return 0;
 }
 
-// Callback function.
+// Callback functions.
+
+// Function that will be called every time the application's window changes size.
 void framebuffer_size_callback_for_camera_mouse_zoom(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+// Function that will be called every time the user moves the mouse while the application has focus.
+void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xPos, double yPos)
+{
+	// Calculate "camera's front" vector that acts as insurance that however we move, camera keeps looking
+	// straight ahead. Math's explained below.
+	// In 2. thing we need to manually create LookAt matrix - "camera's direction":
+	// glm::vec3 cameraTarget = cameraPosition + cameraFront;
+	// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
+
+	// 1. step: calculate the mouse's offset since last frame.
+	float xOffset = static_cast<float>(xPos) - previousCursorPosX_for_2_9_3;
+	// Order of subtraction is reversed, because y-coordinates range from bottom to top.
+	float yOffset = previousCursorPosY_for_2_9_3 - static_cast<float>(yPos);
+	previousCursorPosX_for_2_9_3 = static_cast<float>(xPos);
+	previousCursorPosY_for_2_9_3 = static_cast<float>(yPos);
+
+	// 2. step: add the offset values to the camera's pitch and yaw values.
+	// Mouse movement would be too erratic if we didn't scale it by a sensitivity variable.
+	const float sensitivity = 0.1f;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+	pitch_for_2_9_3 += yOffset;
+	yaw_for_2_9_3 += xOffset;
+
+	// 3. step: add constraints to the minimum and maximum pitch values.
+	if (pitch_for_2_9_3 < -89.0f)
+	{
+		pitch_for_2_9_3 = -89.0f;
+	}
+	if (pitch_for_2_9_3 > 89.0f)
+	{
+		pitch_for_2_9_3 = 89.0f;
+	}
+
+	// 4. and final step: calculate "camera's direction" vector.
+	glm::vec3 direction = glm::vec3(0.0f);
+	direction.x = cos(glm::radians(pitch_for_2_9_3)) * cos(glm::radians(yaw_for_2_9_3));
+	direction.y = sin(glm::radians(pitch_for_2_9_3));
+	direction.z = cos(glm::radians(pitch_for_2_9_3)) * sin(glm::radians(yaw_for_2_9_3));
+	cameraFront_for_2_9_3 = glm::normalize(direction);
 }
 
 // Input processing function.
@@ -499,7 +561,7 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 	}
 
 	// The camera will move at a constant speed of 2.5 units per second.
-	float cameraSpeed = 2.5f * deltaTime;
+	float cameraSpeed = 2.5f * deltaTime_for_2_9_3;
 	// Move camera forward (away from yourself, in negative z-axis' direction) by adding scaled camera's
 	// direction to camera's position.
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
