@@ -5,13 +5,22 @@ const int window_height = 600;
 
 glm::vec3 cameraPosition_for_2_9_2 = glm::vec3(0.0f, 0.0f, 3.0f);
 // This vector acts as insurance that however we move, camera keeps looking straight ahead. Math's explained below.
-// In 2. thing we need to manually create LookAt matrix ("camera's direction"):
+// In 2. thing we need to manually create LookAt matrix - "camera's direction":
 // glm::vec3 cameraTarget = cameraPosition + cameraFront;
 // glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(cameraFront);
-glm::vec3 cameraFront_for_2_9_2 = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 upVector_for_2_9_2 = glm::vec3(0.0f, 1.0f, 0.0f);
+const glm::vec3 cameraFront_for_2_9_2 = glm::vec3(0.0f, 0.0f, -1.0f);
+const glm::vec3 upVector_for_2_9_2 = glm::vec3(0.0f, 1.0f, 0.0f);
 
 float currentMixingFactor_for_2_9_2 = 0.2f;
+
+// The time difference between the end of renderings of the current frame and the previous frame.
+// We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
+// meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
+// balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
+// of the camera will be balanced out accordingly so each user will have the same experience. 
+float deltaTime = 0.0f;
+// The time it took to render the previous frame.
+float previousFrameTime = 0.0f;
 
 int draw_camera_keyboard_dt()
 {
@@ -328,6 +337,11 @@ int draw_camera_keyboard_dt()
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
 	{
+		// Nullth part: Calculate the new delta time and assign the current frame time to the previous frame time.
+		float currentFrameTime = static_cast<float>(glfwGetTime());
+		deltaTime = currentFrameTime - previousFrameTime;
+		previousFrameTime = currentFrameTime;
+
 		// First part: Process the user's input.
 		processInput_for_camera_keyboard_dt(window);
 
@@ -484,7 +498,8 @@ void processInput_for_camera_keyboard_dt(GLFWwindow* window)
 		}
 	}
 
-	const float cameraSpeed = 0.01f;
+	// The camera will move at a constant speed of 2.5 units per second.
+	float cameraSpeed = 2.5f * deltaTime;
 	// Move camera forward (away from yourself, in negative z-axis' direction) by adding scaled camera's direction
 	// to camera's position.
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
