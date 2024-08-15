@@ -151,6 +151,7 @@
     <ClInclude Include="1_Getting_started\coordinate_systems_multiple.h" />
     <ClInclude Include="1_Getting_started\camera_circle.h" />
     <ClInclude Include="1_Getting_started\camera_keyboard_dt.h" />
+    <ClInclude Include="1_Getting_started\camera_mouse_zoom.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -173,6 +174,7 @@
     <ClCompile Include="1_Getting_started\coordinate_systems_multiple.cpp" />
     <ClCompile Include="1_Getting_started\camera_circle.cpp" />
     <ClCompile Include="1_Getting_started\camera_keyboard_dt.cpp" />
+    <ClCompile Include="1_Getting_started\camera_mouse_zoom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1_Getting_started\vertex_shader_for_2_5_3.glsl" />

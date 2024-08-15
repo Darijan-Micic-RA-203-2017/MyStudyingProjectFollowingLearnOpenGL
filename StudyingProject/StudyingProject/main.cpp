@@ -15,6 +15,7 @@
 #include "1_Getting_started/coordinate_systems_multiple.h"
 #include "1_Getting_started/camera_circle.h"
 #include "1_Getting_started/camera_keyboard_dt.h"
+#include "1_Getting_started/camera_mouse_zoom.h"
 
 int main()
 {
@@ -110,7 +111,12 @@ int main()
 				break;
 			case 17:
 				returnValue = draw_camera_keyboard_dt();
-				std::cout << "\"StudyingProject - Camera, keyboard movement\" exited with return value "
+				std::cout << "\"StudyingProject - Camera, moving smoothly (delta time) with keyboard\" exited with return value "
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 18:
+				returnValue = draw_camera_mouse_zoom();
+				std::cout << "\"StudyingProject - Camera, looking around with mouse\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:
