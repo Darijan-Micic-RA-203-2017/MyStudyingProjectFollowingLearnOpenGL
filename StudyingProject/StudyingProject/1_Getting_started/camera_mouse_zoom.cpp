@@ -11,6 +11,7 @@ glm::vec3 cameraPosition_for_2_9_3 = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront_for_2_9_3 = glm::vec3(0.0f, 0.0f, -1.0f);
 const glm::vec3 upVector_for_2_9_3 = glm::vec3(0.0f, 1.0f, 0.0f);
 
+bool firstMouseEntry_for_2_9_3 = true;
 // We present camera's movement with Euler angles - 3 values that can represent any rotation in a 3D space.
 // We will use first two of Eurler angles: pitch (top/bottom, movement around a fixed x-axis) and yaw (left/right,
 // movement around a fixed y-axis). We won't calculate third's Euler angle, roll (movement around a fixed z-axis),
@@ -486,24 +487,34 @@ void framebuffer_size_callback_for_camera_mouse_zoom(GLFWwindow* window, int wid
 }
 
 // Function that will be called every time the user moves the mouse while the application has focus.
-void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xPos, double yPos)
+void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, double ypos)
 {
 	// Calculate "camera's front" vector that acts as insurance that however we move, camera keeps looking
 	// straight ahead. Math's explained below.
 	// In 2. thing we need to manually create LookAt matrix - "camera's direction":
 	// glm::vec3 cameraTarget = cameraPosition + cameraFront;
 	// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
+	
+	// 0. step: if we received mouse input for the first time, we set the previous cursor position to the position
+	// where the user entered the application window and calculate offsets based on it. Wihout this added step,
+	// camera would suddenly jump to point of mouse entry, which is usually far away from window's center.
+	if (firstMouseEntry_for_2_9_3)
+	{
+		previousCursorPosX_for_2_9_3 = static_cast<float>(xpos);
+		previousCursorPosY_for_2_9_3 = static_cast<float>(ypos);
+		firstMouseEntry_for_2_9_3 = false;
+	}
 
 	// 1. step: calculate the mouse's offset since last frame.
-	float xOffset = static_cast<float>(xPos) - previousCursorPosX_for_2_9_3;
+	float xOffset = static_cast<float>(xpos) - previousCursorPosX_for_2_9_3;
 	// Order of subtraction is reversed, because y-coordinates range from bottom to top.
-	float yOffset = previousCursorPosY_for_2_9_3 - static_cast<float>(yPos);
-	previousCursorPosX_for_2_9_3 = static_cast<float>(xPos);
-	previousCursorPosY_for_2_9_3 = static_cast<float>(yPos);
+	float yOffset = previousCursorPosY_for_2_9_3 - static_cast<float>(ypos);
+	previousCursorPosX_for_2_9_3 = static_cast<float>(xpos);
+	previousCursorPosY_for_2_9_3 = static_cast<float>(ypos);
 
 	// 2. step: add the offset values to the camera's pitch and yaw values.
 	// Mouse movement would be too erratic if we didn't scale it by a sensitivity variable.
-	const float sensitivity = 0.1f;
+	const float sensitivity = 0.05f;
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
 	pitch_for_2_9_3 += yOffset;
@@ -519,7 +530,8 @@ void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xPos, 
 		pitch_for_2_9_3 = 89.0f;
 	}
 
-	// 4. and final step: calculate "camera's direction" vector.
+	// 4. and final step: calculate ACTUAL camera's direction vector, the result of subtracting camera's position
+	// from camera's target (thus visually ending at camera's target, minuend of subtraction).
 	glm::vec3 direction = glm::vec3(0.0f);
 	direction.x = cos(glm::radians(pitch_for_2_9_3)) * cos(glm::radians(yaw_for_2_9_3));
 	direction.y = sin(glm::radians(pitch_for_2_9_3));
