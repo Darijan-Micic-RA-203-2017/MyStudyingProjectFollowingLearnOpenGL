@@ -199,7 +199,7 @@ int draw_shaders_uniform()
 
 		// Gradually change color that is being passed to fragment shader.
 		// Retrieve running time in seconds.
-		float timeValue = (float) glfwGetTime();
+		float timeValue = static_cast<float>(glfwGetTime());
 		float greenValue = sin(timeValue) / 2.0f + 0.5f;
 		// Set uniform variables on the currently active shader program.
 		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);

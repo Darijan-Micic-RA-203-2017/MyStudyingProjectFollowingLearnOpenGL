@@ -273,7 +273,7 @@ int draw_transformations()
 		// specified in radians, so we convert the angle's value from degrees.
 		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
 		// representing the axis if we're not rotating around x, y or z-axis.
-		transformationalMatrix = glm::rotate(transformationalMatrix, (float) glfwGetTime(), 
+		transformationalMatrix = glm::rotate(transformationalMatrix, static_cast<float>(glfwGetTime()), 
 			glm::vec3(0.0f, 0.0f, 1.0f));
 		/*
 		transformationalMatrix = glm::rotate(transformationalMatrix, glm::radians(90.0f), 

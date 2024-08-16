@@ -346,7 +346,7 @@ int draw_camera_circle()
 		// MANUALLY create the LookAt (view) matrix.
 		
 		// 1. thing we need to create a LookAt matrix: the camera's position.
-		float time = (float) glfwGetTime();
+		float time = static_cast<float>(glfwGetTime());
 		// The smaller the circle is, the closer the camera is to the scene and vice-versa.
 		float radius = 10.0f;
 		float cameraPositionX = sin(time) * radius;
@@ -418,7 +418,7 @@ int draw_camera_circle()
 			float angle = 20.0f * i;
 			if (i % 3 == 0)
 			{
-				angle = (float) glfwGetTime() * 25.0f;
+				angle = static_cast<float>(glfwGetTime()) * 25.0f;
 			}
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), 
 				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));

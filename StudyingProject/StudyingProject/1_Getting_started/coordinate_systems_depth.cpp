@@ -332,7 +332,7 @@ int draw_coordinate_systems_depth()
 		// angle's value from degrees.
 		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
 		// representing the axis if we're not rotating around x, y or z-axis.
-		modelMatrix = glm::rotate(modelMatrix, (float) glfwGetTime() * glm::radians(50.0f), 
+		modelMatrix = glm::rotate(modelMatrix, static_cast<float>(glfwGetTime()) * glm::radians(50.0f), 
 			glm::vec3(0.6f, 0.8f, 0.0f));
 
 		// The view matrix transforms world space coordinates to view space coordinates.

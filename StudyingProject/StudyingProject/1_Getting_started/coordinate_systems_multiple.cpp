@@ -373,7 +373,7 @@ int draw_coordinate_systems_multiple()
 			float angle = 20.0f * i;
 			if (i % 3 == 0)
 			{
-				angle = (float) glfwGetTime() * 25.0f;
+				angle = static_cast<float>(glfwGetTime()) * 25.0f;
 			}
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), 
 				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
