@@ -374,7 +374,7 @@ int draw_camera_circle()
 		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
 		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
 		// pointing in the positive y-axis's direction (camera's up vector).
-		glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraDirection, cameraRight));
 
 		// Form the manually made LookAt (view) matrix. We transform world coordinates to view coordinates.
 		/* LookAt matrix:

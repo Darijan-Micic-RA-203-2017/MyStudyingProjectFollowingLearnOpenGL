@@ -18,7 +18,7 @@ bool firstMouseEntry_for_2_9_3 = true;
 // because we won't rotate camera like a mobile phone, bending it to left or right or turning it upside-down.
 float pitch_for_2_9_3 = 0.0f;
 // Yaw is initialized to -90.0f, because a 0.0f value would result in "camera's direction" vector pointing to the
-// right, towards the positive z-axis (on a xz plane). We don't want that, because we set up our camera to look
+// right, towards the positive z-axis (on the xz plane). We don't want that, because we set up our camera to look
 // away from user, towards the negative z-axis. Therefore, we initialize yaw Euler angle with a negative value,
 // which means clockwise rotation.
 float yaw_for_2_9_3 = -90.0f;
@@ -412,7 +412,7 @@ int draw_camera_mouse_zoom()
 		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
 		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
 		// pointing in the positive y-axis's direction (camera's up vector).
-		glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraDirection, cameraRight));
 
 		// Form the manually made LookAt (view) matrix. We transform world coordinates to view coordinates.
 		/* LookAt matrix:
