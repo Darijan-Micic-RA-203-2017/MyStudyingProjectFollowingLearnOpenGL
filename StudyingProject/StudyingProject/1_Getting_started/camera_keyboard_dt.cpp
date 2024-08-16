@@ -11,8 +11,6 @@ glm::vec3 cameraPosition_for_2_9_2 = glm::vec3(0.0f, 0.0f, 3.0f);
 const glm::vec3 cameraFront_for_2_9_2 = glm::vec3(0.0f, 0.0f, -1.0f);
 const glm::vec3 upVector_for_2_9_2 = glm::vec3(0.0f, 1.0f, 0.0f);
 
-float currentMixingFactor_for_2_9_2 = 0.2f;
-
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
@@ -21,6 +19,8 @@ float currentMixingFactor_for_2_9_2 = 0.2f;
 float deltaTime_for_2_9_2 = 0.0f;
 // The time it took to render the previous frame.
 float previousFrameTime_for_2_9_2 = 0.0f;
+
+float currentMixingFactor_for_2_9_2 = 0.2f;
 
 int draw_camera_keyboard_dt()
 {
@@ -313,7 +313,7 @@ int draw_camera_keyboard_dt()
 	// The projection matrix transforms view space coordinates to clip space coordinates.
 	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
 	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f),
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 
 		(float) window_width / (float) window_height, 0.1f, 100.0f);
 	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));

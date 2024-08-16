@@ -10,4 +10,5 @@
 int draw_camera_mouse_zoom();
 void framebuffer_size_callback_for_camera_mouse_zoom(GLFWwindow* window, int width, int height);
 void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback_for_camera_mouse_zoom(GLFWwindow* window, double xoffset, double yoffset);
 void processInput_for_camera_mouse_zoom(GLFWwindow* window);

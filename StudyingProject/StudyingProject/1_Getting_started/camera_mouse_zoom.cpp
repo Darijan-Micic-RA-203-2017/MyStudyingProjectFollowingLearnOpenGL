@@ -24,8 +24,7 @@ float pitch_for_2_9_3 = 0.0f;
 float yaw_for_2_9_3 = -90.0f;
 float previousCursorPosX_for_2_9_3 = (float) window_width / 2.0f;
 float previousCursorPosY_for_2_9_3 = (float) window_height / 2.0f;
-
-float currentMixingFactor_for_2_9_3 = 0.2f;
+float fov_for_2_9_3 = 45.0f;
 
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
@@ -35,6 +34,8 @@ float currentMixingFactor_for_2_9_3 = 0.2f;
 float deltaTime_for_2_9_3 = 0.0f;
 // The time it took to render the previous frame.
 float previousFrameTime_for_2_9_3 = 0.0f;
+
+float currentMixingFactor_for_2_9_3 = 0.2f;
 
 int draw_camera_mouse_zoom()
 {
@@ -65,6 +66,7 @@ int draw_camera_mouse_zoom()
 	// Register the callback functions after the window is created and before the render loop is started.
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_camera_mouse_zoom);
 	glfwSetCursorPosCallback(window, cursor_pos_callback_for_camera_mouse_zoom);
+	glfwSetScrollCallback(window, scroll_callback_for_camera_mouse_zoom);
 
 	// Tell GLFW library to capture and hide our mouse cursor. Capturing the mouse cursor means fixating it to the
 	// center of application's window and only letting it move if application loses focus or quits.
@@ -329,13 +331,6 @@ int draw_camera_mouse_zoom()
 
 		return 11;
 	}
-	// The projection matrix transforms view space coordinates to clip space coordinates.
-	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
-	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f),
-		(float) window_width / (float) window_height, 0.1f, 100.0f);
-	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
@@ -378,6 +373,15 @@ int draw_camera_mouse_zoom()
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+
+		// The projection matrix transforms view space coordinates to clip space coordinates.
+		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
+		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(fov_for_2_9_3), 
+			(float) window_width / (float) window_height, 0.1f, 100.0f);
+
+		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
+		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
@@ -537,6 +541,20 @@ void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, 
 	direction.y = sin(glm::radians(pitch_for_2_9_3));
 	direction.z = cos(glm::radians(pitch_for_2_9_3)) * sin(glm::radians(yaw_for_2_9_3));
 	cameraFront_for_2_9_3 = glm::normalize(direction);
+}
+
+// Function that will be called every time the user scrolls the mouse's middle button.
+void scroll_callback_for_camera_mouse_zoom(GLFWwindow* window, double xoffset, double yoffset)
+{
+	fov_for_2_9_3 -= static_cast<float>(yoffset);
+	if (fov_for_2_9_3 < 1.0f)
+	{
+		fov_for_2_9_3 = 1.0f;
+	}
+	if (fov_for_2_9_3 > 45.0f)
+	{
+		fov_for_2_9_3 = 45.0f;
+	}
 }
 
 // Input processing function.
