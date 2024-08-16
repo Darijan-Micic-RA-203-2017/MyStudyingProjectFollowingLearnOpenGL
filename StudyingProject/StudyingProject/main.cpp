@@ -16,6 +16,7 @@
 #include "1_Getting_started/camera_circle.h"
 #include "1_Getting_started/camera_keyboard_dt.h"
 #include "1_Getting_started/camera_mouse_zoom.h"
+#include "1_Getting_started/camera_class.h"
 
 int main()
 {
@@ -24,7 +25,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument: ";
+		std::cout << "Enter argument from set {1, ..., 19}): ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -117,6 +118,11 @@ int main()
 			case 18:
 				returnValue = draw_camera_mouse_zoom();
 				std::cout << "\"StudyingProject - Camera, looking around with mouse\" exited with return value " 
+					<< returnValue << ".\n" << std::endl;
+				break;
+			case 19:
+				returnValue = draw_camera_class();
+				std::cout << "\"StudyingProject - Camera, class\" exited with return value " 
 					<< returnValue << ".\n" << std::endl;
 				break;
 			default:

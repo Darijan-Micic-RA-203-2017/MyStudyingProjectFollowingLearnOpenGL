@@ -53,7 +53,7 @@ int draw_camera_mouse_zoom()
 
 	// Create a window and make the context of created window the main context on the current thread.
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"StudyingProject - Camera, looking around with mouse", NULL, NULL);
+		"StudyingProject - Camera, class", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -378,7 +378,7 @@ int draw_camera_mouse_zoom()
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
 		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
 		glm::mat4 projectionMatrix = glm::perspective(glm::radians(fov_for_2_9_3), 
-			(float) window_width / (float) window_height, 0.1f, 100.0f);
+			(float)window_width / (float)window_height, 0.1f, 100.0f);
 
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
@@ -498,7 +498,7 @@ void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, 
 	// In 2. thing we need to manually create LookAt matrix - "camera's direction":
 	// glm::vec3 cameraTarget = cameraPosition + cameraFront;
 	// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
-	
+
 	// 0. step: if we received mouse input for the first time, we set the previous cursor position to the position
 	// where the user entered the application window and calculate offsets based on it. Wihout this added step,
 	// camera would suddenly jump to point of mouse entry, which is usually far away from window's center.

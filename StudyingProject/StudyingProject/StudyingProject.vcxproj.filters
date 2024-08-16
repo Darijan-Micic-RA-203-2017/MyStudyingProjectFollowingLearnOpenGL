@@ -82,6 +82,9 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="1_Getting_started\camera_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -145,6 +148,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="1_Getting_started\camera_mouse_zoom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="1_Getting_started\camera_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
