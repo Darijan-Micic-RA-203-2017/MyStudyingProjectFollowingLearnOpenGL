@@ -82,6 +82,8 @@ public:
 	// Utility function for calculating the view matrix.
 	glm::mat4 getCalculatedViewMatrix()
 	{
+		updateCameraCoordinateSystem();
+
 		// GLM's "lookAt" function requires the camera's position, the camera's target and the "up" vector.
 		return glm::lookAt(cameraPosition, cameraTarget, upVector);
 	}

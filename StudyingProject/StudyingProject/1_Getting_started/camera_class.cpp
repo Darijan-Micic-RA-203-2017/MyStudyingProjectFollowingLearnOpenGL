@@ -1,30 +1,14 @@
-#include "camera_mouse_zoom.h"
+#include "camera_class.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
-glm::vec3 cameraPosition_for_2_9_4 = glm::vec3(0.0f, 0.0f, 3.0f);
-// This vector acts as insurance that however we move, camera keeps looking straight ahead. Math's explained below.
-// In 2. thing we need to manually create LookAt matrix - "camera's direction":
-// glm::vec3 cameraTarget = cameraPosition + cameraFront;
-// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
-glm::vec3 cameraFront_for_2_9_4 = glm::vec3(0.0f, 0.0f, -1.0f);
-const glm::vec3 upVector_for_2_9_4 = glm::vec3(0.0f, 1.0f, 0.0f);
+// All setting are kept in an instance of the camera class.
+Camera camera_for_2_9_4(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_2_9_4 = true;
-// We present camera's movement with Euler angles - 3 values that can represent any rotation in a 3D space.
-// We will use first two of Eurler angles: pitch (top/bottom, movement around a fixed x-axis) and yaw (left/right,
-// movement around a fixed y-axis). We won't calculate third's Euler angle, roll (movement around a fixed z-axis),
-// because we won't rotate camera like a mobile phone, bending it to left or right or turning it upside-down.
-float pitch_for_2_9_4 = 0.0f;
-// Yaw is initialized to -90.0f, because a 0.0f value would result in "camera's direction" vector pointing to the
-// right, towards the positive z-axis (on the xz plane). We don't want that, because we set up our camera to look
-// away from user, towards the negative z-axis. Therefore, we initialize yaw Euler angle with a negative value,
-// which means clockwise rotation.
-float yaw_for_2_9_4 = -90.0f;
 float previousCursorPosX_for_2_9_4 = (float) window_width / 2.0f;
 float previousCursorPosY_for_2_9_4 = (float) window_height / 2.0f;
-float fov_for_2_9_4 = 45.0f;
 
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
@@ -37,7 +21,7 @@ float previousFrameTime_for_2_9_4 = 0.0f;
 
 float currentMixingFactor_for_2_9_4 = 0.2f;
 
-int draw_camera_mouse_zoom()
+int draw_camera_class()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -64,9 +48,9 @@ int draw_camera_mouse_zoom()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_camera_mouse_zoom);
-	glfwSetCursorPosCallback(window, cursor_pos_callback_for_camera_mouse_zoom);
-	glfwSetScrollCallback(window, scroll_callback_for_camera_mouse_zoom);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_camera_class);
+	glfwSetCursorPosCallback(window, cursor_pos_callback_for_camera_class);
+	glfwSetScrollCallback(window, scroll_callback_for_camera_class);
 
 	// Tell GLFW library to capture and hide our mouse cursor. Capturing the mouse cursor means fixating it to the
 	// center of application's window and only letting it move if application loses focus or quits.
@@ -357,7 +341,7 @@ int draw_camera_mouse_zoom()
 		previousFrameTime_for_2_9_4 = currentFrameTime;
 
 		// First part: Process the user's input.
-		processInput_for_camera_mouse_zoom(window);
+		processInput_for_camera_class(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -377,61 +361,15 @@ int draw_camera_mouse_zoom()
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
 		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(fov_for_2_9_4), 
-			(float)window_width / (float)window_height, 0.1f, 100.0f);
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_2_9_4.fov), 
+			(float) window_width / (float) window_height, 0.1f, 100.0f);
 
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
-
-		// MANUALLY create the LookAt (view) matrix.
-
-		// 1. thing we need to create a LookAt matrix: the camera's position.
-		// Camera's position is already set as the global variable and modified using WASD keys.
-
-		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
-		// actually need the direction TO camera.
-		// The camera's direction is counted by subtracting camera's position from the camera's target. However,
-		// the camera in the OpenGL by convention points towards the negative z-axis and we want the z-axis in the
-		// view matrix's coordinate system to be positive. Because of those two reasons, we switch the subtraction
-		// order and subtract camera's target from camera's position. Vector visually ends at the minuend
-		// (first operand of subtraction) and starts at the subtrahend (second operand of subtraction). Therefore,
-		// we want it to end on camera's position, pointing to it.
-		glm::vec3 cameraTarget = cameraPosition_for_2_9_4 + cameraFront_for_2_9_4;
-		glm::vec3 cameraDirection = glm::normalize(cameraPosition_for_2_9_4 - cameraTarget);
-		// 3. thing we need to create a LookAt matrix: the camera's right vector. This vector points right from
-		// camera and is perpendicular to "camera's direction".
-		// We can create it with the following trick. We first create an "up" vector, that's pointing upwards in
-		// the global space (0.0f, 1.0f, 0.0f). Then, we create camera's right vector by doing a cross product
-		// between "up" vector and "camera's direction". Result of a cross product is a vector perpendicular to
-		// both vectors and we will get a vector that points in the positive x-axis' direction.
-		glm::vec3 cameraRight = glm::normalize(glm::cross(upVector_for_2_9_4, cameraDirection));
-		// 4. and final thing we need to create a LookAt matrix: the camera's up vector.
-		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
-		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
-		// pointing in the positive y-axis's direction (camera's up vector).
-		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraDirection, cameraRight));
-
-		// Form the manually made LookAt (view) matrix. We transform world coordinates to view coordinates.
-		/* LookAt matrix:
-		* ([Rx   Ux    Dx    0.0f])T * [1.0f 0.0f 0.0f -(Px)] = [Rx   Ry   Rz   0.0f] * [1.0f 0.0f 0.0f -Px ] =
-		* ([Ry   Uy    Dy    0.0f])    [0.0f 1.0f 0.0f -(Py)]   [Ux   Uy   Uz   0.0f]   [0.0f 1.0f 0.0f -Py ]
-		* ([Rz   Uz    Dz    0.0f])    [0.0f 0.0f 1.0f -(Pz)]   [Dx   Dy   Dz   0.0f]   [0.0f 0.0f 1.0f -Pz ]
-		* ([0.0f 0.0f  0.0f  1.0f])    [0.0f 0.0f 0.0f  1.0f]   [0.0f 0.0f 0.0f 1.0f]   [0.0f 0.0f 0.0f 1.0f]
-		* = [Rx   Ry   Rz   -Rx*Px - Ry*Py - Rz*Pz]
-		*   [Ux   Uy   Uz   -Ux*Px - Uy*Py - Uz*Pz]
-		*   [Dx   Dy   Dz   -Dx*Px - Dy*Py - Dz*Pz]
-		*   [0.0f 0.0f 0.0f 1.0f                  ]
-		*/
-		glm::mat4 viewMatrix = glm::mat4(cameraRight.x, cameraUp.x, cameraDirection.x, 0.0f, 
-			cameraRight.y, cameraUp.y, cameraDirection.y, 0.0f, 
-			cameraRight.z, cameraUp.z, cameraDirection.z, 0.0f, 
-			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 
-				0.0f, 1.0f, 0.0f, 0.0f, 
-				0.0f, 0.0f, 1.0f, 0.0f, 
-				-cameraPosition_for_2_9_4.x, -cameraPosition_for_2_9_4.y, -cameraPosition_for_2_9_4.z, 1.0f);
+		glm::mat4 viewMatrix = camera_for_2_9_4.getCalculatedViewMatrix();
 
 		// Set the view matrix. This matrix changes each frame.
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -485,13 +423,13 @@ int draw_camera_mouse_zoom()
 // Callback functions.
 
 // Function that will be called every time the application's window changes size.
-void framebuffer_size_callback_for_camera_mouse_zoom(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_camera_class(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Function that will be called every time the user moves the mouse while the application has focus.
-void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, double ypos)
+void cursor_pos_callback_for_camera_class(GLFWwindow* window, double xpos, double ypos)
 {
 	// Calculate "camera's front" vector that acts as insurance that however we move, camera keeps looking
 	// straight ahead. Math's explained below.
@@ -516,49 +454,18 @@ void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, 
 	previousCursorPosX_for_2_9_4 = static_cast<float>(xpos);
 	previousCursorPosY_for_2_9_4 = static_cast<float>(ypos);
 
-	// 2. step: add the offset values to the camera's pitch and yaw values.
-	// Mouse movement would be too erratic if we didn't scale it by a sensitivity variable.
-	const float sensitivity = 0.05f;
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-	pitch_for_2_9_4 += yOffset;
-	yaw_for_2_9_4 += xOffset;
-
-	// 3. step: add constraints to the minimum and maximum pitch values.
-	if (pitch_for_2_9_4 < -89.0f)
-	{
-		pitch_for_2_9_4 = -89.0f;
-	}
-	if (pitch_for_2_9_4 > 89.0f)
-	{
-		pitch_for_2_9_4 = 89.0f;
-	}
-
-	// 4. and final step: calculate ACTUAL camera's direction vector, the result of subtracting camera's position
-	// from camera's target (thus visually ending at camera's target, minuend of subtraction).
-	glm::vec3 direction = glm::vec3(0.0f);
-	direction.x = cos(glm::radians(pitch_for_2_9_4)) * cos(glm::radians(yaw_for_2_9_4));
-	direction.y = sin(glm::radians(pitch_for_2_9_4));
-	direction.z = cos(glm::radians(pitch_for_2_9_4)) * sin(glm::radians(yaw_for_2_9_4));
-	cameraFront_for_2_9_4 = glm::normalize(direction);
+	// 2. step onward: done in Camera class.
+	camera_for_2_9_4.processMouseMovement(xOffset, yOffset);
 }
 
 // Function that will be called every time the user scrolls the mouse's middle button.
-void scroll_callback_for_camera_mouse_zoom(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback_for_camera_class(GLFWwindow* window, double xoffset, double yoffset)
 {
-	fov_for_2_9_4 -= static_cast<float>(yoffset);
-	if (fov_for_2_9_4 < 1.0f)
-	{
-		fov_for_2_9_4 = 1.0f;
-	}
-	if (fov_for_2_9_4 > 45.0f)
-	{
-		fov_for_2_9_4 = 45.0f;
-	}
+	camera_for_2_9_4.processMouseScroll(static_cast<float>(yoffset));
 }
 
 // Input processing function.
-void processInput_for_camera_mouse_zoom(GLFWwindow* window)
+void processInput_for_camera_class(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -577,7 +484,6 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 			currentMixingFactor_for_2_9_4 = 1.0f;
 		}
 	}
-
 	// Change how much the wooden container and awesome face are visible.
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
@@ -589,38 +495,21 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 			currentMixingFactor_for_2_9_4 = 0.0f;
 		}
 	}
-
-	// The camera will move at a constant speed of 2.5 units per second.
-	float cameraSpeed = 2.5f * deltaTime_for_2_9_4;
-	// Move camera forward (away from yourself, in negative z-axis' direction) by adding scaled camera's
-	// direction to camera's position.
+	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		cameraPosition_for_2_9_4 += cameraFront_for_2_9_4 * cameraSpeed;
+		camera_for_2_9_4.processKeyboardInput("W", deltaTime_for_2_9_4);
 	}
-
-	// Move camera backwards (towards yourself, in positive z-axis' direction) by subtracting scaled camera's
-	// direction from camera's position.
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		cameraPosition_for_2_9_4 -= cameraFront_for_2_9_4 * cameraSpeed;
+		camera_for_2_9_4.processKeyboardInput("S", deltaTime_for_2_9_4);
 	}
-
-	// Move camera to the left (in negative x-axis' direction) by subtracting scaled right vector (cross product of
-	// camera's front vector and "up" vector) from camera's position. We have to normalize that right vector,
-	// because cross product could return differently sized vectors depending on the value of "cameraFront". Also,
-	// we would move slow or fast depending on camera's orientation, instead of at a consistent speed.
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		cameraPosition_for_2_9_4 -= glm::normalize(glm::cross(cameraFront_for_2_9_4, upVector_for_2_9_4)) * cameraSpeed;
+		camera_for_2_9_4.processKeyboardInput("A", deltaTime_for_2_9_4);
 	}
-
-	// Move camera to the right (in positive x-axis' direction) by adding scaled right vector (cross product of
-	// camera's front vector and "up" vector) to camera's position. We have to normalize that right vector,
-	// because cross product could return differently sized vectors depending on the value of "cameraFront". Also,
-	// we would move slow or fast depending on camera's orientation, instead of at a consistent speed.
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		cameraPosition_for_2_9_4 += glm::normalize(glm::cross(cameraFront_for_2_9_4, upVector_for_2_9_4)) * cameraSpeed;
+		camera_for_2_9_4.processKeyboardInput("D", deltaTime_for_2_9_4);
 	}
 }
