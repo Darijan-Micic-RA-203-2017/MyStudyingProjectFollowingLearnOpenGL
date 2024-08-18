@@ -623,4 +623,8 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 	{
 		cameraPosition_for_2_9_3 += glm::normalize(glm::cross(cameraFront_for_2_9_3, upVector_for_2_9_3)) * cameraSpeed;
 	}
+
+	// If we want camera to be a true FPS camera, we fix the y-coordinate of camera's position to 0.0f, forcing
+	// the user to stay on the ground level. User cannot fly, but only look around while staying on the xz plane.
+	cameraPosition_for_2_9_3.y = 0.0f;
 }
