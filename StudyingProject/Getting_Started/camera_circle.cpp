@@ -186,16 +186,18 @@ int draw_camera_circle()
 	stbi_set_flip_vertically_on_load(true);
 
 	// Load the image that will be used as a texture.
-	int width;
-	int height;
-	int numberOfColorChannels;
-	unsigned char* pixels = stbi_load("wooden_container.jpg", &width, &height, &numberOfColorChannels, 0);
+	int textureImageWidth;
+	int textureImageHeight;
+	int numberOfColorChannelsInTextureImage;
+	unsigned char* pixels = stbi_load("wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
+		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
 		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImageWidth, textureImageHeight, 0, GL_RGB, 
+			GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
@@ -225,13 +227,15 @@ int draw_camera_circle()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load the image that will be used as a texture.
-	pixels = stbi_load("awesome_face.png", &width, &height, &numberOfColorChannels, 0);
+	pixels = stbi_load("awesome_face.png", &textureImageWidth, &textureImageHeight, 
+		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
 		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
 		// it will incorrectly interpret the image data.
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImageWidth, textureImageHeight, 0, GL_RGBA, 
+			GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}

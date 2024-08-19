@@ -137,14 +137,16 @@ int draw_textures()
 	// could be seen.
 
 	// Load the image that will be used as a texture.
-	int width;
-	int height;
-	int numberOfColorChannels;
-	unsigned char* pixels = stbi_load("wooden_container.jpg", &width, &height, &numberOfColorChannels, 0);
+	int textureImageWidth;
+	int textureImageHeight;
+	int numberOfColorChannelsInTextureImage;
+	unsigned char* pixels = stbi_load("wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
+		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
 		// Generate a texture using the previously loaded image data (pixels).
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImageWidth, textureImageHeight, 0, GL_RGB, 
+			GL_UNSIGNED_BYTE, pixels);
 		// Automatically generate all the required mipmaps for the currently bound texture.
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
