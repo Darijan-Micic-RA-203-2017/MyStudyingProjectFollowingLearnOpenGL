@@ -1,0 +1,12 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include "shader_s.h"
+#include "stb_image.h"
+
+int draw_coordinate_systems_depth();
+void framebuffer_size_callback_for_coordinate_systems_depth(GLFWwindow* window, int width, int height);
+void processInput_for_coordinate_systems_depth(GLFWwindow* window);
