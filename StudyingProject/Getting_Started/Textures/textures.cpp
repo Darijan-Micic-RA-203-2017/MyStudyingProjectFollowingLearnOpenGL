@@ -42,7 +42,7 @@ int draw_textures()
 	}
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("vertex_shader_for_2_6_1.glsl", "fragment_shader_for_2_6_1.glsl");
+	ShaderProgram ourShaderProgram("Textures/vertex_shader_for_2_6_1.glsl", "Textures/fragment_shader_for_2_6_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -141,7 +141,7 @@ int draw_textures()
 	int textureImageWidth;
 	int textureImageHeight;
 	int numberOfColorChannelsInTextureImage;
-	unsigned char* pixels = stbi_load("wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
+	unsigned char* pixels = stbi_load("resources/wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{

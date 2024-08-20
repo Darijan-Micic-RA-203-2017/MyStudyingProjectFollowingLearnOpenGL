@@ -1,11 +1,11 @@
-#include "coordinate_systems_depth.h"
+#include "textures_combined.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
-float currentMixingFactor_for_2_8_2 = 0.2f;
+float currentMixingFactor_for_2_6_2 = 0.2f;
 
-int draw_coordinate_systems_depth()
+int draw_textures_combined()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -21,7 +21,7 @@ int draw_coordinate_systems_depth()
 
 	// Create a window and make the context of created window the main context on the current thread.
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"Getting Started - Coordinate Systems, depth", NULL, NULL);
+		"Getting Started - Textures, combined", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -32,7 +32,7 @@ int draw_coordinate_systems_depth()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_coordinate_systems_depth);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_textures_combined);
 
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -43,18 +43,8 @@ int draw_coordinate_systems_depth()
 		return 3;
 	}
 
-	// Configure global OpenGL state.
-	// Enable depth testing. Without the use of z-buffer, some sides of the cube will be drawn over other sides
-	// of the cube. This happens because when OpenGL draws our cube triangle by triangle, fragment by fragment,
-	// it will overwrite any pixel color that may have already been drawn there before. Since OpenGL gives no
-	// guarantee on the order of triangles rendered (within the same draw call), some triangles are drawn on
-	// top of each other even though one should clearly be in front of the other.
-	// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to decide
-	// when to or not to draw over a pixel. Using the z-buffer we can configure OpenGL to do depth testing.
-	glEnable(GL_DEPTH_TEST);
-	
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("vertex_shader_for_2_8_1.glsl", "fragment_shader_for_2_8_1.glsl");
+	ShaderProgram ourShaderProgram("Textures/vertex_shader_for_2_6_2.glsl", "Textures/fragment_shader_for_2_6_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -63,53 +53,23 @@ int draw_coordinate_systems_depth()
 	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
-	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
-	// (6 sides * 2 triangles per side * 3 vertices for each triangle).
-	// First three values represent position of vertex, while last two values represent texture coordinates
-	// (from 0.0f to 1.0f).
+	// First three values represent position of vertex, middle four values represent color of vertex, while
+	// last two values represent texture coordinates (from 0.0f to 1.0f).
 	float vertices[] = {
-		// position          // texture coordinates
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // back side
-		 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 
-		
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, // front side
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
-		-0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		
-		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f, // left side
-		-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
-		
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, // right side
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		 0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
-		 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom side
-		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top side
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
-		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f
+		// We intentionally specified texture coordinates in range [0.0f, 2.0f]. If texture's wrapping
+		// parameters are set to "GL_REPEAT", texture will be repeated 2 times horizontally and vertically.
+		// If they're set to "GL_CLAMP_TO_EDGE", texture will occupate 1/2 of horizontal and vertical space of
+		// end vertices.
+		// position         // color                // texture coordinates
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 2.0f, 0.0f, // bottom right
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 2.0f, 2.0f, // top right
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 2.0f  // top left
+	};
+	// Indices, which start at 0.
+	unsigned int indices[] = {
+		0u, 1u, 3u, 
+		1u, 2u, 3u
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -119,6 +79,8 @@ int draw_coordinate_systems_depth()
 	glGenVertexArrays(1, &VAO);
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
 
 	// Bind (assign) the newly created VAO to OpenGL's context.
 	glBindVertexArray(VAO);
@@ -128,16 +90,25 @@ int draw_coordinate_systems_depth()
 	// Copy user-defined data into the currently bound buffer.
 	// Vertex data is now stored on the graphics card's memory.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	// Bind (assign) the newly created EBO to OpenGL's context.
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// Copy user-defined data into the currently bound buffer.
+	// Index data is now stored on the graphics card's memory.
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
-	// Texture coordinate attribute.
-	glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
-	// Enable vertex texture coordinate attribute.
+	// Color attribute.
+	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
+	// Enable vertex color attribute.
 	glEnableVertexAttribArray(1u);
+	// Texture coordinate attribute.
+	glVertexAttribPointer(2u, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
+	// Enable vertex texture coordinate attribute.
+	glEnableVertexAttribArray(2u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -156,8 +127,10 @@ int draw_coordinate_systems_depth()
 	// are specified outside of mentioned range, texture wrapping option determines the look.
 	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
 	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	// "GL_CLAMP_TO_EDGE" texture wrapping option clamps the texture coordinates between 0 and 1. The result is
+	// that higher coordinates become clamped to the edge, resulting in a stretched edge pattern.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
 	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
@@ -177,7 +150,7 @@ int draw_coordinate_systems_depth()
 	int textureImageWidth;
 	int textureImageHeight;
 	int numberOfColorChannelsInTextureImage;
-	unsigned char* pixels = stbi_load("wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
+	unsigned char* pixels = stbi_load("resources/wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
@@ -208,6 +181,7 @@ int draw_coordinate_systems_depth()
 
 	// Set texture wrapping parameters.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	// We want to repeat the awesome face pattern, so we kept it at default option (GL_REPEAT).
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Set texture filtering parameters.
@@ -215,7 +189,7 @@ int draw_coordinate_systems_depth()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load the image that will be used as a texture.
-	pixels = stbi_load("awesome_face.png", &textureImageWidth, &textureImageHeight, 
+	pixels = stbi_load("resources/awesome_face.png", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
@@ -247,54 +221,10 @@ int draw_coordinate_systems_depth()
 	// Activate the shader program.
 	// Every shader and rendering call from now on will use this shader program object.
 	ourShaderProgram.useProgram();
-
-	// Retrieve location of uniform variable "modelMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int modelMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "modelMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (modelMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"modelMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 9;
-	}
-
-	// Retrieve location of uniform variable "viewMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int viewMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "viewMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (viewMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"viewMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 10;
-	}
-
-	// Retrieve location of uniform variable "projectionMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int projectionMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "projectionMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (projectionMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"projectionMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 11;
-	}
-	// The projection matrix transforms view space coordinates to clip space coordinates.
-	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
-	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 
-		(float) (window_width) / (float) (window_height), 0.1f, 100.0f);
-	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0u][0u]);
-
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.id, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
-
+	
 	// Retrieve location of uniform variable "mixingFactor" in shader program.
 	// This doesn't require activation of shader program.
 	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.id, "mixingFactor");
@@ -304,20 +234,18 @@ int draw_coordinate_systems_depth()
 		std::cout << "Location of uniform variable \"mixingFactor\" wasn't found!" << std::endl;
 		glfwTerminate();
 
-		return 12;
+		return 9;
 	}
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
 	{
 		// First part: Process the user's input.
-		processInput_for_coordinate_systems_depth(window);
+		processInput_for_textures_combined(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		// Since we're now using a depth buffer, we also want to clear it before each rendering iteration.
-		// Otherwise, the depth information of the previous frame would remain in the buffer.
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
@@ -328,44 +256,19 @@ int draw_coordinate_systems_depth()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform our cube by rotating it over time around the (0.6f, 0.8f, 0.0f) axis.
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert the
-		// angle's value from degrees.
-		// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
-		// representing the axis if we're not rotating around x, y or z-axis.
-		modelMatrix = glm::rotate(modelMatrix, static_cast<float>(glfwGetTime()) * glm::radians(50.0f), 
-			glm::vec3(0.6f, 0.8f, 0.0f));
-
-		// The view matrix transforms world space coordinates to view space coordinates.
-		// We will transform our world (scene) by translating it forward, which equals moving the camera
-		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
-		// camera to move.
-		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
-		// screen away from the user, while the positive z-axis is going through the screen towards the user.
-		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
-		// positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the
-		// impression that we are moving backwards.
-		glm::mat4 viewMatrix = glm::mat4(1.0f);
-		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
-
-		// Set the model matrix and view matrix. These two matrices change each frame.
-		glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
 		// Set the uniform variable "mixingFactor" in fragment shader.
-		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_2);
+		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_6_2);
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0u);
+
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	// De-allocate all resources once they're no longer needed.
+	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
 
@@ -376,13 +279,13 @@ int draw_coordinate_systems_depth()
 }
 
 // Callback function.
-void framebuffer_size_callback_for_coordinate_systems_depth(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_textures_combined(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Input processing function.
-void processInput_for_coordinate_systems_depth(GLFWwindow* window)
+void processInput_for_textures_combined(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -393,11 +296,11 @@ void processInput_for_coordinate_systems_depth(GLFWwindow* window)
 	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_8_2 += 0.01f;
+		currentMixingFactor_for_2_6_2 += 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_2_8_2 >= 1.0f)
+		if (currentMixingFactor_for_2_6_2 >= 1.0f)
 		{
-			currentMixingFactor_for_2_8_2 = 1.0f;
+			currentMixingFactor_for_2_6_2 = 1.0f;
 		}
 	}
 
@@ -405,11 +308,11 @@ void processInput_for_coordinate_systems_depth(GLFWwindow* window)
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_8_2 -= 0.01f;
+		currentMixingFactor_for_2_6_2 -= 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_2_8_2 <= 0.0f)
+		if (currentMixingFactor_for_2_6_2 <= 0.0f)
 		{
-			currentMixingFactor_for_2_8_2 = 0.0f;
+			currentMixingFactor_for_2_6_2 = 0.0f;
 		}
 	}
 }

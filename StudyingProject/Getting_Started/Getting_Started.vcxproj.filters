@@ -19,70 +19,70 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hello_window.h">
+    <ClInclude Include="Hello_Window\hello_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hello_triangle.h">
+    <ClInclude Include="Hello_Triangle\hello_triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hello_triangle_indexed.h">
+    <ClInclude Include="Hello_Triangle\hello_triangle_indexed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hello_triangle_exercise1.h">
+    <ClInclude Include="Hello_Triangle\hello_triangle_exercise1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hello_triangle_exercise2.h">
+    <ClInclude Include="Hello_Triangle\hello_triangle_exercise2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hello_triangle_exercise3.h">
+    <ClInclude Include="Hello_Triangle\hello_triangle_exercise3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shaders_uniform.h">
+    <ClInclude Include="Shaders\shaders_uniform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shaders_interpolation.h">
+    <ClInclude Include="Shaders\shaders_interpolation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shader_program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shaders_class.h">
+    <ClInclude Include="Shaders\shaders_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textures.h">
+    <ClInclude Include="Textures\textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textures_combined.h">
+    <ClInclude Include="Textures\textures_combined.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="transformations.h">
+    <ClInclude Include="Transformations\transformations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="coordinate_systems.h">
+    <ClInclude Include="Coordinate_Systems\coordinate_systems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="coordinate_systems_depth.h">
+    <ClInclude Include="Coordinate_Systems\coordinate_systems_depth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="coordinate_systems_multiple.h">
+    <ClInclude Include="Coordinate_Systems\coordinate_systems_multiple.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera_circle.h">
+    <ClInclude Include="Camera\camera_circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera_keyboard_dt.h">
+    <ClInclude Include="Camera\camera_keyboard_dt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera_mouse_zoom.h">
+    <ClInclude Include="Camera\camera_mouse_zoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera_class.h">
+    <ClInclude Include="Camera\camera_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,113 +93,113 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_window.cpp">
+    <ClCompile Include="Hello_Window\hello_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_triangle.cpp">
+    <ClCompile Include="Hello_Triangle\hello_triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_triangle_indexed.cpp">
+    <ClCompile Include="Hello_Triangle\hello_triangle_indexed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_triangle_exercise1.cpp">
+    <ClCompile Include="Hello_Triangle\hello_triangle_exercise1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_triangle_exercise2.cpp">
+    <ClCompile Include="Hello_Triangle\hello_triangle_exercise2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_triangle_exercise3.cpp">
+    <ClCompile Include="Hello_Triangle\hello_triangle_exercise3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaders_uniform.cpp">
+    <ClCompile Include="Shaders\shaders_uniform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaders_interpolation.cpp">
+    <ClCompile Include="Shaders\shaders_interpolation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaders_class.cpp">
+    <ClCompile Include="Shaders\shaders_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textures.cpp">
+    <ClCompile Include="Textures\textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textures_combined.cpp">
+    <ClCompile Include="Textures\textures_combined.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="transformations.cpp">
+    <ClCompile Include="Transformations\transformations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="coordinate_systems.cpp">
+    <ClCompile Include="Coordinate_Systems\coordinate_systems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="coordinate_systems_depth.cpp">
+    <ClCompile Include="Coordinate_Systems\coordinate_systems_depth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="coordinate_systems_multiple.cpp">
+    <ClCompile Include="Coordinate_Systems\coordinate_systems_multiple.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera_circle.cpp">
+    <ClCompile Include="Camera\camera_circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera_keyboard_dt.cpp">
+    <ClCompile Include="Camera\camera_keyboard_dt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera_mouse_zoom.cpp">
+    <ClCompile Include="Camera\camera_mouse_zoom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera_class.cpp">
+    <ClCompile Include="Camera\camera_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertex_shader_for_2_5_3.glsl">
+    <None Include="Shaders\vertex_shader_for_2_5_3.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_5_3.glsl">
+    <None Include="Shaders\fragment_shader_for_2_5_3.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="vertex_shader_for_2_6_1.glsl">
+    <None Include="Textures\vertex_shader_for_2_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_6_1.glsl">
+    <None Include="Textures\fragment_shader_for_2_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="vertex_shader_for_2_6_2.glsl">
+    <None Include="Textures\vertex_shader_for_2_6_2.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_6_2.glsl">
+    <None Include="Textures\fragment_shader_for_2_6_2.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="vertex_shader_for_2_7_1.glsl">
+    <None Include="Transformations\vertex_shader_for_2_7_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_7_1.glsl">
+    <None Include="Transformations\fragment_shader_for_2_7_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="vertex_shader_for_2_8_1.glsl">
+    <None Include="Coordinate_Systems\vertex_shader_for_2_8_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_8_1.glsl">
+    <None Include="Coordinate_Systems\fragment_shader_for_2_8_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="vertex_shader_for_2_9_1.glsl">
+    <None Include="Camera\vertex_shader_for_2_9_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="fragment_shader_for_2_9_1.glsl">
+    <None Include="Camera\fragment_shader_for_2_9_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="brick_wall.jpg">
+    <Image Include="resources\brick_wall.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="wooden_container.jpg">
+    <Image Include="resources\wooden_container.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="awesome_face.png">
+    <Image Include="resources\awesome_face.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader_program.h"
+#include "../shader_program.h"
 
 int draw_shaders_class();
 void framebuffer_size_callback_for_shaders_class(GLFWwindow* window, int width, int height);

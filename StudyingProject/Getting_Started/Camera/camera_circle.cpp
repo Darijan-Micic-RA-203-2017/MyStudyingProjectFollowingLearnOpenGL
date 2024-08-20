@@ -1,11 +1,11 @@
-#include "coordinate_systems_multiple.h"
+#include "camera_circle.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
-float currentMixingFactor_for_2_8_3 = 0.2f;
+float currentMixingFactor_for_2_9_1 = 0.2f;
 
-int draw_coordinate_systems_multiple()
+int draw_camera_circle()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -21,7 +21,7 @@ int draw_coordinate_systems_multiple()
 
 	// Create a window and make the context of created window the main context on the current thread.
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"Getting Started - Coordinate Systems, multiple cubes", NULL, NULL);
+		"Getting Started - Camera, circle", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -32,7 +32,7 @@ int draw_coordinate_systems_multiple()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_coordinate_systems_multiple);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_camera_circle);
 
 	// Initialize the GLAD library.
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -54,7 +54,7 @@ int draw_coordinate_systems_multiple()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("vertex_shader_for_2_8_1.glsl", "fragment_shader_for_2_8_1.glsl");
+	ShaderProgram ourShaderProgram("Camera/vertex_shader_for_2_9_1.glsl", "Camera/fragment_shader_for_2_9_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -103,7 +103,7 @@ int draw_coordinate_systems_multiple()
 		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
 		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
 		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		
+
 		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top side
 		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
 		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
@@ -190,7 +190,7 @@ int draw_coordinate_systems_multiple()
 	int textureImageWidth;
 	int textureImageHeight;
 	int numberOfColorChannelsInTextureImage;
-	unsigned char* pixels = stbi_load("wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
+	unsigned char* pixels = stbi_load("resources/wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
@@ -228,7 +228,7 @@ int draw_coordinate_systems_multiple()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load the image that will be used as a texture.
-	pixels = stbi_load("awesome_face.png", &textureImageWidth, &textureImageHeight, 
+	pixels = stbi_load("resources/awesome_face.png", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{
@@ -245,7 +245,7 @@ int draw_coordinate_systems_multiple()
 		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
 		stbi_image_free(pixels);
 		glfwTerminate();
-
+		
 		return 8;
 	}
 	// Free the image memory.
@@ -300,9 +300,9 @@ int draw_coordinate_systems_multiple()
 	// We will use the perspective projection with standard 45 degrees field of view (FOV), 0.1f near plane and
 	// 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 
-		(float) (window_width) / (float) (window_height), 0.1f, 100.0f);
+		(float) window_width / (float) window_height, 0.1f, 100.0f);
 	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0u][0u]);
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.id, "ourTexture1"), 0);
@@ -324,7 +324,7 @@ int draw_coordinate_systems_multiple()
 	while (!glfwWindowShouldClose(window))
 	{
 		// First part: Process the user's input.
-		processInput_for_coordinate_systems_multiple(window);
+		processInput_for_camera_circle(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -342,22 +342,67 @@ int draw_coordinate_systems_multiple()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
-		// We will transform our world (scene) by translating it forward, which equals moving the camera
-		// backwards. Keep in mind we need to translate the world in the inverse direction of where we want the
-		// camera to move.
-		// By convention, OpenGL is a right-handed system. That means the negative z-axis is going into the
-		// screen away from the user, while the positive z-axis is going through the screen towards the user.
-		// Because we want to move backwards and since OpenGL is a right-handed system, we have to move in the
-		// positive z-axis. We do this by translating the scene towards the negative z-axis. This gives the
-		// impression that we are moving backwards.
-		glm::mat4 viewMatrix = glm::mat4(1.0f);
-		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+		// We will transform our world (scene) by moving the camera around the scene over time. Each frame, we will
+		// create x-coordinate and z-coordinate that represent a point on a circle. Circle is enlargened to a
+		// pre-defined radius.
+
+		// MANUALLY create the LookAt (view) matrix.
+		
+		// 1. thing we need to create a LookAt matrix: the camera's position.
+		float time = static_cast<float>(glfwGetTime());
+		// The smaller the circle is, the closer the camera is to the scene and vice-versa.
+		float radius = 10.0f;
+		float cameraPositionX = sin(time) * radius;
+		float cameraPositionZ = cos(time) * radius;
+		glm::vec3 cameraPosition = glm::vec3(cameraPositionX, 0.0f, cameraPositionZ);
+		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
+		// actually need the direction TO camera.
+		// The camera's direction is counted by subtracting camera's position from the camera's target. However,
+		// the camera in the OpenGL by convention points towards the negative z-axis and we want the z-axis in the
+		// view matrix's coordinate system to be positive. Because of those two reasons, we switch the subtraction
+		// order and subtract camera's target from camera's position. Vector visually ends at the minuend
+		// (first operand of subtraction) and starts at the subtrahend (second operand of subtraction). Therefore,
+		// we want it to end on camera's position, pointing to it.
+		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
+		// 3. thing we need to create a LookAt matrix: the camera's right vector. This vector points right from
+		// camera and is perpendicular to "camera's direction".
+		// We can create it with the following trick. We first create an "up" vector, that's pointing upwards in
+		// the global space (0.0f, 1.0f, 0.0f). Then, we create camera's right vector by doing a cross product
+		// between "up" vector and "camera's direction". Result of a cross product is a vector perpendicular to
+		// both vectors and we will get a vector that points in the positive x-axis' direction.
+		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 cameraRight = glm::normalize(glm::cross(upVector, cameraDirection));
+		// 4. and final thing we need to create a LookAt matrix: the camera's up vector.
+		// Since we have vectors that point in the positive z-axis' direction ("camera's direction") and the
+		// positive x-axis's direction (camera's right vector), their cross product will give us the vector
+		// pointing in the positive y-axis's direction (camera's up vector).
+		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraDirection, cameraRight));
+
+		// Form the manually made LookAt (view) matrix. We transform world coordinates to view coordinates.
+		/* LookAt matrix:
+		* ([Rx   Ux    Dx    0.0f])T * [1.0f 0.0f 0.0f -(Px)] = [Rx   Ry   Rz   0.0f] * [1.0f 0.0f 0.0f -Px ] =
+		* ([Ry   Uy    Dy    0.0f])    [0.0f 1.0f 0.0f -(Py)]   [Ux   Uy   Uz   0.0f]   [0.0f 1.0f 0.0f -Py ]
+		* ([Rz   Uz    Dz    0.0f])    [0.0f 0.0f 1.0f -(Pz)]   [Dx   Dy   Dz   0.0f]   [0.0f 0.0f 1.0f -Pz ]
+		* ([0.0f 0.0f  0.0f  1.0f])    [0.0f 0.0f 0.0f  1.0f]   [0.0f 0.0f 0.0f 1.0f]   [0.0f 0.0f 0.0f 1.0f]
+		* = [Rx   Ry   Rz   -Rx*Px - Ry*Py - Rz*Pz]
+		*   [Ux   Uy   Uz   -Ux*Px - Uy*Py - Uz*Pz]
+		*   [Dx   Dy   Dz   -Dx*Px - Dy*Py - Dz*Pz]
+		*   [0.0f 0.0f 0.0f 1.0f                  ]
+		*/
+		glm::mat4 viewMatrix = glm::mat4(cameraRight.x, cameraUp.x, cameraDirection.x, 0.0f, 
+			cameraRight.y, cameraUp.y, cameraDirection.y, 0.0f, 
+			cameraRight.z, cameraUp.z, cameraDirection.z, 0.0f, 
+			0.0f, 0.0f, 0.0f, 1.0f) * glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 
+				0.0f, 1.0f, 0.0f, 0.0f, 
+				0.0f, 0.0f, 1.0f, 0.0f, 
+				-cameraPosition.x, -cameraPosition.y, -cameraPosition.z, 1.0f);
 
 		// Set the view matrix. This matrix changes each frame.
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
 		// Set the uniform variable "mixingFactor" in fragment shader.
-		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_8_3);
+		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_9_1);
 
 		glBindVertexArray(VAO);
 		// We draw ten cubes.
@@ -368,7 +413,7 @@ int draw_coordinate_systems_multiple()
 			// (1.0f, 0.3f, 0.5f) axis. The other cubes will only be rotated once over aforementioned axis.
 			// Finally, each of the ten cubes will be translated to its corresponding specified position.
 			glm::mat4 modelMatrix = glm::mat4(1.0f);
-			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
+			modelMatrix = glm::translate(modelMatrix, positionsOfCubes[i]);
 			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
 			// the angle's value from degrees.
 			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
@@ -382,8 +427,8 @@ int draw_coordinate_systems_multiple()
 				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
 
 			// Set the model matrix. This matrix changes each frame.
-			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-			
+			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0u][0u]);
+
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
@@ -403,13 +448,13 @@ int draw_coordinate_systems_multiple()
 }
 
 // Callback function.
-void framebuffer_size_callback_for_coordinate_systems_multiple(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_camera_circle(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Input processing function.
-void processInput_for_coordinate_systems_multiple(GLFWwindow* window)
+void processInput_for_camera_circle(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -420,11 +465,11 @@ void processInput_for_coordinate_systems_multiple(GLFWwindow* window)
 	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_8_3 += 0.01f;
+		currentMixingFactor_for_2_9_1 += 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_2_8_3 >= 1.0f)
+		if (currentMixingFactor_for_2_9_1 >= 1.0f)
 		{
-			currentMixingFactor_for_2_8_3 = 1.0f;
+			currentMixingFactor_for_2_9_1 = 1.0f;
 		}
 	}
 
@@ -432,11 +477,11 @@ void processInput_for_coordinate_systems_multiple(GLFWwindow* window)
 	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		currentMixingFactor_for_2_8_3 -= 0.01f;
+		currentMixingFactor_for_2_9_1 -= 0.01f;
 		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_2_8_3 <= 0.0f)
+		if (currentMixingFactor_for_2_9_1 <= 0.0f)
 		{
-			currentMixingFactor_for_2_8_3 = 0.0f;
+			currentMixingFactor_for_2_9_1 = 0.0f;
 		}
 	}
 }
