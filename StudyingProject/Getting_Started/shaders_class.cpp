@@ -42,7 +42,7 @@ int draw_shaders_class()
 	}
 
 	// Compile our shaders and link our shader program using helper class.
-	Shader ourShaderProgram("vertex_shader_for_2_5_3.glsl", "fragment_shader_for_2_5_3.glsl");
+	ShaderProgram ourShaderProgram("vertex_shader_for_2_5_3.glsl", "fragment_shader_for_2_5_3.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();

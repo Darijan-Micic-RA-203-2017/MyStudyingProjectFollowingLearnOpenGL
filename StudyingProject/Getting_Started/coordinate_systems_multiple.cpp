@@ -53,7 +53,8 @@ int draw_coordinate_systems_multiple()
 	// when to or not to draw over a pixel. Using the z-buffer we can configure OpenGL to do depth testing.
 	glEnable(GL_DEPTH_TEST);
 
-	Shader ourShaderProgram("vertex_shader_for_2_8_1.glsl", "fragment_shader_for_2_8_1.glsl");
+	// Compile our shaders and link our shader program using helper class.
+	ShaderProgram ourShaderProgram("vertex_shader_for_2_8_1.glsl", "fragment_shader_for_2_8_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -262,7 +263,7 @@ int draw_coordinate_systems_multiple()
 
 	// Retrieve location of uniform variable "modelMatrix" in shader program.
 	// This doesn't require activation of shader program.
-	int modelMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "modelMatrix");
+	int modelMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "modelMatrix");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (modelMatrixLocation == -1)
 	{
@@ -274,7 +275,7 @@ int draw_coordinate_systems_multiple()
 
 	// Retrieve location of uniform variable "viewMatrix" in shader program.
 	// This doesn't require activation of shader program.
-	int viewMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "viewMatrix");
+	int viewMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "viewMatrix");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (viewMatrixLocation == -1)
 	{
@@ -286,7 +287,7 @@ int draw_coordinate_systems_multiple()
 
 	// Retrieve location of uniform variable "projectionMatrix" in shader program.
 	// This doesn't require activation of shader program.
-	int projectionMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "projectionMatrix");
+	int projectionMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "projectionMatrix");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (projectionMatrixLocation == -1)
 	{
@@ -304,12 +305,12 @@ int draw_coordinate_systems_multiple()
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0u][0u]);
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
-	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
+	glUniform1i(glGetUniformLocation(ourShaderProgram.id, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
 
 	// Retrieve location of uniform variable "mixingFactor" in shader program.
 	// This doesn't require activation of shader program.
-	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "mixingFactor");
+	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.id, "mixingFactor");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (mixingFactorLocation == -1)
 	{

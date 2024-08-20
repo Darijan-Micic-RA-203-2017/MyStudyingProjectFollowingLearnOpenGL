@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader_s.h"
+#include "shader_program.h"
 #include "stb_image.h"
 
 int draw_textures();

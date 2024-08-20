@@ -43,7 +43,8 @@ int draw_transformations()
 		return 3;
 	}
 
-	Shader ourShaderProgram("vertex_shader_for_2_7_1.glsl", "fragment_shader_for_2_7_1.glsl");
+	// Compile our shaders and link our shader program using helper class.
+	ShaderProgram ourShaderProgram("vertex_shader_for_2_7_1.glsl", "fragment_shader_for_2_7_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -216,7 +217,7 @@ int draw_transformations()
 
 	// Retrieve location of uniform variable "transformationalMatrix" in shader program.
 	// This doesn't require activation of shader program.
-	int transformationalMatrixLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId,
+	int transformationalMatrixLocation = glGetUniformLocation(ourShaderProgram.id,
 		"transformationalMatrix");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (transformationalMatrixLocation == -1)
@@ -228,12 +229,12 @@ int draw_transformations()
 	}
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
-	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);
+	glUniform1i(glGetUniformLocation(ourShaderProgram.id, "ourTexture1"), 0);
 	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
 
 	// Retrieve location of uniform variable "mixingFactor" in shader program.
 	// This doesn't require activation of shader program.
-	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.shaderProgramId, "mixingFactor");
+	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.id, "mixingFactor");
 	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
 	if (mixingFactorLocation == -1)
 	{

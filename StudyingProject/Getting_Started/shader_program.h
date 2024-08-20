@@ -1,8 +1,8 @@
 // We used several preprocessor directives at the top of the header file. Using these little lines of code
 // informs your compiler to only include and compile this header file if it hasn't been included yet, even if
-// multiple files include the shader header. This prevents linking conflicts.
-#ifndef SHADER_H
-#define SHADER_H
+// multiple files include the shader program header. This prevents linking conflicts.
+#ifndef SHADER_PROGRAM_H
+#define SHADER_PROGRAM_H
 
 #include <glad/glad.h>
 #include <string>
@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iostream>
 
-class Shader
+class ShaderProgram
 {
 private:
 	// Utility function for checking whether the compilation of shader or linking of shader program succeeded.
@@ -56,10 +56,10 @@ private:
 		errorCode = 0;
 	}
 public:
-	unsigned int shaderProgramId = 0;
+	unsigned int id = 0u;
 	int errorCode = 0;
 
-	Shader(const char* vertexShaderSourcePath, const char* fragmentShaderSourcePath)
+	ShaderProgram(const char* vertexShaderSourcePath, const char* fragmentShaderSourcePath)
 	{
 		// Retrieve shaders source code from files with paths provided as function parameters.
 		std::string vsSourceCode;
@@ -70,7 +70,7 @@ public:
 		// Ensure ifstream objects can throw exceptions.
 		vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		fragmentShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		
+
 		try
 		{
 			// Open files with source codes.
@@ -127,14 +127,14 @@ public:
 		}
 
 		// Create and link shader program.
-		shaderProgramId = glCreateProgram();
-		glAttachShader(shaderProgramId, vertexShader);
-		glAttachShader(shaderProgramId, fragmentShader);
-		glLinkProgram(shaderProgramId);
-		checkForCompilationOrLinkingErrors(shaderProgramId, "shader program");
+		id = glCreateProgram();
+		glAttachShader(id, vertexShader);
+		glAttachShader(id, fragmentShader);
+		glLinkProgram(id);
+		checkForCompilationOrLinkingErrors(id, "shader program");
 		if (errorCode == 6)
 		{
-			glDeleteProgram(shaderProgramId);
+			glDeleteProgram(id);
 		}
 
 		glDeleteShader(fragmentShader);
@@ -144,38 +144,38 @@ public:
 	// Utility function for using (activating) shader program.
 	void useProgram()
 	{
-		glUseProgram(shaderProgramId);
+		glUseProgram(id);
 	}
 
 	// Utility uniform functions.
-	void setBoolUniform(const std::string &name, bool value) const
+	void setBoolUniform(const std::string& name, bool value) const
 	{
-		glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), (int) value);
+		glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
 	}
 
-	void setUnsignedIntegerUniform(const std::string &name, unsigned int value) const
+	void setUnsignedIntegerUniform(const std::string& name, unsigned int value) const
 	{
-		glUniform1ui(glGetUniformLocation(shaderProgramId, name.c_str()), value);
+		glUniform1ui(glGetUniformLocation(id, name.c_str()), value);
 	}
 
-	void setIntegerUniform(const std::string &name, int value) const
+	void setIntegerUniform(const std::string& name, int value) const
 	{
-		glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), value);
+		glUniform1i(glGetUniformLocation(id, name.c_str()), value);
 	}
 
-	void setFloatUniform(const std::string &name, float value) const
+	void setFloatUniform(const std::string& name, float value) const
 	{
-		glUniform1f(glGetUniformLocation(shaderProgramId, name.c_str()), value);
+		glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 	}
 
 	void setFloatVec3Uniform(const std::string& name, float value0, float value1, float value2) const
 	{
-		glUniform3f(glGetUniformLocation(shaderProgramId, name.c_str()), value0, value1, value2);
+		glUniform3f(glGetUniformLocation(id, name.c_str()), value0, value1, value2);
 	}
 
-	void setFloatVec4Uniform(const std::string &name, float value0, float value1, float value2, float value3) const
+	void setFloatVec4Uniform(const std::string& name, float value0, float value1, float value2, float value3) const
 	{
-		glUniform4f(glGetUniformLocation(shaderProgramId, name.c_str()), value0, value1, value2, value3);
+		glUniform4f(glGetUniformLocation(id, name.c_str()), value0, value1, value2, value3);
 	}
 };
 #endif

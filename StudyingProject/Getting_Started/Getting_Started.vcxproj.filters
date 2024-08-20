@@ -43,7 +43,7 @@
     <ClInclude Include="shaders_interpolation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shader_s.h">
+    <ClInclude Include="shader_program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shaders_class.h">
