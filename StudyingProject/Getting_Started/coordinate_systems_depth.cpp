@@ -130,20 +130,20 @@ int draw_coordinate_systems_depth()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 	// Texture coordinate attribute.
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
 	// DO NOT EVER unbind EBO before unbinding VAO, otherwise it won't have a configured EBO.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Create memory on the GPU where first texture will be stored.
 	unsigned int texture1;
@@ -238,7 +238,7 @@ int draw_coordinate_systems_depth()
 	stbi_image_free(pixels);
 
 	// Unbind texture for safety reasons. This is not neccessary.
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0u);
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -288,7 +288,7 @@ int draw_coordinate_systems_depth()
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 
 		(float) (window_width) / (float) (window_height), 0.1f, 100.0f);
 	// Projection matrix rarely changes, so it's best practice to set it once outside the rendering loop.
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0u][0u]);
 
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	glUniform1i(glGetUniformLocation(ourShaderProgram.shaderProgramId, "ourTexture1"), 0);

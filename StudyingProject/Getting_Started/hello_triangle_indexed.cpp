@@ -127,8 +127,8 @@ int draw_hello_triangle_indexed()
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		0u, 1u, 3u, 
+		1u, 2u, 3u
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -156,16 +156,16 @@ int draw_hello_triangle_indexed()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
 	// Enable vertex attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
 	// DO NOT EVER unbind EBO before unbinding VAO, otherwise it won't have a configured EBO.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -184,7 +184,7 @@ int draw_hello_triangle_indexed()
 		// Every shader and rendering call from now on will use this shader program object.
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0u);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);

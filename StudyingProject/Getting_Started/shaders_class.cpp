@@ -78,17 +78,17 @@ int draw_shaders_class()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 	// Color attribute.
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex color attribute.
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))

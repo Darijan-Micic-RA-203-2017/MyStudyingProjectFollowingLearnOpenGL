@@ -63,8 +63,8 @@ int draw_transformations()
 	};
 	// Indices, which start at 0.
 	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		0u, 1u, 3u, 
+		1u, 2u, 3u
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -93,24 +93,24 @@ int draw_transformations()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 	// Color attribute.
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex color attribute.
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1u);
 	// Texture coordinate attribute.
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
+	glVertexAttribPointer(2u, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*) (7 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
 	// DO NOT EVER unbind EBO before unbinding VAO, otherwise it won't have a configured EBO.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Create memory on the GPU where first texture will be stored.
 	unsigned int texture1;
@@ -205,7 +205,7 @@ int draw_transformations()
 	stbi_image_free(pixels);
 
 	// Unbind texture for safety reasons. This is not neccessary.
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0u);
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -289,7 +289,7 @@ int draw_transformations()
 		glUniform1f(mixingFactorLocation, currentMixingFactor_for_2_7_1);
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0u);
 
 		// Create a 4*4 matrix and initialize it with 1.0f on main diagonal, thus creating an identity matrix.
 		transformationalMatrix = glm::mat4(1.0f);
@@ -304,7 +304,7 @@ int draw_transformations()
 		glUniformMatrix4fv(transformationalMatrixLocation, 1, GL_FALSE, &transformationalMatrix[0][0]);
 
 		// Draw the second object, created using only transformations.
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0u);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);

@@ -165,20 +165,20 @@ int draw_camera_class()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 	// Texture coordinate attribute.
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
 	// DO NOT EVER unbind EBO before unbinding VAO, otherwise it won't have a configured EBO.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Create memory on the GPU where first texture will be stored.
 	unsigned int texture1;
@@ -273,7 +273,7 @@ int draw_camera_class()
 	stbi_image_free(pixels);
 
 	// Unbind texture for safety reasons. This is not neccessary.
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0u);
 
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -381,7 +381,7 @@ int draw_camera_class()
 
 		glBindVertexArray(VAO);
 		// We draw ten cubes.
-		for (unsigned int i = 0; i < 10; i++)
+		for (unsigned int i = 0u; i < 10u; i++)
 		{
 			// The model matrix transforms local space coordinates to world space coordinates.
 			// We will transform every third cube (including the first one) by rotating it over time around the
@@ -394,7 +394,7 @@ int draw_camera_class()
 			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
 			// representing the axis if we're not rotating around x, y or z-axis.
 			float angle = 20.0f * i;
-			if (i % 3 == 0)
+			if (i % 3u == 0u)
 			{
 				angle = static_cast<float>(glfwGetTime()) * 25.0f;
 			}
@@ -402,7 +402,7 @@ int draw_camera_class()
 				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
 
 			// Set the model matrix. This matrix changes each frame.
-			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
+			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0u][0u]);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}

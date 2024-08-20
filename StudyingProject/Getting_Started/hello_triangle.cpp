@@ -143,13 +143,13 @@ int draw_hello_triangle()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
 	// Enable vertex attribute.
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0u);
+	glBindVertexArray(0u);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
