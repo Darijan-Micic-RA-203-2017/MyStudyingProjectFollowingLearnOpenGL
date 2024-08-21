@@ -181,7 +181,7 @@ int draw_textures_combined()
 
 	// Set texture wrapping parameters.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	// We want to repeat the awesome face pattern, so we kept it at default option (GL_REPEAT).
+	// We want to repeat the second texture pattern, so we kept it at default option (GL_REPEAT).
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Set texture filtering parameters.
@@ -292,8 +292,8 @@ void processInput_for_textures_combined(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	// Change how much the wooden container and awesome face are visible.
-	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
+	// Change how much the first texture and the second texture are visible.
+	// Increasing mixing factor will increase visibility of second texture and decrease visibility of first texture.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		currentMixingFactor_for_2_6_2 += 0.01f;
@@ -304,8 +304,8 @@ void processInput_for_textures_combined(GLFWwindow* window)
 		}
 	}
 
-	// Change how much the wooden container and awesome face are visible.
-	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
+	// Change how much the first texture and the second texture are visible.
+	// Decreasing mixing factor will increase visibility of first texture and decrease visibility of second texture.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		currentMixingFactor_for_2_6_2 -= 0.01f;

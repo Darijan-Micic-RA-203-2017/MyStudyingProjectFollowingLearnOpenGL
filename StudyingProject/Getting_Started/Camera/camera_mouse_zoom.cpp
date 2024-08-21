@@ -569,8 +569,8 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 	}
 
 	const float mixingFactorChangeSpeed = 0.01f;
-	// Change how much the wooden container and awesome face are visible.
-	// Increasing mixing factor will increase visibility of awesome face and decrease visibility of wooden container.
+	// Change how much the first texture and the second texture are visible.
+	// Increasing mixing factor will increase visibility of second texture and decrease visibility of first texture.
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		currentMixingFactor_for_2_9_3 += mixingFactorChangeSpeed;
@@ -581,8 +581,8 @@ void processInput_for_camera_mouse_zoom(GLFWwindow* window)
 		}
 	}
 
-	// Change how much the wooden container and awesome face are visible.
-	// Decreasing mixing factor will increase visibility of wooden container and decrease visibility of awesome face.
+	// Change how much the first texture and the second texture are visible.
+	// Decreasing mixing factor will increase visibility of first texture and decrease visibility of second texture.
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		currentMixingFactor_for_2_9_3 -= mixingFactorChangeSpeed;
