@@ -14,7 +14,7 @@ float previousCursorPosY_for_2_9_4 = (float) window_height / 2.0f;
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
 // balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
-// of the camera will be balanced out accordingly so each user will have the same experience. 
+// of the camera will be balanced out accordingly so each user will have the same experience.
 float deltaTime_for_2_9_4 = 0.0f;
 // The time it took to render the previous frame.
 float previousFrameTime_for_2_9_4 = 0.0f;
