@@ -3,23 +3,24 @@
 const int window_width = 800;
 const int window_height = 600;
 
+// Position of light source in world-space coordinates.
+glm::vec3 positionOfLightSource(1.2f, 1.0f, 2.0f);
+
 // All setting are kept in an instance of the camera class.
 Camera camera_for_3_1_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_3_1_1 = true;
-float previousCursorPosX_for_3_1_1 = (float)window_width / 2.0f;
-float previousCursorPosY_for_3_1_1 = (float)window_height / 2.0f;
+float previousCursorPosX_for_3_1_1 = (float) window_width / 2.0f;
+float previousCursorPosY_for_3_1_1 = (float) window_height / 2.0f;
 
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
 // balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
-// of the camera will be balanced out accordingly so each user will have the same experience. 
+// of the camera will be balanced out accordingly so each user will have the same experience.
 float deltaTime_for_3_1_1 = 0.0f;
 // The time it took to render the previous frame.
 float previousFrameTime_for_3_1_1 = 0.0f;
-
-float currentMixingFactor_for_3_1_1 = 0.2f;
 
 int draw_colors()
 {
@@ -83,68 +84,63 @@ int draw_colors()
 
 		return ourShaderProgram.errorCode;
 	}
+	// Compile our light source shaders and link our light source shader program using helper class.
+	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
+		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
+	if (ourLightSourceShaderProgram.errorCode)
+	{
+		glfwTerminate();
+
+		return ourLightSourceShaderProgram.errorCode;
+	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
 	// (6 sides * 2 triangles per side * 3 vertices for each triangle).
-	// First three values represent position of vertex, while last two values represent texture coordinates
-	// (from 0.0f to 1.0f).
+	// Values (three of them) represent position of vertex.
 	float vertices[] = {
-		// position          // texture coordinates
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // back side
-		 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 
+		// position
+		-0.5f, -0.5f, -0.5f, // back side
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		-0.5f,  0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, // front side
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 
-		-0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
+		-0.5f, -0.5f,  0.5f, // front side
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
+		-0.5f, -0.5f,  0.5f, 
 
-		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f, // left side
-		-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		-0.5f,  0.5f,  0.5f, // left side
+		-0.5f,  0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		-0.5f, -0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, // right side
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
-		 0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f, // right side
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom side
-		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 
-		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, // bottom side
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		-0.5f, -0.5f,  0.5f, 
+		-0.5f, -0.5f, -0.5f, 
 
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top side
-		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
-		 0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 
-		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f
-	};
-	// World space positions of our ten cubes.
-	glm::vec3 positionsOfCubes[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f), 
-		glm::vec3(2.0f,  5.0f, -15.0f), 
-		glm::vec3(-1.5f, -2.2f, -2.5f), 
-		glm::vec3(-3.8f, -2.0f, -12.3f), 
-		glm::vec3(2.4f, -0.4f, -3.5f), 
-		glm::vec3(-1.7f,  3.0f, -7.5f), 
-		glm::vec3(1.3f, -2.0f, -2.5f), 
-		glm::vec3(1.5f,  2.0f, -2.5f), 
-		glm::vec3(1.5f,  0.2f, -1.5f), 
-		glm::vec3(-1.3f,  1.0f, -1.5f)
+		-0.5f,  0.5f, -0.5f, // top side
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f, -0.5f
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -166,13 +162,26 @@ int draw_colors()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
-	// Texture coordinate attribute.
-	glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
-	// Enable vertex texture coordinate attribute.
-	glEnableVertexAttribArray(1u);
+
+	// Create memory on the GPU where vertex data of light source will be stored.
+	unsigned int lightSourceVAO;
+	glGenVertexArrays(1, &lightSourceVAO);
+
+	// Bind (assign) the newly created VAO to OpenGL's context.
+	glBindVertexArray(lightSourceVAO);
+
+	// Bind (assign) the previously created VBO to OpenGL's context. We use the same VBO, because the light source
+	// object will use the same vertices as the object in scene (light source is also a 3D cube).
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
+	// Position attribute.
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	// Enable vertex position attribute.
+	glEnableVertexAttribArray(0u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -181,159 +190,8 @@ int draw_colors()
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
-	// Create memory on the GPU where first texture will be stored.
-	unsigned int texture1;
-	glGenTextures(1, &texture1);
-	// Bind (assign) the newly created texture to OpenGL's context.
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
-	// Set texture wrapping parameters. Texture coordinates are in range [0.0f, 1.0f]. If texture coordinates
-	// are specified outside of mentioned range, texture wrapping option determines the look.
-	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
-	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
-	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
-	// texture coordinate to. Nearest neighbour filtering is better suited for minifying operations,
-	// while (bi)linear filtering is better suited for magnifying operations.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// Mipmaps are used to improve minifying, not magnifying. Setting one of the mipmap filtering options as
-	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Tell "stb_image.h" library to flip the y-axis during image loading. This call is necessary because
-	// OpenGL expects the 0.0f coordinate on the y-axis to be on the bottom side of the image, but images
-	// usually have 0.0f at the top of the y-axis.
-	stbi_set_flip_vertically_on_load(true);
-
-	// Load the image that will be used as a texture.
-	int textureImageWidth;
-	int textureImageHeight;
-	int numberOfColorChannelsInTextureImage;
-	unsigned char* pixels = stbi_load("resources/wooden_container.jpg", &textureImageWidth, &textureImageHeight, 
-		&numberOfColorChannelsInTextureImage, 0);
-	if (pixels)
-	{
-		// Generate a texture using the previously loaded image data (pixels).
-		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGL, or
-		// it will incorrectly interpret the image data.
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImageWidth, textureImageHeight, 0, GL_RGB, 
-			GL_UNSIGNED_BYTE, pixels);
-		// Automatically generate all the required mipmaps for the currently bound texture.
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
-		stbi_image_free(pixels);
-		glfwTerminate();
-
-		return 7;
-	}
-	// Free the image memory.
-	stbi_image_free(pixels);
-
-	// Create memory on the GPU where second texture will be stored.
-	unsigned int texture2;
-	glGenTextures(1, &texture2);
-	// Bind (assign) the newly created texture to OpenGL's context.
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	// Set texture wrapping parameters.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Set texture filtering parameters.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Load the image that will be used as a texture.
-	pixels = stbi_load("resources/awesome_face.png", &textureImageWidth, &textureImageHeight, 
-		&numberOfColorChannelsInTextureImage, 0);
-	if (pixels)
-	{
-		// Generate a texture using the previously loaded image data (pixels).
-		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
-		// it will incorrectly interpret the image data.
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImageWidth, textureImageHeight, 0, GL_RGBA, 
-			GL_UNSIGNED_BYTE, pixels);
-		// Automatically generate all the required mipmaps for the currently bound texture.
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
-		stbi_image_free(pixels);
-		glfwTerminate();
-
-		return 8;
-	}
-	// Free the image memory.
-	stbi_image_free(pixels);
-
-	// Unbind texture for safety reasons. This is not neccessary.
-	glBindTexture(GL_TEXTURE_2D, 0u);
-
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	// Activate the shader program.
-	// Every shader and rendering call from now on will use this shader program object.
-	ourShaderProgram.useProgram();
-
-	// Retrieve location of uniform variable "modelMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int modelMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "modelMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (modelMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"modelMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 9;
-	}
-
-	// Retrieve location of uniform variable "viewMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int viewMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "viewMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (viewMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"viewMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 10;
-	}
-
-	// Retrieve location of uniform variable "projectionMatrix" in shader program.
-	// This doesn't require activation of shader program.
-	int projectionMatrixLocation = glGetUniformLocation(ourShaderProgram.id, "projectionMatrix");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (projectionMatrixLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"projectionMatrix\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 11;
-	}
-
-	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
-	glUniform1i(glGetUniformLocation(ourShaderProgram.id, "ourTexture1"), 0);
-	ourShaderProgram.setIntegerUniform("ourTexture2", 1);
-
-	// Retrieve location of uniform variable "mixingFactor" in shader program.
-	// This doesn't require activation of shader program.
-	int mixingFactorLocation = glGetUniformLocation(ourShaderProgram.id, "mixingFactor");
-	// If uniform variable's location wasn't found, glGetUniformLocation returns -1.
-	if (mixingFactorLocation == -1)
-	{
-		std::cout << "Location of uniform variable \"mixingFactor\" wasn't found!" << std::endl;
-		glfwTerminate();
-
-		return 12;
-	}
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -352,61 +210,61 @@ int draw_colors()
 		// Otherwise, the depth information of the previous frame would remain in the buffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
-		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
-		// always active by default, so it isn't necessary to manually activate any texture unit if only one
-		// texture is used (like in examples previous to "Textures, combined").
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
+		// Activate the shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		ourShaderProgram.useProgram();
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
 		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
 		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_1_1.fov), 
 			(float) window_width / (float) window_height, 0.1f, 100.0f);
-
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
 		glm::mat4 viewMatrix = camera_for_3_1_1.getCalculatedViewMatrix();
-
 		// Set the view matrix. This matrix changes each frame.
-		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
 
-		// Set the uniform variable "mixingFactor" in fragment shader.
-		glUniform1f(mixingFactorLocation, currentMixingFactor_for_3_1_1);
+		// The model matrix transforms local space coordinates to world space coordinates.
+		// We won't perform any transformation of object (3D cube).
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		// Set the model matrix. This matrix changes each frame.
+		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
+		// Set color of light source to white.
+		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
+		// Set color of object to coral.
+		ourShaderProgram.setFloatVec3Uniform("colorOfObject", glm::vec3(1.0f, 0.5f, 0.31f));
+
+		// Render 3D cube.
 		glBindVertexArray(VAO);
-		// We draw ten cubes.
-		for (unsigned int i = 0u; i < 10u; i++)
-		{
-			// The model matrix transforms local space coordinates to world space coordinates.
-			// We will transform every third cube (including the first one) by rotating it over time around the
-			// (1.0f, 0.3f, 0.5f) axis. The other cubes will only be rotated once over aforementioned axis.
-			// Finally, each of the ten cubes will be translated to its corresponding specified position.
-			glm::mat4 modelMatrix = glm::mat4(1.0f);
-			modelMatrix = glm::translate(modelMatrix, positionsOfCubes[i]);
-			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
-			// the angle's value from degrees.
-			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
-			// representing the axis if we're not rotating around x, y or z-axis.
-			float angle = 20.0f * i;
-			if (i % 3u == 0u)
-			{
-				angle = static_cast<float>(glfwGetTime()) * 25.0f;
-			}
-			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), 
-				glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-			// Set the model matrix. This matrix changes each frame.
-			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0u][0u]);
+		// Activate the light source shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		ourLightSourceShaderProgram.useProgram();
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
+		// Set the view matrix. This matrix changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
+
+		// The model matrix transforms local space coordinates to world space coordinates.
+		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
+		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
+		// position of light source.
+		modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, positionOfLightSource);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+		// Set the model matrix. This matrix changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
+
+		// Render light source, represented by a 3D cube.
+		glBindVertexArray(lightSourceVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
@@ -416,6 +274,7 @@ int draw_colors()
 	// De-allocate all resources once they're no longer needed.
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &lightSourceVAO);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
 	glfwTerminate();
@@ -473,30 +332,6 @@ void processInput_for_colors(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
-	}
-
-	const float mixingFactorChangeSpeed = 0.01f;
-	// Change how much the first texture and the second texture are visible.
-	// Increasing mixing factor will increase visibility of second texture and decrease visibility of first texture.
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		currentMixingFactor_for_3_1_1 += mixingFactorChangeSpeed;
-		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_3_1_1 >= 1.0f)
-		{
-			currentMixingFactor_for_3_1_1 = 1.0f;
-		}
-	}
-	// Change how much the first texture and the second texture are visible.
-	// Decreasing mixing factor will increase visibility of first texture and decrease visibility of second texture.
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		currentMixingFactor_for_3_1_1 -= mixingFactorChangeSpeed;
-		// Prevent falling out of allowed range of mixing factor.
-		if (currentMixingFactor_for_3_1_1 <= 0.0f)
-		{
-			currentMixingFactor_for_3_1_1 = 0.0f;
-		}
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

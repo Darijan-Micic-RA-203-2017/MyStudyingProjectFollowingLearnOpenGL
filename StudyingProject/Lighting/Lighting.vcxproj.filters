@@ -53,6 +53,12 @@
     <None Include="Colors\fragment_shader_for_3_1_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="Colors\light_source_vertex_shader_for_3_1_1.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Colors\light_source_fragment_shader_for_3_1_1.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg">
