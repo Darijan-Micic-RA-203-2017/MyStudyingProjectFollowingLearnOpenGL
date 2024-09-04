@@ -1,28 +1,28 @@
-#include "colors.h"
+#include "basic_lighting_diffuse.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
 // Position of light source in world-space coordinates.
-glm::vec3 positionOfLightSource_for_3_1_1(1.2f, 1.0f, 2.0f);
+glm::vec3 positionOfLightSource_for_3_2_1(1.2f, 1.0f, 2.0f);
 
 // All setting are kept in an instance of the camera class.
-Camera camera_for_3_1_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+Camera camera_for_3_2_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-bool firstMouseEntry_for_3_1_1 = true;
-float previousCursorPosX_for_3_1_1 = (float) window_width / 2.0f;
-float previousCursorPosY_for_3_1_1 = (float) window_height / 2.0f;
+bool firstMouseEntry_for_3_2_1 = true;
+float previousCursorPosX_for_3_2_1 = (float) window_width / 2.0f;
+float previousCursorPosY_for_3_2_1 = (float) window_height / 2.0f;
 
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
 // balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
 // of the camera will be balanced out accordingly so each user will have the same experience.
-float deltaTime_for_3_1_1 = 0.0f;
+float deltaTime_for_3_2_1 = 0.0f;
 // The time it took to render the previous frame.
-float previousFrameTime_for_3_1_1 = 0.0f;
+float previousFrameTime_for_3_2_1 = 0.0f;
 
-int draw_colors()
+int draw_basic_lighting_diffuse()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -38,7 +38,7 @@ int draw_colors()
 
 	// Create a window and make the context of created window the main context on the current thread.
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"Lighting - Colors", NULL, NULL);
+		"Lighting - Basic Lighting, diffuse", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -49,9 +49,9 @@ int draw_colors()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_colors);
-	glfwSetCursorPosCallback(window, cursor_pos_callback_for_colors);
-	glfwSetScrollCallback(window, scroll_callback_for_colors);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_basic_lighting_diffuse);
+	glfwSetCursorPosCallback(window, cursor_pos_callback_for_basic_lighting_diffuse);
+	glfwSetScrollCallback(window, scroll_callback_for_basic_lighting_diffuse);
 
 	// Tell GLFW library to capture and hide our mouse cursor. Capturing the mouse cursor means fixating it to the
 	// center of application's window and only letting it move if application loses focus or quits.
@@ -198,11 +198,11 @@ int draw_colors()
 	{
 		// Nullth part: Calculate the new delta time and assign the current frame time to the previous frame time.
 		float currentFrameTime = static_cast<float>(glfwGetTime());
-		deltaTime_for_3_1_1 = currentFrameTime - previousFrameTime_for_3_1_1;
-		previousFrameTime_for_3_1_1 = currentFrameTime;
+		deltaTime_for_3_2_1 = currentFrameTime - previousFrameTime_for_3_2_1;
+		previousFrameTime_for_3_2_1 = currentFrameTime;
 
 		// First part: Process the user's input.
-		processInput_for_colors(window);
+		processInput_for_basic_lighting_diffuse(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -217,14 +217,14 @@ int draw_colors()
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
 		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_1_1.fov), 
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_2_1.fov), 
 			(float) window_width / (float) window_height, 0.1f, 100.0f);
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
-		glm::mat4 viewMatrix = camera_for_3_1_1.getCalculatedViewMatrix();
+		glm::mat4 viewMatrix = camera_for_3_2_1.getCalculatedViewMatrix();
 		// Set the view matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
 
@@ -257,7 +257,7 @@ int draw_colors()
 		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
 		// position of light source.
 		modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_1_1);
+		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_2_1);
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
 		// Set the model matrix. This matrix changes each frame.
 		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
@@ -285,13 +285,13 @@ int draw_colors()
 // Callback functions.
 
 // Function that will be called every time the application's window changes size.
-void framebuffer_size_callback_for_colors(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_basic_lighting_diffuse(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Function that will be called every time the user moves the mouse while the application has focus.
-void cursor_pos_callback_for_colors(GLFWwindow* window, double xpos, double ypos)
+void cursor_pos_callback_for_basic_lighting_diffuse(GLFWwindow* window, double xpos, double ypos)
 {
 	// Calculate "camera's front" vector that acts as insurance that however we move, camera keeps looking
 	// straight ahead. Math's explained below.
@@ -302,32 +302,32 @@ void cursor_pos_callback_for_colors(GLFWwindow* window, double xpos, double ypos
 	// 0. step: if we received mouse input for the first time, we set the previous cursor position to the position
 	// where the user entered the application window and calculate offsets based on it. Wihout this added step,
 	// camera would suddenly jump to point of mouse entry, which is usually far away from window's center.
-	if (firstMouseEntry_for_3_1_1)
+	if (firstMouseEntry_for_3_2_1)
 	{
-		previousCursorPosX_for_3_1_1 = static_cast<float>(xpos);
-		previousCursorPosY_for_3_1_1 = static_cast<float>(ypos);
-		firstMouseEntry_for_3_1_1 = false;
+		previousCursorPosX_for_3_2_1 = static_cast<float>(xpos);
+		previousCursorPosY_for_3_2_1 = static_cast<float>(ypos);
+		firstMouseEntry_for_3_2_1 = false;
 	}
 
 	// 1. step: calculate the mouse's offset since last frame.
-	float xOffset = static_cast<float>(xpos) - previousCursorPosX_for_3_1_1;
+	float xOffset = static_cast<float>(xpos) - previousCursorPosX_for_3_2_1;
 	// Order of subtraction is reversed, because y-coordinates range from bottom to top.
-	float yOffset = previousCursorPosY_for_3_1_1 - static_cast<float>(ypos);
-	previousCursorPosX_for_3_1_1 = static_cast<float>(xpos);
-	previousCursorPosY_for_3_1_1 = static_cast<float>(ypos);
+	float yOffset = previousCursorPosY_for_3_2_1 - static_cast<float>(ypos);
+	previousCursorPosX_for_3_2_1 = static_cast<float>(xpos);
+	previousCursorPosY_for_3_2_1 = static_cast<float>(ypos);
 
 	// 2. step onward: done in Camera class.
-	camera_for_3_1_1.processMouseMovement(xOffset, yOffset);
+	camera_for_3_2_1.processMouseMovement(xOffset, yOffset);
 }
 
 // Function that will be called every time the user scrolls the mouse's middle button.
-void scroll_callback_for_colors(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback_for_basic_lighting_diffuse(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera_for_3_1_1.processMouseScroll(static_cast<float>(yoffset));
+	camera_for_3_2_1.processMouseScroll(static_cast<float>(yoffset));
 }
 
 // Input processing function.
-void processInput_for_colors(GLFWwindow* window)
+void processInput_for_basic_lighting_diffuse(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -336,18 +336,18 @@ void processInput_for_colors(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera_for_3_1_1.processKeyboardInput("W", deltaTime_for_3_1_1);
+		camera_for_3_2_1.processKeyboardInput("W", deltaTime_for_3_2_1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera_for_3_1_1.processKeyboardInput("S", deltaTime_for_3_1_1);
+		camera_for_3_2_1.processKeyboardInput("S", deltaTime_for_3_2_1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera_for_3_1_1.processKeyboardInput("A", deltaTime_for_3_1_1);
+		camera_for_3_2_1.processKeyboardInput("A", deltaTime_for_3_2_1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera_for_3_1_1.processKeyboardInput("D", deltaTime_for_3_1_1);
+		camera_for_3_2_1.processKeyboardInput("D", deltaTime_for_3_2_1);
 	}
 }

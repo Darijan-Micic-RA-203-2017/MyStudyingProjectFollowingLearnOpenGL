@@ -31,6 +31,9 @@
     <ClInclude Include="Colors\colors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Basic_Lighting\basic_lighting_diffuse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -43,6 +46,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Colors\colors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Basic_Lighting\basic_lighting_diffuse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

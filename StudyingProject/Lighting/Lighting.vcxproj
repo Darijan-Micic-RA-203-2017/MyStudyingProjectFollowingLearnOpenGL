@@ -136,12 +136,14 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Colors\colors.h" />
+    <ClInclude Include="Basic_Lighting\basic_lighting_diffuse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Colors\colors.cpp" />
+    <ClCompile Include="Basic_Lighting\basic_lighting_diffuse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />
