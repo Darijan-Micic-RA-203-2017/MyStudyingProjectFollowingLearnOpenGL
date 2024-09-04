@@ -77,7 +77,8 @@ int draw_basic_lighting_diffuse()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Colors/vertex_shader_for_3_1_1.glsl", "Colors/fragment_shader_for_3_1_1.glsl");
+	ShaderProgram ourShaderProgram("Basic_Lighting/vertex_shader_for_3_2_1.glsl", 
+		"Basic_Lighting/fragment_shader_for_3_2_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -85,8 +86,8 @@ int draw_basic_lighting_diffuse()
 		return ourShaderProgram.errorCode;
 	}
 	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
+	ShaderProgram ourLightSourceShaderProgram("Basic_Lighting/light_source_vertex_shader_for_3_2_1.glsl", 
+		"Basic_Lighting/light_source_fragment_shader_for_3_2_1.glsl");
 	if (ourLightSourceShaderProgram.errorCode)
 	{
 		glfwTerminate();
