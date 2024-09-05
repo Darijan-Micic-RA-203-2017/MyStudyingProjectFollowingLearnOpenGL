@@ -244,6 +244,8 @@ int draw_basic_lighting_diffuse()
 		// Set the model matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
+		// Set position of light source to declared global variable.
+		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_1);
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
 		// Set color of object to coral.

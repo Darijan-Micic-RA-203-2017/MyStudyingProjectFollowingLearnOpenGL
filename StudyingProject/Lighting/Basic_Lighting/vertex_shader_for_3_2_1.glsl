@@ -3,6 +3,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 
+out vec3 FragPos;
 out vec3 Normal;
 
 // Pass the transformational matrices to the vertex shader.
@@ -12,6 +13,9 @@ uniform mat4 projectionMatrix;
 
 void main()
 {
+	// We're going to do all lighting calculations in world space, so fragment's position needs to be in world
+	// coordinates. To convert vertex's position to world coordinates, we multiply it with the model matrix only.
+	FragPos = vec3(modelMatrix * vec4(aPos, 1.0f));
 	Normal = aNormal;
 	
 	// Vclip = Mprojection * Mview * Mmodel * Vlocal. Matrix multiplication is meant to be read from right.
