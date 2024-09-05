@@ -1,5 +1,7 @@
 #version 330 core
 
+in vec3 Normal;
+
 out vec4 FragColor;
 
 // Pass the color of light source and the color of object to the fragment shader.

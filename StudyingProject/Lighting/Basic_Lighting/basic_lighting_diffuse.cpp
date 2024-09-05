@@ -98,50 +98,55 @@ int draw_basic_lighting_diffuse()
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
 	// (6 sides * 2 triangles per side * 3 vertices for each triangle).
-	// Values (three of them) represent position of vertex.
+	// First three values represent position of vertex, while last three values represent vector normal to
+	// vertex's surface. Vertex's surface is one of 6 planes forming a 3D cube.
 	float vertices[] = {
-		// position
-		-0.5f, -0.5f, -0.5f, // back side
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
+		// Since a vertex by itself doesn't have a surface (vertex is simply a single point in space), we need to
+		// use its surrounding vertices to figure out the surface of the vertex.
+		// We can use a neat trick to calculate the normal vectors for all the 3D cube's vertices by using the
+		// cross product, but since 3D cube is a simple shape we can simply manually add them to the vertex data.
+		// position          // normal vector
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // back side
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
 
-		-0.5f, -0.5f,  0.5f, // front side
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f, -0.5f,  0.5f, 
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // front side
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
 
-		-0.5f,  0.5f,  0.5f, // left side
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // left side
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 
 
-		 0.5f,  0.5f,  0.5f, // right side
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // right side
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 
 
-		-0.5f, -0.5f, -0.5f, // bottom side
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f, -0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // bottom side
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 
 
-		-0.5f,  0.5f, -0.5f, // top side
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f, -0.5f
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // top side
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -163,9 +168,13 @@ int draw_basic_lighting_diffuse()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
+	// Normal vector attribute.
+	glVertexAttribPointer(1u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+	// Enable vertex normal vector attribute.
+	glEnableVertexAttribArray(1u);
 
 	// Create memory on the GPU where vertex data of light source will be stored.
 	unsigned int lightSourceVAO;
@@ -180,7 +189,7 @@ int draw_basic_lighting_diffuse()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
 
