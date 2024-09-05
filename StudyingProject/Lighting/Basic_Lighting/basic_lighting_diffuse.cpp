@@ -244,7 +244,16 @@ int draw_basic_lighting_diffuse()
 		// Set the model matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
-		// Set position of light source to declared global variable.
+		// The normal matrix is a model matrix specifically tailored for normal vectors. Normal matrix is defined
+		// as the transpose of the inverse of the upper-left 3x3 part of the model matrix.
+		// Non-uniform scaling would transform vertex in such a way that the normal vector would no longer be
+		// perpendicular to the vertex's surface. This means that the lighting of surface would be distorted. We
+		// mitigate non-uniform scaling by multiplying normal vector with normal matrix.
+		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
+		// Set the normal matrix. This matrix changes each frame.
+		ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
+
+		// Set position of light source to declared global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_1);
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
