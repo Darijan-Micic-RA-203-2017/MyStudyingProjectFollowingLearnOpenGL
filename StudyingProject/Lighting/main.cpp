@@ -8,7 +8,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1}: ";
+		std::cout << "Enter argument from set {1, 2}: ";
 		std::cin >> argument;
 
 		switch (argument)
