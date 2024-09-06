@@ -253,7 +253,9 @@ int draw_basic_lighting_diffuse()
 		// Set the normal matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
 
-		// Set position of light source to declared global variable "positionOfLightSource".
+		// Set position of viewer to field "cameraPosition" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_2_1.cameraPosition);
+		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_1);
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
