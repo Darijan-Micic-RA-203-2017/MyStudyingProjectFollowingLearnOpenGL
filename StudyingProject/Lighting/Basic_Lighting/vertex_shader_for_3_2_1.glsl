@@ -18,6 +18,8 @@ void main()
 	// We're going to do all lighting calculations in world space, so fragment's position needs to be in world
 	// coordinates. To convert vertex's position to world coordinates, we multiply it with the model matrix only.
 	FragPos = vec3(modelMatrix * vec4(aPos, 1.0f));
+	// Multiply the normal vector with the normal matrix to ensure that normal vector is still perpendicular to
+	// vertex's surface. In other words, all transformations done in the model matrix are undone.
 	Normal = normalMatrix * aNormal;
 	
 	// Vclip = Mprojection * Mview * Mmodel * Vlocal. Matrix multiplication is meant to be read from right.
