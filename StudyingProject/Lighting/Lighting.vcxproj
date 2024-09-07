@@ -137,6 +137,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="Colors\colors.h" />
     <ClInclude Include="Basic_Lighting\basic_lighting_diffuse.h" />
+    <ClInclude Include="Basic_Lighting\basic_lighting_specular.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -144,6 +145,7 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Colors\colors.cpp" />
     <ClCompile Include="Basic_Lighting\basic_lighting_diffuse.cpp" />
+    <ClCompile Include="Basic_Lighting\basic_lighting_specular.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />
@@ -154,6 +156,10 @@
     <None Include="Basic_Lighting\fragment_shader_for_3_2_1.glsl" />
     <None Include="Basic_Lighting\light_source_vertex_shader_for_3_2_1.glsl" />
     <None Include="Basic_Lighting\light_source_fragment_shader_for_3_2_1.glsl" />
+    <None Include="Basic_Lighting\vertex_shader_for_3_2_2.glsl" />
+    <None Include="Basic_Lighting\fragment_shader_for_3_2_2.glsl" />
+    <None Include="Basic_Lighting\light_source_vertex_shader_for_3_2_2.glsl" />
+    <None Include="Basic_Lighting\light_source_fragment_shader_for_3_2_2.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg" />

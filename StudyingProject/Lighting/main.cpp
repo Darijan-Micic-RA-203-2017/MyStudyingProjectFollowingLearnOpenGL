@@ -1,5 +1,6 @@
 #include "Colors/colors.h"
 #include "Basic_Lighting/basic_lighting_diffuse.h"
+#include "Basic_Lighting/basic_lighting_specular.h"
 
 int main()
 {
@@ -8,7 +9,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, 2}: ";
+		std::cout << "Enter argument from set {1, ..., 3}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -21,6 +22,11 @@ int main()
 		case 2:
 			returnValue = draw_basic_lighting_diffuse();
 			std::cout << "\"Lighting - Basic Lighting, diffuse\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 3:
+			returnValue = draw_basic_lighting_specular();
+			std::cout << "\"Lighting - Basic Lighting, specular\" exited with return value "
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
