@@ -220,6 +220,11 @@ int draw_basic_lighting_specular()
 		// Otherwise, the depth information of the previous frame would remain in the buffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Move light source around the scene over time.
+		float time = static_cast<float>(glfwGetTime());
+		positionOfLightSource_for_3_2_2.x = sin(time) * 2.0f + 1.0f;
+		positionOfLightSource_for_3_2_2.y = sin(time / 2.0f);
+
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		ourShaderProgram.useProgram();
