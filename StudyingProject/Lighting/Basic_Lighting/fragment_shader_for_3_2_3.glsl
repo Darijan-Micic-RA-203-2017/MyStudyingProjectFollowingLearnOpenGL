@@ -2,13 +2,10 @@
 
 in vec3 FragPos;
 in vec3 Normal;
+in vec3 LightSourcePos;
 
 out vec4 FragColor;
 
-// Pass the position of viewer (needed for specular component of Phong lighting model).
-uniform vec3 positionOfViewer;
-// Pass the position of light source (needed for diffuse and specular components of Phong lighting model).
-uniform vec3 positionOfLightSource;
 // Pass the color of light source and the color of object (needed for all 3 components of Phong lighting model).
 uniform vec3 colorOfLightSource;
 uniform vec3 colorOfObject;
@@ -26,7 +23,7 @@ void main()
 	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
 	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
-	vec3 lightDirection = normalize(positionOfLightSource - FragPos);
+	vec3 lightDirection = normalize(LightSourcePos - FragPos);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -40,7 +37,8 @@ void main()
 	// Give the specular highlight a medium-bright color, so that it doesn't impact the color of object too much.
 	float specularStrength = 0.5f;
 	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
-	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	// Position of viewer is always (0.0f, 0.0f, 0.0f) in view space.
+	vec3 viewDirection = normalize(-FragPos);
 	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
 	// need to negate light direction vector calculated as part of diffuse component.
 	vec3 reflectionDirection = reflect(-lightDirection, normal);

@@ -86,8 +86,8 @@ int draw_basic_lighting_exercise2()
 		return ourShaderProgram.errorCode;
 	}
 	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Basic_Lighting/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Basic_Lighting/light_source_fragment_shader_for_3_1_1.glsl");
+	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
+		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
 	if (ourLightSourceShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -252,16 +252,14 @@ int draw_basic_lighting_exercise2()
 		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
 		// The normal matrix is a model matrix specifically tailored for normal vectors. Normal matrix is defined
-		// as the transpose of the inverse of the upper-left 3x3 part of the model matrix.
+		// as the transpose of the inverse of the upper-left 3x3 part of the product of model matrix and view matrix.
 		// Non-uniform scaling would transform vertex in such a way that the normal vector would no longer be
 		// perpendicular to the vertex's surface. This means that the lighting of surface would be distorted. We
 		// mitigate non-uniform scaling by multiplying normal vector with normal matrix.
-		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
+		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(viewMatrix * modelMatrix)));
 		// Set the normal matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
 
-		// Set position of viewer to field "cameraPosition" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_2_3.cameraPosition);
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_3);
 		// Set color of light source to white.
