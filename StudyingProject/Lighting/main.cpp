@@ -1,6 +1,7 @@
 #include "Colors/colors.h"
 #include "Basic_Lighting/basic_lighting_diffuse.h"
 #include "Basic_Lighting/basic_lighting_specular.h"
+#include "Basic_Lighting/basic_lighting_exercise2.h"
 
 int main()
 {
@@ -26,7 +27,12 @@ int main()
 			break;
 		case 3:
 			returnValue = draw_basic_lighting_specular();
-			std::cout << "\"Lighting - Basic Lighting, specular\" exited with return value "
+			std::cout << "\"Lighting - Basic Lighting, specular\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 4:
+			returnValue = draw_basic_lighting_exercise2();
+			std::cout << "\"Lighting - Basic Lighting, exercise 2\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
