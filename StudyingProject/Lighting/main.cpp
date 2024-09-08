@@ -10,7 +10,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 3}: ";
+		std::cout << "Enter argument from set {1, ..., 4}: ";
 		std::cin >> argument;
 
 		switch (argument)

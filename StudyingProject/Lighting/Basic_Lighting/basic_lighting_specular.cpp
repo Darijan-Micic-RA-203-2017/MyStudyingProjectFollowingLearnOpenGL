@@ -86,8 +86,8 @@ int draw_basic_lighting_specular()
 		return ourShaderProgram.errorCode;
 	}
 	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Basic_Lighting/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Basic_Lighting/light_source_fragment_shader_for_3_1_1.glsl");
+	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
+		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
 	if (ourLightSourceShaderProgram.errorCode)
 	{
 		glfwTerminate();
