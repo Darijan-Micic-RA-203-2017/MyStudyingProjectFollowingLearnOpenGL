@@ -2,6 +2,7 @@
 #include "Basic_Lighting/basic_lighting_diffuse.h"
 #include "Basic_Lighting/basic_lighting_specular.h"
 #include "Basic_Lighting/basic_lighting_exercise2.h"
+#include "Basic_Lighting/basic_lighting_exercise3.h"
 
 int main()
 {
@@ -10,7 +11,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 4}: ";
+		std::cout << "Enter argument from set {1, ..., 5}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -32,6 +33,11 @@ int main()
 			break;
 		case 4:
 			returnValue = draw_basic_lighting_exercise2();
+			std::cout << "\"Lighting - Basic Lighting, exercise 2\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 5:
+			returnValue = draw_basic_lighting_exercise3();
 			std::cout << "\"Lighting - Basic Lighting, exercise 2\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;

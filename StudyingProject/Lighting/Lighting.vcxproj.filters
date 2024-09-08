@@ -40,6 +40,9 @@
     <ClInclude Include="Basic_Lighting\basic_lighting_exercise2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Basic_Lighting\basic_lighting_exercise3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -61,6 +64,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Basic_Lighting\basic_lighting_exercise2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Basic_Lighting\basic_lighting_exercise3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -93,6 +99,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="Basic_Lighting\fragment_shader_for_3_2_3.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Basic_Lighting\vertex_shader_for_3_2_4.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Basic_Lighting\fragment_shader_for_3_2_4.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
