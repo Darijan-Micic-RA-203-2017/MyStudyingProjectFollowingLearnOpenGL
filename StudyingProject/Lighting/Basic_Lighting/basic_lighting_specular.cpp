@@ -86,8 +86,8 @@ int draw_basic_lighting_specular()
 		return ourShaderProgram.errorCode;
 	}
 	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Basic_Lighting/light_source_vertex_shader_for_3_2_2.glsl", 
-		"Basic_Lighting/light_source_fragment_shader_for_3_2_2.glsl");
+	ShaderProgram ourLightSourceShaderProgram("Basic_Lighting/light_source_vertex_shader_for_3_1_1.glsl", 
+		"Basic_Lighting/light_source_fragment_shader_for_3_1_1.glsl");
 	if (ourLightSourceShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -221,9 +221,11 @@ int draw_basic_lighting_specular()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Move light source around the scene over time.
+		/*
 		float time = static_cast<float>(glfwGetTime());
 		positionOfLightSource_for_3_2_2.x = sin(time) * 2.0f + 1.0f;
 		positionOfLightSource_for_3_2_2.y = sin(time / 2.0f);
+		*/
 
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
