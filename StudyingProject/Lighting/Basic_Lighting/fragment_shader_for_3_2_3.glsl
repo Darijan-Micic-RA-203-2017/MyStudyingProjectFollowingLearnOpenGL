@@ -44,6 +44,7 @@ void main()
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	// Shininess value of highlight (light source's beam) determines the size of highlight. The higher it is, the
 	// light will be more properly reflected, instead of being scattered all around and highlight will be smaller.
+	// Shininess of highlight should be a degree of number 2 (2, 4, 8, 16, 32, ...).
 	int shininessOfHighlight = 32;
 	// The cosine of angle at which reflection comes at viewer.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
