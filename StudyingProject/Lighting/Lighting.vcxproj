@@ -140,6 +140,7 @@
     <ClInclude Include="Basic_Lighting\basic_lighting_specular.h" />
     <ClInclude Include="Basic_Lighting\basic_lighting_exercise2.h" />
     <ClInclude Include="Basic_Lighting\basic_lighting_exercise3.h" />
+    <ClInclude Include="Materials\materials.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Basic_Lighting\basic_lighting_specular.cpp" />
     <ClCompile Include="Basic_Lighting\basic_lighting_exercise2.cpp" />
     <ClCompile Include="Basic_Lighting\basic_lighting_exercise3.cpp" />
+    <ClCompile Include="Materials\materials.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />
@@ -164,6 +166,8 @@
     <None Include="Basic_Lighting\fragment_shader_for_3_2_3.glsl" />
     <None Include="Basic_Lighting\vertex_shader_for_3_2_4.glsl" />
     <None Include="Basic_Lighting\fragment_shader_for_3_2_4.glsl" />
+    <None Include="Materials\vertex_shader_for_3_3_1.glsl" />
+    <None Include="Materials\fragment_shader_for_3_3_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg" />
