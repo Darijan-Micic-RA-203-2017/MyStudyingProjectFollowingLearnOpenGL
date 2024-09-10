@@ -262,10 +262,17 @@ int draw_materials()
 
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_3_1.cameraPosition);
+
 		// Set position of light source to global variable "positionOfLightSource".
-		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_3_1);
-		// Set color of light source to white.
-		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_3_1);
+		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
+		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", glm::vec3(0.2f, 0.2f, 0.2f));
+		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
+		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
+		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
+		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
 		// Set ambient color of object to coral. It's usually the same as the surface's color.
 		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", glm::vec3(1.0f, 0.5f, 0.31f));
 		// Set diffuse color of object to coral. It's usually the same as the surface's color.
