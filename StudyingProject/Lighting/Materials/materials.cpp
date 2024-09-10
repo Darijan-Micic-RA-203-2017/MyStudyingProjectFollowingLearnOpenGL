@@ -265,11 +265,19 @@ int draw_materials()
 
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_3_1);
+		// Change color of light over time.
+		glm::vec3 colorOfLight = glm::vec3(0.0f);
+		float time = static_cast<float>(glfwGetTime());
+		colorOfLight.x = sin(time * 2.0f);
+		colorOfLight.y = sin(time * 0.7f);
+		colorOfLight.z = sin(time * 1.3f);
 		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
-		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", glm::vec3(0.2f, 0.2f, 0.2f));
+		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
+		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
 		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
 		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
+		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
