@@ -77,8 +77,8 @@ int draw_materials()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Basic_Lighting/vertex_shader_for_3_3_1.glsl", 
-		"Basic_Lighting/fragment_shader_for_3_3_1.glsl");
+	ShaderProgram ourShaderProgram("Materials/vertex_shader_for_3_3_1.glsl", 
+		"Materials/fragment_shader_for_3_3_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -266,8 +266,14 @@ int draw_materials()
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_3_1);
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
-		// Set color of object to coral.
-		ourShaderProgram.setFloatVec3Uniform("colorOfObject", glm::vec3(1.0f, 0.5f, 0.31f));
+		// Set ambient color of object to coral. It's usually the same as the surface's color.
+		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		// Set diffuse color of object to coral. It's usually the same as the surface's color.
+		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
+		ourShaderProgram.setFloatVec3Uniform("material.specularColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
+		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", 32.0f);
 
 		// Render 3D cube.
 		glBindVertexArray(VAO);
