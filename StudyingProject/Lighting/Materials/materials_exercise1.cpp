@@ -256,18 +256,18 @@ int draw_materials_exercise1()
 		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
 		// Change color of light over time.
-		glm::vec3 colorOfLight = glm::vec3(0.0f);
+		glm::vec3 colorOfLight = glm::vec3(1.0f);
+		/*
 		float time = static_cast<float>(glfwGetTime());
 		colorOfLight.x = sin(time * 2.0f);
 		colorOfLight.y = sin(time * 0.7f);
 		colorOfLight.z = sin(time * 1.3f);
-
-		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
-		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
+		*/
+		// Set ambient component color of light source to (1.0f, 1.0f, 1.0f).
+		glm::vec3 ambientColorOfLight = glm::vec3(1.0f) * colorOfLight;
 		ourLightSourceShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
-		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
-		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
+		// Set diffuse component color of light source to (1.0f, 1.0f, 1.0f).
+		glm::vec3 diffuseColorOfLight = glm::vec3(1.0f) * colorOfLight;
 		ourLightSourceShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
@@ -313,16 +313,25 @@ int draw_materials_exercise1()
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Set ambient color of object to coral. It's usually the same as the surface's color.
-		glm::vec3 ambientColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		// We will simulate a specific material: cyan plastic.
+		//               ambient      diffuse                   specular                         shininess / 128
+		// Cyan plastic: 0.0 0.1 0.06 0.0 0.50980392 0.50980392 0.50196078 0.50196078 0.50196078 0.25
+		// REFERENCE: http://devernay.free.fr/cours/opengl/materials.html
+		// IMPORTANT NOTE: Ambient values in the numbers table are not same as diffuse values, because table
+		// creators didn't take intensities (strengths) of light components into account. In order to set the
+		// perceived color of object to desired one, strength of each light component must be set to 1.0f.
+
+		// Set ambient color of object to cyan plastic. It's usually the same as the surface's color, but not now.
+		glm::vec3 ambientColorOfObject = glm::vec3(0.0f, 0.1f, 0.06f);
 		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", ambientColorOfObject);
-		// Set diffuse color of object to coral. It's usually the same as the surface's color.
-		glm::vec3 diffuseColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		// Set diffuse color of object to cyan plastic. It's usually the same as the surface's color.
+		glm::vec3 diffuseColorOfObject = glm::vec3(0.0f, 0.50980392f, 0.50980392f);
 		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", diffuseColorOfObject);
-		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
-		glm::vec3 specularColorOfObject = glm::vec3(0.5f);
+		// Set specular color of object (color of specular highlight).
+		glm::vec3 specularColorOfObject = glm::vec3(0.50196078f, 0.50196078f, 0.50196078f);
 		ourShaderProgram.setFloatVec3Uniform("material.specularColor", specularColorOfObject);
-		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
+		// Set shininess of highlight to 0.25f * 128 = 32.0f (as per instructions below the numbers table).
+		// This impacts the scattering and radius of specular highlight.
 		float shininessOfHighlight = 32.0f;
 		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);
 

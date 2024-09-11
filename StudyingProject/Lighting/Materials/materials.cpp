@@ -266,7 +266,7 @@ int draw_materials()
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_3_1);
 		// Change color of light over time.
-		glm::vec3 colorOfLight = glm::vec3(0.0f);
+		glm::vec3 colorOfLight = glm::vec3(1.0f);
 		float time = static_cast<float>(glfwGetTime());
 		colorOfLight.x = sin(time * 2.0f);
 		colorOfLight.y = sin(time * 0.7f);
