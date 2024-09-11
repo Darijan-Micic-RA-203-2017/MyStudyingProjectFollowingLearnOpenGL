@@ -160,5 +160,8 @@
     <Image Include="resources\awesome_face.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\steel-bordered_wooden_container.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

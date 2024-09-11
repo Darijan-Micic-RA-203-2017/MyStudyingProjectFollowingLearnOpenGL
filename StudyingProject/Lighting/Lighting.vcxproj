@@ -183,6 +183,7 @@
     <Image Include="resources\brick_wall.jpg" />
     <Image Include="resources\wooden_container.jpg" />
     <Image Include="resources\awesome_face.png" />
+    <Image Include="resources\steel-bordered_wooden_container.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
