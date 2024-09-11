@@ -86,8 +86,8 @@ int draw_materials_exercise1()
 		return ourShaderProgram.errorCode;
 	}
 	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
+	ShaderProgram ourLightSourceShaderProgram("Materials/light_source_vertex_shader_for_3_3_2.glsl", 
+		"Materials/light_source_fragment_shader_for_3_3_2.glsl");
 	if (ourLightSourceShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -227,9 +227,9 @@ int draw_materials_exercise1()
 		positionOfLightSource_for_3_3_2.y = sin(time / 2.0f);
 		*/
 
-		// Activate the shader program.
+		// Activate the light source shader program.
 		// Every shader and rendering call from now on will use this shader program object.
-		ourShaderProgram.useProgram();
+		ourLightSourceShaderProgram.useProgram();
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
@@ -237,17 +237,57 @@ int draw_materials_exercise1()
 		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_3_2.fov), 
 			(float) window_width / (float) window_height, 0.1f, 100.0f);
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
+		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
 		glm::mat4 viewMatrix = camera_for_3_3_2.getCalculatedViewMatrix();
 		// Set the view matrix. This matrix changes each frame.
-		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
+		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
 
 		// The model matrix transforms local space coordinates to world space coordinates.
-		// We won't perform any transformation of object (3D cube).
+		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
+		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
+		// position of light source.
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_3_2);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+		// Set the model matrix. This matrix changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
+
+		// Change color of light over time.
+		glm::vec3 colorOfLight = glm::vec3(0.0f);
+		float time = static_cast<float>(glfwGetTime());
+		colorOfLight.x = sin(time * 2.0f);
+		colorOfLight.y = sin(time * 0.7f);
+		colorOfLight.z = sin(time * 1.3f);
+
+		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
+		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
+		ourLightSourceShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
+		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
+		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
+		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
+		ourLightSourceShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
+		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
+		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
+		ourLightSourceShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
+
+		// Render light source, represented by a 3D cube.
+		glBindVertexArray(lightSourceVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Activate the shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		ourShaderProgram.useProgram();
+		
+		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
+		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
+		// Set the view matrix. This matrix changes each frame.
+		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
+		// The model matrix transforms local space coordinates to world space coordinates.
+		// We won't perform any transformation of object (3D cube).
+		modelMatrix = glm::mat4(1.0f);
 		// Set the model matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
@@ -265,56 +305,29 @@ int draw_materials_exercise1()
 
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_3_2);
-		// Change color of light over time.
-		glm::vec3 colorOfLight = glm::vec3(0.0f);
-		float time = static_cast<float>(glfwGetTime());
-		colorOfLight.x = sin(time * 2.0f);
-		colorOfLight.y = sin(time * 0.7f);
-		colorOfLight.z = sin(time * 1.3f);
 		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
-		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
 		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
 		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
-		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", glm::vec3(1.0f, 1.0f, 1.0f));
+		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
 		// Set ambient color of object to coral. It's usually the same as the surface's color.
-		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		glm::vec3 ambientColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", ambientColorOfObject);
 		// Set diffuse color of object to coral. It's usually the same as the surface's color.
-		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		glm::vec3 diffuseColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", diffuseColorOfObject);
 		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
-		ourShaderProgram.setFloatVec3Uniform("material.specularColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		glm::vec3 specularColorOfObject = glm::vec3(0.5f);
+		ourShaderProgram.setFloatVec3Uniform("material.specularColor", specularColorOfObject);
 		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
-		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", 32.0f);
+		float shininessOfHighlight = 32.0f;
+		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);
 
 		// Render 3D cube.
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// Activate the light source shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourLightSourceShaderProgram.useProgram();
-
-		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
-		// Set the view matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
-
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
-		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
-		// position of light source.
-		modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_3_2);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-		// Set the model matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
-
-		// Render light source, represented by a 3D cube.
-		glBindVertexArray(lightSourceVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.

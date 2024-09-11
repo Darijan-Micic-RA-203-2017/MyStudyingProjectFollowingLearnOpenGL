@@ -279,16 +279,21 @@ int draw_materials()
 		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
-		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", glm::vec3(1.0f, 1.0f, 1.0f));
+		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
+		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
 		// Set ambient color of object to coral. It's usually the same as the surface's color.
-		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		glm::vec3 ambientColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", ambientColorOfObject);
 		// Set diffuse color of object to coral. It's usually the same as the surface's color.
-		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		glm::vec3 diffuseColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
+		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", diffuseColorOfObject);
 		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
-		ourShaderProgram.setFloatVec3Uniform("material.specularColor", glm::vec3(0.5f, 0.5f, 0.5f));
+		glm::vec3 specularColorOfObject = glm::vec3(0.5f);
+		ourShaderProgram.setFloatVec3Uniform("material.specularColor", specularColorOfObject);
 		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
-		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", 32.0f);
+		float shininessOfHighlight = 32.0f;
+		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);
 
 		// Render 3D cube.
 		glBindVertexArray(VAO);

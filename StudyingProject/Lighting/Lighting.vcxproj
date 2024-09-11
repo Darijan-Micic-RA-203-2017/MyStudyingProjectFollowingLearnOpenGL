@@ -172,6 +172,8 @@
     <None Include="Materials\fragment_shader_for_3_3_1.glsl" />
     <None Include="Materials\vertex_shader_for_3_3_2.glsl" />
     <None Include="Materials\fragment_shader_for_3_3_2.glsl" />
+    <None Include="Materials\light_source_vertex_shader_for_3_3_2.glsl" />
+    <None Include="Materials\light_source_fragment_shader_for_3_3_2.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg" />
