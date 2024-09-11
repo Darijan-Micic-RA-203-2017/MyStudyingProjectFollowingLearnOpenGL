@@ -142,6 +142,7 @@
     <ClInclude Include="Basic_Lighting\basic_lighting_exercise3.h" />
     <ClInclude Include="Materials\materials.h" />
     <ClInclude Include="Materials\materials_exercise1.h" />
+    <ClInclude Include="Lighting_maps\lighting_maps_diffuse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -154,6 +155,7 @@
     <ClCompile Include="Basic_Lighting\basic_lighting_exercise3.cpp" />
     <ClCompile Include="Materials\materials.cpp" />
     <ClCompile Include="Materials\materials_exercise1.cpp" />
+    <ClCompile Include="Lighting_maps\lighting_maps_diffuse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />
@@ -174,6 +176,8 @@
     <None Include="Materials\fragment_shader_for_3_3_2.glsl" />
     <None Include="Materials\light_source_vertex_shader_for_3_3_2.glsl" />
     <None Include="Materials\light_source_fragment_shader_for_3_3_2.glsl" />
+    <None Include="Lighting_maps\vertex_shader_for_3_4_1.glsl" />
+    <None Include="Lighting_maps\fragment_shader_for_3_4_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg" />
