@@ -205,7 +205,7 @@ int draw_lighting_maps_specular()
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
-	// Create memory on the GPU where texture will be stored.
+	// Create memory on the GPU where diffuse map texture will be stored.
 	unsigned int diffuseMap;
 	glGenTextures(1, &diffuseMap);
 	// Bind (assign) the newly created texture to OpenGL's context.
@@ -254,6 +254,44 @@ int draw_lighting_maps_specular()
 	// Free the image memory.
 	stbi_image_free(pixels);
 
+	// Create memory on the GPU where specular map texture will be stored.
+	unsigned int specularMap;
+	glGenTextures(1, &specularMap);
+	// Bind (assign) the newly created texture to OpenGL's context.
+	glBindTexture(GL_TEXTURE_2D, specularMap);
+
+	// Set texture wrapping parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load the image that will be used as a texture.
+	pixels = stbi_load("resources/steel_border_specular.png", &textureImageWidth, &textureImageHeight, 
+		&numberOfColorChannelsInTextureImage, 0);
+	if (pixels)
+	{
+		// Generate a texture using the previously loaded image data (pixels).
+		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
+		// it will incorrectly interpret the image data.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImageWidth, textureImageHeight, 0, GL_RGBA, 
+			GL_UNSIGNED_BYTE, pixels);
+		// Automatically generate all the required mipmaps for the currently bound texture.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
+		stbi_image_free(pixels);
+		glfwTerminate();
+
+		return 8;
+	}
+	// Free the image memory.
+	stbi_image_free(pixels);
+
 	// Unbind texture for safety reasons. This is not neccessary.
 	glBindTexture(GL_TEXTURE_2D, 0u);
 
@@ -265,6 +303,7 @@ int draw_lighting_maps_specular()
 	ourShaderProgram.useProgram();
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	ourShaderProgram.setIntegerUniform("material.diffuseMap", 0);
+	ourShaderProgram.setIntegerUniform("material.specularMap", 1);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -300,6 +339,8 @@ int draw_lighting_maps_specular()
 		// texture is used (like in examples previous to "Textures, combined").
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, specularMap);
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
@@ -354,9 +395,6 @@ int draw_lighting_maps_specular()
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
-		glm::vec3 specularColorOfObject = glm::vec3(0.5f);
-		ourShaderProgram.setFloatVec3Uniform("material.specularColor", specularColorOfObject);
 		// Set shininess of highlight to 64. This impacts the scattering and radius of specular highlight.
 		float shininessOfHighlight = 64.0f;
 		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);

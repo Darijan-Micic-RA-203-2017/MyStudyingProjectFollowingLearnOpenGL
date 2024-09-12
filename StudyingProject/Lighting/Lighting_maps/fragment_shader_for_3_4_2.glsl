@@ -21,8 +21,9 @@ struct Material
 	// the surface reflects a unique color under diffuse lighting. There's no need for ambient color, as they
 	// should always be the same. We indirectly influence ambient color component through diffuse color component.
 	sampler2D diffuseMap;
-	// Color the surface reflects under specular lighting.
-	vec3 specularColor;
+	// Specular map is a texture image that we're indexing for unique color values per fragment. Each fragment of
+	// the surface reflects a unique color under specular lighting.
+	sampler2D specularMap;
 	// Shininess value of highlight (light source's beam) determines the size of highlight. The higher it is, the
 	// light will be more properly reflected, instead of being scattered all around and highlight will be smaller.
 	// Shininess of highlight should be a degree of number 2 (2, 4, 8, 16, 32, ...).
@@ -75,7 +76,7 @@ void main()
 	// is, the highlight will be less bright. We use "max" function because we do not want the specular factor
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
-	vec3 specularColor = lightSource.specularColor * (specularFactor * material.specularColor);
+	vec3 specularColor = lightSource.specularColor * (specularFactor * vec3(texture(material.specularMap, TexCoords)));
 
 	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
 	// ambient color, diffuse color and specular color.
