@@ -6,6 +6,7 @@
 #include "Materials/materials.h"
 #include "Materials/materials_exercise1.h"
 #include "Lighting_maps/lighting_maps_diffuse.h"
+#include "Lighting_maps/lighting_maps_specular.h"
 
 int main()
 {
@@ -14,7 +15,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 8}: ";
+		std::cout << "Enter argument from set {1, ..., 9}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -57,6 +58,11 @@ int main()
 		case 8:
 			returnValue = draw_lighting_maps_diffuse();
 			std::cout << "\"Lighting - Lighting maps, diffuse\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 9:
+			returnValue = draw_lighting_maps_specular();
+			std::cout << "\"Lighting - Lighting maps, specular\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
