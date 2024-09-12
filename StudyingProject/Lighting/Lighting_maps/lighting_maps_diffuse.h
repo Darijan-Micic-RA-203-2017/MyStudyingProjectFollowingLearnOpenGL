@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "../shader_program.h"
+#include "../stb_image.h"
 #include "../camera.h"
 
 int draw_lighting_maps_diffuse();

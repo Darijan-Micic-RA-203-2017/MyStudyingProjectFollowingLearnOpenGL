@@ -2,9 +2,11 @@
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
 
 out vec3 FragPos;
 out vec3 Normal;
+out vec2 TexCoords;
 
 // Pass the normal matrix to the vertex shader.
 uniform mat3 normalMatrix;
@@ -22,6 +24,7 @@ void main()
 	// Multiply the normal vector with the normal matrix to ensure that normal vector is still perpendicular to
 	// vertex's surface. In other words, all transformations in the model matrix are undone.
 	Normal = normalMatrix * aNormal;
+	TexCoords = aTexCoords;
 	
 	// Vclip = Mprojection * Mview * Mmodel * Vlocal. Matrix multiplication is meant to be read from right.
 	// OpenGL will automatically perform perspective division and clipping after we provide output variable

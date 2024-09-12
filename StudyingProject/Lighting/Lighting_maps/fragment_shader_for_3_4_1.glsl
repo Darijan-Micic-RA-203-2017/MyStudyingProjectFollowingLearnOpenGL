@@ -17,10 +17,10 @@ struct LightSource
 // "Material" structure contains 4 necessary material properties of the surface.
 struct Material
 {
-	// Color the surface reflects under ambient lighting.
-	vec3 ambientColor;
-	// Color the surface reflects under diffuse lighting.
-	vec3 diffuseColor;
+	// Diffuse map is a texture image that we're indexing for unique color values per fragment. Each fragment of
+	// the surface reflects a unique color under diffuse lighting. There's no need for ambient color, as they
+	// should always be the same. We indirectly influence ambient color component through diffuse color component.
+	sampler2D diffuseMap;
 	// Color the surface reflects under specular lighting.
 	vec3 specularColor;
 	// Shininess value of highlight (light source's beam) determines the size of highlight. The higher it is, the
@@ -31,6 +31,7 @@ struct Material
 
 in vec3 FragPos;
 in vec3 Normal;
+in vec2 TexCoords;
 
 out vec4 FragColor;
 
@@ -43,7 +44,7 @@ uniform Material material;
 
 void main()
 {
-	vec3 ambientColor = lightSource.ambientColor * material.ambientColor;
+	vec3 ambientColor = lightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
 	
 	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
@@ -59,7 +60,7 @@ void main()
 	// is, the less bright that fragment will be. We use "max" function because we do not want the diffuse factor
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
-	vec3 diffuseColor = lightSource.diffuseColor * (diffuseFactor * material.diffuseColor);
+	vec3 diffuseColor = lightSource.diffuseColor * (diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
 
 	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
 	vec3 viewDirection = normalize(positionOfViewer - FragPos);

@@ -98,55 +98,56 @@ int draw_lighting_maps_diffuse()
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
 	// (6 sides * 2 triangles per side * 3 vertices for each triangle).
-	// First three values represent position of vertex, while last three values represent vector normal to
-	// vertex's surface. Vertex's surface is one of 6 planes forming a 3D cube.
+	// First three values represent position of vertex, middle three values represent vector normal to vertex's
+	// surface, while last two values represent texture coordinates (from 0.0f to 1.0f).
+	// Vertex's surface is one of 6 planes forming a 3D cube.
 	float vertices[] = {
 		// Since a vertex by itself doesn't have a surface (vertex is simply a single point in space), we need to
 		// use its surrounding vertices to figure out the surface of the vertex.
 		// We can use a neat trick to calculate the normal vectors for all the 3D cube's vertices by using the
 		// cross product, but since 3D cube is a simple shape we can simply manually add them to the vertex data.
-		// position          // normal vector
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // back side
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+		// position          // normal vector     // texture coordinates
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // back side
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, 
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, 
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, 
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, 
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, 
 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // front side
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // front side
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, 
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, 
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, 
 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // left side
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // left side
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, 
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, 
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, 
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, 
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // right side
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // right side
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, 
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, 
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, 
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, 
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, 
 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // bottom side
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // bottom side
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, 
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, 
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, 
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, 
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, 
 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // top side
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f, // top side
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, 
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, 
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, 
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -168,13 +169,17 @@ int draw_lighting_maps_diffuse()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
 	// Normal vector attribute.
-	glVertexAttribPointer(1u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+	glVertexAttribPointer(1u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Enable vertex normal vector attribute.
 	glEnableVertexAttribArray(1u);
+	// Texture coordinate attribute.
+	glVertexAttribPointer(2u, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (6 * sizeof(float)));
+	// Enable vertex texture coordinate attribute.
+	glEnableVertexAttribArray(2u);
 
 	// Create memory on the GPU where vertex data of light source will be stored.
 	unsigned int lightSourceVAO;
@@ -189,7 +194,7 @@ int draw_lighting_maps_diffuse()
 
 	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
 	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
 	// Enable vertex position attribute.
 	glEnableVertexAttribArray(0u);
 
@@ -200,8 +205,66 @@ int draw_lighting_maps_diffuse()
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
+	// Create memory on the GPU where texture will be stored.
+	unsigned int diffuseMap;
+	glGenTextures(1, &diffuseMap);
+	// Bind (assign) the newly created texture to OpenGL's context.
+	glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+	// Set texture wrapping parameters. Texture coordinates are in range [0.0f, 1.0f]. If texture coordinates
+	// are specified outside of mentioned range, texture wrapping option determines the look.
+	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
+	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
+	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
+	// texture coordinate to. Nearest neighbour filtering is better suited for minifying operations,
+	// while (bi)linear filtering is better suited for magnifying operations.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// Mipmaps are used to improve minifying, not magnifying. Setting one of the mipmap filtering options as
+	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load the image that will be used as a texture.
+	int textureImageWidth;
+	int textureImageHeight;
+	int numberOfColorChannelsInTextureImage;
+	unsigned char* pixels = stbi_load("resources/steel-bordered_wooden_container.png", &textureImageWidth, 
+		&textureImageHeight, &numberOfColorChannelsInTextureImage, 0);
+	if (pixels)
+	{
+		// Generate a texture using the previously loaded image data (pixels).
+		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
+		// it will incorrectly interpret the image data.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImageWidth, textureImageHeight, 0, GL_RGBA, 
+			GL_UNSIGNED_BYTE, pixels);
+		// Automatically generate all the required mipmaps for the currently bound texture.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
+		stbi_image_free(pixels);
+		glfwTerminate();
+
+		return 7;
+	}
+	// Free the image memory.
+	stbi_image_free(pixels);
+
+	// Unbind texture for safety reasons. This is not neccessary.
+	glBindTexture(GL_TEXTURE_2D, 0u);
+
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Activate the shader program.
+	// Every shader and rendering call from now on will use this shader program object.
+	ourShaderProgram.useProgram();
+	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
+	ourShaderProgram.setIntegerUniform("material.diffuseMap", 0);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -230,6 +293,13 @@ int draw_lighting_maps_diffuse()
 		// Activate the shader program.
 		// Every shader and rendering call from now on will use this shader program object.
 		ourShaderProgram.useProgram();
+
+		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
+		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
+		// always active by default, so it isn't necessary to manually activate any texture unit if only one
+		// texture is used (like in examples previous to "Textures, combined").
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
@@ -267,10 +337,12 @@ int draw_lighting_maps_diffuse()
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_4_1);
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
+		/*
 		float time = static_cast<float>(glfwGetTime());
 		colorOfLight.x = sin(time * 2.0f);
 		colorOfLight.y = sin(time * 0.7f);
 		colorOfLight.z = sin(time * 1.3f);
+		*/
 		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
 		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
@@ -282,17 +354,11 @@ int draw_lighting_maps_diffuse()
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Set ambient color of object to coral. It's usually the same as the surface's color.
-		glm::vec3 ambientColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
-		ourShaderProgram.setFloatVec3Uniform("material.ambientColor", ambientColorOfObject);
-		// Set diffuse color of object to coral. It's usually the same as the surface's color.
-		glm::vec3 diffuseColorOfObject = glm::vec3(1.0f, 0.5f, 0.31f);
-		ourShaderProgram.setFloatVec3Uniform("material.diffuseColor", diffuseColorOfObject);
 		// Set specular color of object to "medium" (0.5f, 0.5f, 0.5f). This is the color of specular highlight.
 		glm::vec3 specularColorOfObject = glm::vec3(0.5f);
 		ourShaderProgram.setFloatVec3Uniform("material.specularColor", specularColorOfObject);
-		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
-		float shininessOfHighlight = 32.0f;
+		// Set shininess of highlight to 64. This impacts the scattering and radius of specular highlight.
+		float shininessOfHighlight = 64.0f;
 		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);
 
 		// Render 3D cube.
