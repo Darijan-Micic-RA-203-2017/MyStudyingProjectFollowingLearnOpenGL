@@ -140,7 +140,7 @@
     <ClInclude Include="Hello_Triangle\hello_triangle_exercise3.h" />
     <ClInclude Include="Shaders\shaders_uniform.h" />
     <ClInclude Include="Shaders\shaders_interpolation.h" />
-    <ClInclude Include="Shaders\shader_program.h" />
+    <ClInclude Include="shader_program.h" />
     <ClInclude Include="Shaders\shaders_class.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Textures\textures.h" />
