@@ -269,7 +269,7 @@ int draw_lighting_maps_exercise2()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load the image that will be used as a texture.
-	pixels = stbi_load("resources/steel_border_exercise2.png", &textureImageWidth, &textureImageHeight, 
+	pixels = stbi_load("resources/steel_border_specular.png", &textureImageWidth, &textureImageHeight, 
 		&numberOfColorChannelsInTextureImage, 0);
 	if (pixels)
 	{

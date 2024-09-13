@@ -76,7 +76,9 @@ void main()
 	// is, the highlight will be less bright. We use "max" function because we do not want the specular factor
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
-	vec3 specularColor = lightSource.specularColor * (specularFactor * vec3(texture(material.specularMap, TexCoords)));
+	// Invert the color values of the specular map. Wood will show specular highlights and steel borders will not.
+	vec3 specularColor = lightSource.specularColor * 
+		(specularFactor * (vec3(1.0f) - vec3(texture(material.specularMap, TexCoords))));
 
 	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
 	// ambient color, diffuse color and specular color.
