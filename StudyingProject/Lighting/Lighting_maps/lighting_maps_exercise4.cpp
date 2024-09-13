@@ -291,6 +291,44 @@ int draw_lighting_maps_exercise4()
 	}
 	// Free the image memory.
 	stbi_image_free(pixels);
+	
+	// Create memory on the GPU where emission map texture will be stored.
+	unsigned int emissionMap;
+	glGenTextures(1, &emissionMap);
+	// Bind (assign) the newly created texture to OpenGL's context.
+	glBindTexture(GL_TEXTURE_2D, emissionMap);
+
+	// Set texture wrapping parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load the image that will be used as a texture.
+	pixels = stbi_load("resources/matrix_emission.jpg", &textureImageWidth, &textureImageHeight, 
+		&numberOfColorChannelsInTextureImage, 0);
+	if (pixels)
+	{
+		// Generate a texture using the previously loaded image data (pixels).
+		// JPG image format doesn't include alpha (transparency) channel. We need to specify that to OpenGL, or
+		// it will incorrectly interpret the image data.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImageWidth, textureImageHeight, 0, GL_RGB, 
+			GL_UNSIGNED_BYTE, pixels);
+		// Automatically generate all the required mipmaps for the currently bound texture.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
+		stbi_image_free(pixels);
+		glfwTerminate();
+
+		return 9;
+	}
+	// Free the image memory.
+	stbi_image_free(pixels);
 
 	// Unbind texture for safety reasons. This is not neccessary.
 	glBindTexture(GL_TEXTURE_2D, 0u);
@@ -304,6 +342,7 @@ int draw_lighting_maps_exercise4()
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	ourShaderProgram.setIntegerUniform("material.diffuseMap", 0);
 	ourShaderProgram.setIntegerUniform("material.specularMap", 1);
+	ourShaderProgram.setIntegerUniform("material.emissionMap", 2);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -341,6 +380,8 @@ int draw_lighting_maps_exercise4()
 		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularMap);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emissionMap);
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,

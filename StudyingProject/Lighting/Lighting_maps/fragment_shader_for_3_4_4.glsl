@@ -24,6 +24,10 @@ struct Material
 	// Specular map is a texture image that we're indexing for unique color values per fragment. Each fragment of
 	// the surface reflects a unique color under specular lighting.
 	sampler2D specularMap;
+	// Emission map is a texture image that we're indexing for unique color values per fragment. Each fragment of
+	// the surface emits a unique color regardless of the ligh conditions. Emission values are colors an object
+	// may emit as if it contains a light source itself (for example, robot eyes in video games).
+	sampler2D emissionMap;
 	// Shininess value of highlight (light source's beam) determines the size of highlight. The higher it is, the
 	// light will be more properly reflected, instead of being scattered all around and highlight will be smaller.
 	// Shininess of highlight should be a degree of number 2 (2, 4, 8, 16, 32, ...).
@@ -79,8 +83,10 @@ void main()
 	vec3 specularColor = lightSource.specularColor * 
 		(specularFactor * vec3(texture(material.specularMap, TexCoords)));
 
+	vec3 emissionColor = vec3(texture(material.emissionMap, TexCoords));
+
 	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
-	// ambient color, diffuse color and specular color.
-	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor;
+	// ambient color, diffuse color, specular color and emission color.
+	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor + emissionColor;
 	FragColor = vec4(resultingColorOfFragment, 1.0f);
 }
