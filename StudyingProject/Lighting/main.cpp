@@ -8,6 +8,7 @@
 #include "Lighting_maps/lighting_maps_diffuse.h"
 #include "Lighting_maps/lighting_maps_specular.h"
 #include "Lighting_maps/lighting_maps_exercise2.h"
+#include "Lighting_maps/lighting_maps_exercise4.h"
 
 int main()
 {
@@ -16,7 +17,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 10}: ";
+		std::cout << "Enter argument from set {1, ..., 11}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -69,6 +70,11 @@ int main()
 		case 10:
 			returnValue = draw_lighting_maps_exercise2();
 			std::cout << "\"Lighting - Lighting maps, exercise 2\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 11:
+			returnValue = draw_lighting_maps_exercise4();
+			std::cout << "\"Lighting - Lighting maps, exercise 4\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
