@@ -49,6 +49,9 @@
     <ClInclude Include="Materials\materials_exercise1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Lighting_maps\lighting_maps_diffuse.h">
       <Filter>Header Files</Filter>
     </ClInclude>

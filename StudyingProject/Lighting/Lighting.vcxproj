@@ -142,6 +142,7 @@
     <ClInclude Include="Basic_Lighting\basic_lighting_exercise3.h" />
     <ClInclude Include="Materials\materials.h" />
     <ClInclude Include="Materials\materials_exercise1.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="Lighting_maps\lighting_maps_diffuse.h" />
     <ClInclude Include="Lighting_maps\lighting_maps_specular.h" />
     <ClInclude Include="Lighting_maps\lighting_maps_exercise2.h" />
