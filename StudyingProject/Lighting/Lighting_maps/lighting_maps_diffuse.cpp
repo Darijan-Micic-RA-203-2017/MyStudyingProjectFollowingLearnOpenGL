@@ -205,54 +205,15 @@ int draw_lighting_maps_diffuse()
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
-	// Create memory on the GPU where texture will be stored.
-	unsigned int diffuseMap;
-	glGenTextures(1, &diffuseMap);
-	// Bind (assign) the newly created texture to OpenGL's context.
-	glBindTexture(GL_TEXTURE_2D, diffuseMap);
-
-	// Set texture wrapping parameters. Texture coordinates are in range [0.0f, 1.0f]. If texture coordinates
-	// are specified outside of mentioned range, texture wrapping option determines the look.
-	// Each texture wrapping option can be set per coordinate axis (s, t and r if 3D textures are used).
-	// s-axis, t-axis and r-axis correspond to x-axis, y-axis and z-axis, respectively.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Set texture filtering parameters. Texture coordinates do not depend on resolution, but can be any
-	// floating point value. Therefore, OpenGL needs to figure out which texture pixel (texel) to map the
-	// texture coordinate to. Nearest neighbour filtering is better suited for minifying operations,
-	// while (bi)linear filtering is better suited for magnifying operations.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// Mipmaps are used to improve minifying, not magnifying. Setting one of the mipmap filtering options as
-	// the magnification filter will generate the OpenGL "GL_INVALID_ENUM" error code.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Load the image that will be used as a texture.
-	int textureImageWidth;
-	int textureImageHeight;
-	int numberOfColorChannelsInTextureImage;
-	unsigned char* pixels = stbi_load("resources/steel-bordered_wooden_container.png", &textureImageWidth, 
-		&textureImageHeight, &numberOfColorChannelsInTextureImage, 0);
-	if (pixels)
+	// Generate texture, set its wrapping and filtering parameters, load image-to-become-texture from file system
+	// and generate all the required mipmaps using helper class.
+	Texture diffuseMap("resources/steel-bordered_wooden_container.png");
+	if (diffuseMap.errorCode)
 	{
-		// Generate a texture using the previously loaded image data (pixels).
-		// PNG image format includes alpha (transparency) channel. We need to specify that to OpenGL, or
-		// it will incorrectly interpret the image data.
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImageWidth, textureImageHeight, 0, GL_RGBA, 
-			GL_UNSIGNED_BYTE, pixels);
-		// Automatically generate all the required mipmaps for the currently bound texture.
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Image of would-be-texture could not be loaded!" << std::endl;
-		stbi_image_free(pixels);
 		glfwTerminate();
 
-		return 7;
+		return diffuseMap.errorCode;
 	}
-	// Free the image memory.
-	stbi_image_free(pixels);
 
 	// Unbind texture for safety reasons. This is not neccessary.
 	glBindTexture(GL_TEXTURE_2D, 0u);
@@ -299,7 +260,7 @@ int draw_lighting_maps_diffuse()
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
 		// texture is used (like in examples previous to "Textures, combined").
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap.id);
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
