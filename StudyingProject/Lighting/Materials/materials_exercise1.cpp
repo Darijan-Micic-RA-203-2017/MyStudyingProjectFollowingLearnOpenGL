@@ -344,6 +344,9 @@ int draw_materials_exercise1()
 		glfwPollEvents();
 	}
 
+	// On next drawing, reset first mouse entry indicator.
+	firstMouseEntry_for_3_3_2 = true;
+
 	// De-allocate all resources once they're no longer needed.
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
@@ -375,19 +378,21 @@ void cursor_pos_callback_for_materials_exercise1(GLFWwindow* window, double xpos
 	// 0. step: if we received mouse input for the first time, we set the previous cursor position to the position
 	// where the user entered the application window and calculate offsets based on it. Wihout this added step,
 	// camera would suddenly jump to point of mouse entry, which is usually far away from window's center.
+	float xPos = static_cast<float>(xpos);
+	float yPos = static_cast<float>(ypos);
 	if (firstMouseEntry_for_3_3_2)
 	{
-		previousCursorPosX_for_3_3_2 = static_cast<float>(xpos);
-		previousCursorPosY_for_3_3_2 = static_cast<float>(ypos);
+		previousCursorPosX_for_3_3_2 = xPos;
+		previousCursorPosY_for_3_3_2 = yPos;
 		firstMouseEntry_for_3_3_2 = false;
 	}
 
 	// 1. step: calculate the mouse's offset since last frame.
-	float xOffset = static_cast<float>(xpos) - previousCursorPosX_for_3_3_2;
+	float xOffset = xPos - previousCursorPosX_for_3_3_2;
 	// Order of subtraction is reversed, because y-coordinates range from bottom to top.
-	float yOffset = previousCursorPosY_for_3_3_2 - static_cast<float>(ypos);
-	previousCursorPosX_for_3_3_2 = static_cast<float>(xpos);
-	previousCursorPosY_for_3_3_2 = static_cast<float>(ypos);
+	float yOffset = previousCursorPosY_for_3_3_2 - yPos;
+	previousCursorPosX_for_3_3_2 = xPos;
+	previousCursorPosY_for_3_3_2 = yPos;
 
 	// 2. step onward: done in Camera class.
 	camera_for_3_3_2.processMouseMovement(xOffset, yOffset);
