@@ -215,7 +215,7 @@ int draw_basic_lighting_specular()
 		processInput_for_basic_lighting_specular(window);
 
 		// Second part: Rendering commands.
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		// Since we're now using a depth buffer, we also want to clear it before each rendering iteration.
 		// Otherwise, the depth information of the previous frame would remain in the buffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
