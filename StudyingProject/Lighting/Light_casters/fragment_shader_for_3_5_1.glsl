@@ -3,8 +3,11 @@
 // "LightSource" structure contains 4 necessary properties of the light source.
 struct LightSource
 {
-	// Position of light source in world space.
-	vec3 position;
+	// Direction of light in world space. Directional light source is modeled to be infinitely far away from all
+	// objects, which makes the light rays it's emitting to be parallel to each other. It looks like all light rays
+	// are coming from the same direction, regardless of where the object and the viewer are positioned.
+	// Position of light source no longer matters, so it is replaced with direction of light.
+	vec3 direction;
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
 	// the ambient color to be too dominant.
 	vec3 ambientColor;
@@ -49,10 +52,10 @@ void main()
 
 	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
-	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
-	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
-	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
-	vec3 lightDirection = normalize(lightSource.position - FragPos);
+	// The "light's direction", now that position of light source is replaced with direction of light, is counted
+	// by negating direction of light. People usually specify direction of light as vector pointing to object's
+	// surface, so that's why negating is necessary.
+	vec3 lightDirection = normalize(-lightSource.direction);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).

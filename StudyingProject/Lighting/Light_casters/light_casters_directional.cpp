@@ -3,8 +3,8 @@
 const int window_width = 800;
 const int window_height = 600;
 
-// Position of light source in world-space coordinates.
-glm::vec3 positionOfLightSource_for_3_5_1 = glm::vec3(1.2f, 1.0f, 2.0f);
+// Direction of light, as vector pointing from directional light source infinitely far away from scene.
+glm::vec3 directionOfLight_for_3_5_1(-0.2f, -1.0f, -0.3f);
 
 // All setting are kept in an instance of the camera class.
 Camera camera_for_3_5_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -85,15 +85,6 @@ int draw_light_casters_directional()
 
 		return ourShaderProgram.errorCode;
 	}
-	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
-	if (ourLightSourceShaderProgram.errorCode)
-	{
-		glfwTerminate();
-
-		return ourLightSourceShaderProgram.errorCode;
-	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
@@ -149,6 +140,19 @@ int draw_light_casters_directional()
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, 
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
 	};
+	// World space positions of our ten cubes.
+	glm::vec3 positionsOfCubes[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f), 
+		glm::vec3(2.0f,  5.0f, -15.0f), 
+		glm::vec3(-1.5f, -2.2f, -2.5f), 
+		glm::vec3(-3.8f, -2.0f, -12.3f), 
+		glm::vec3(2.4f, -0.4f, -3.5f), 
+		glm::vec3(-1.7f,  3.0f, -7.5f), 
+		glm::vec3(1.3f, -2.0f, -2.5f), 
+		glm::vec3(1.5f,  2.0f, -2.5f), 
+		glm::vec3(1.5f,  0.2f, -1.5f), 
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
 	// Said data will be handled by VAO and vertex/element buffer objects inside that VAO.
@@ -180,23 +184,6 @@ int draw_light_casters_directional()
 	glVertexAttribPointer(2u, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (6 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
 	glEnableVertexAttribArray(2u);
-
-	// Create memory on the GPU where vertex data of light source will be stored.
-	unsigned int lightSourceVAO;
-	glGenVertexArrays(1, &lightSourceVAO);
-
-	// Bind (assign) the newly created VAO to OpenGL's context.
-	glBindVertexArray(lightSourceVAO);
-
-	// Bind (assign) the previously created VBO to OpenGL's context. We use the same VBO, because the light source
-	// object will use the same vertices as the object in scene (light source is also a 3D cube).
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
-	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -261,10 +248,6 @@ int draw_light_casters_directional()
 		positionOfLightSource_for_3_4_2.y = sin(time / 2.0f);
 		*/
 
-		// Activate the shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourShaderProgram.useProgram();
-
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
@@ -288,26 +271,11 @@ int draw_light_casters_directional()
 		// Set the view matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
 
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We won't perform any transformation of object (3D cube).
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		// Set the model matrix. This matrix changes each frame.
-		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
-
-		// The normal matrix is a model matrix specifically tailored for normal vectors. Normal matrix is defined
-		// as the transpose of the inverse of the upper-left 3x3 part of the model matrix.
-		// Non-uniform scaling would transform vertex in such a way that the normal vector would no longer be
-		// perpendicular to the vertex's surface. This means that the lighting of surface would be distorted. We
-		// mitigate non-uniform scaling by multiplying normal vector with normal matrix.
-		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
-		// Set the normal matrix. This matrix changes each frame.
-		ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
-
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_5_1.cameraPosition);
 
-		// Set position of light source to global variable "positionOfLightSource".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_1);
+		// Set direction of light to global variable "directionOfLight".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", directionOfLight_for_3_5_1);
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
 		/*
@@ -327,36 +295,41 @@ int draw_light_casters_directional()
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Set shininess of highlight to 64. This impacts the scattering and radius of specular highlight.
-		float shininessOfHighlight = 64.0f;
+		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
+		float shininessOfHighlight = 32.0f;
 		ourShaderProgram.setFloatUniform("material.shininessOfHighlight", shininessOfHighlight);
 		
 		// Render 3D cube.
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// We draw ten cubes.
+		for (unsigned int i = 0u; i < 10u; i++)
+		{
+			// The model matrix transforms local space coordinates to world space coordinates.
+			// We will transform every cube by rotating it once around the (1.0f, 0.3f, 0.5f) axis and translating
+			// it to its corresponding specified position.
+			glm::mat4 modelMatrix = glm::mat4(1.0f);
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
+			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
+			// the angle's value from degrees.
+			// The axis we are rotating around should be a unit vector, so make sure to normalize the vector
+			// representing the axis if we're not rotating around x, y or z-axis.
+			float angle = 20.0f * i;
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
 
-		// Activate the light source shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourLightSourceShaderProgram.useProgram();
+			// Set the model matrix. This matrix changes each frame.
+			ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
-		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
-		// Set the view matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
+			// The normal matrix is a model matrix specifically tailored for normal vectors. Normal matrix is
+			// defined as the transpose of the inverse of the upper-left 3x3 part of the model matrix.
+			// Non-uniform scaling would transform vertex in such a way that the normal vector would no longer be
+			// perpendicular to the vertex's surface. This means that the lighting of surface would be distorted.
+			// We mitigate non-uniform scaling by multiplying normal vector with normal matrix.
+			glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
+			// Set the normal matrix. This matrix changes each frame.
+			ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
 
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
-		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
-		// position of light source.
-		modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_5_1);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-		// Set the model matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
-
-		// Render light source, represented by a 3D cube.
-		glBindVertexArray(lightSourceVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
@@ -369,7 +342,6 @@ int draw_light_casters_directional()
 	// De-allocate all resources once they're no longer needed.
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteVertexArrays(1, &lightSourceVAO);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
 	glfwTerminate();
