@@ -1,0 +1,89 @@
+#version 330 core
+
+// "LightSource" structure contains 4 necessary properties of the light source.
+struct LightSource
+{
+	// Direction of light in world space. Directional light source is modeled to be infinitely far away from all
+	// objects, which makes the light rays it's emitting to be parallel to each other. It looks like all light rays
+	// are coming from the same direction, regardless of where the object and the viewer are positioned.
+	// Position of light source no longer matters, so it is replaced with direction of light.
+	vec3 direction;
+	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
+	// the ambient color to be too dominant.
+	vec3 ambientColor;
+	// Intensity of the diffuse lighting component. It's usually set to the exact color we'd like light to have.
+	vec3 diffuseColor;
+	// Intensity of the specular lighting component. It's usually kept at vec3(1.0f), shining at full intensity.
+	vec3 specularColor;
+};
+
+// "Material" structure contains 4 necessary material properties of the surface.
+struct Material
+{
+	// Diffuse map is a texture image that we're indexing for unique color values per fragment. Each fragment of
+	// the surface reflects a unique color under diffuse lighting. There's no need for ambient color, as they
+	// should always be the same. We indirectly influence ambient color component through diffuse color component.
+	sampler2D diffuseMap;
+	// Specular map is a texture image that we're indexing for unique color values per fragment. Each fragment of
+	// the surface reflects a unique color under specular lighting.
+	sampler2D specularMap;
+	// Shininess value of highlight (light source's beam) determines the size of highlight. The higher it is, the
+	// light will be more properly reflected, instead of being scattered all around and highlight will be smaller.
+	// Shininess of highlight should be a degree of number 2 (2, 4, 8, 16, 32, ...).
+	float shininessOfHighlight;
+};
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+// Pass the position of viewer (needed for specular component of Phong lighting model).
+uniform vec3 positionOfViewer;
+// Pass the light source (needed for all 3 components of Phong lighting model).
+uniform LightSource lightSource;
+// Pass the material of object (needed for all 3 components of Phong lighting model).
+uniform Material material;
+
+void main()
+{
+	vec3 ambientColor = lightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
+
+	vec3 normal = normalize(Normal);
+	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
+	// The "light's direction", now that position of light source is replaced with direction of light, is counted
+	// by negating direction of light. People usually specify direction of light as vector pointing to object's
+	// surface, so that's why negating is necessary.
+	vec3 lightDirection = normalize(-lightSource.direction);
+	// The cosine of angle at which light comes at fragment.
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If light emitted from light source comes directly at fragment (at angle of 0 degrees), diffuse factor will
+	// be 1 and fragment will be the brightest it can be. The larger the angle at which light comes at fragment
+	// is, the less bright that fragment will be. We use "max" function because we do not want the diffuse factor
+	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
+	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
+	vec3 diffuseColor = lightSource.diffuseColor * (diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
+
+	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
+	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
+	// need to negate light direction vector calculated as part of diffuse component.
+	vec3 reflectionDirection = reflect(-lightDirection, normal);
+	// The cosine of angle at which reflection comes at viewer.
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If reflected light comes directly at viewer (at angle of 0 degrees), specular factor will be 1 and
+	// highlight will be the brightest it can be. The larger the angle between light reflection and view direction
+	// is, the highlight will be less bright. We use "max" function because we do not want the specular factor
+	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
+	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
+	vec3 specularColor = lightSource.specularColor * 
+		(specularFactor * vec3(texture(material.specularMap, TexCoords)));
+
+	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
+	// ambient color, diffuse color and specular color.
+	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor;
+	FragColor = vec4(resultingColorOfFragment, 1.0f);
+}

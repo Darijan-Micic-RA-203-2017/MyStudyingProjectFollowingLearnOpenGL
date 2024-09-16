@@ -67,6 +67,9 @@
     <ClInclude Include="Light_casters\light_casters_directional.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light_casters\light_casters_point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -112,6 +115,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Light_casters\light_casters_directional.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light_casters\light_casters_point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -198,6 +204,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="Light_casters\fragment_shader_for_3_5_1.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Light_casters\vertex_shader_for_3_5_2.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Light_casters\fragment_shader_for_3_5_2.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
