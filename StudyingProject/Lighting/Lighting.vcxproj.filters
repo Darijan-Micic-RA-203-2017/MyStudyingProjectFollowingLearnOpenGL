@@ -64,6 +64,9 @@
     <ClInclude Include="Lighting_maps\lighting_maps_exercise4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light_casters\light_casters_directional.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -106,6 +109,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Lighting_maps\lighting_maps_exercise4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light_casters\light_casters_directional.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -186,6 +192,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="Lighting_maps\fragment_shader_for_3_4_4.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Light_casters\vertex_shader_for_3_5_1.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Light_casters\fragment_shader_for_3_5_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
