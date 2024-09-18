@@ -11,6 +11,7 @@
 #include "Lighting_maps/lighting_maps_exercise4.h"
 #include "Light_casters/light_casters_directional.h"
 #include "Light_casters/light_casters_point.h"
+#include "Light_casters/light_casters_spot.h"
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 13}: ";
+		std::cout << "Enter argument from set {1, ..., 14}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -87,6 +88,11 @@ int main()
 		case 13:
 			returnValue = draw_light_casters_point();
 			std::cout << "\"Lighting - Light casters, point\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 14:
+			returnValue = draw_light_casters_spot();
+			std::cout << "\"Lighting - Light casters, spot\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
