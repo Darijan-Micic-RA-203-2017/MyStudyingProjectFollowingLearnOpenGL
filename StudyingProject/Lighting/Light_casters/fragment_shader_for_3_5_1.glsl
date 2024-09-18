@@ -8,6 +8,7 @@ struct LightSource
 	// are coming from the same direction, regardless of where the object and the viewer are positioned.
 	// Position of light source no longer matters, so it is replaced with direction of light.
 	vec3 direction;
+
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
 	// the ambient color to be too dominant.
 	vec3 ambientColor;

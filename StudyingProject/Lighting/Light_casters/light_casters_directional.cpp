@@ -274,6 +274,11 @@ int draw_light_casters_directional()
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_5_1.cameraPosition);
 
+		// Directional light source is a light source modeled to be infinitely far away from all objects, which
+		// makes the light rays it's emitting to be parallel to each other. It looks like all light rays are
+		// coming from the same direction, regardless of where the object and the viewer are positioned. Position
+		// of light source no longer matters, so it is replaced with direction of light.
+
 		// Set direction of light to global variable "directionOfLight".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", directionOfLight_for_3_5_1);
 		// Change color of light over time.

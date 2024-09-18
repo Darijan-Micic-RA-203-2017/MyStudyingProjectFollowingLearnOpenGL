@@ -5,6 +5,7 @@ struct LightSource
 {
 	// Position of light source in world space.
 	vec3 position;
+
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
 	// the ambient color to be too dominant.
 	vec3 ambientColor;
