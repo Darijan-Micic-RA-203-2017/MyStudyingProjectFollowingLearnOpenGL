@@ -321,7 +321,6 @@ int draw_light_casters_directional()
 			// representing the axis if we're not rotating around x, y or z-axis.
 			float angle = 20.0f * i;
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::normalize(glm::vec3(1.0f, 0.3f, 0.5f)));
-
 			// Set the model matrix. This matrix changes each frame.
 			ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 

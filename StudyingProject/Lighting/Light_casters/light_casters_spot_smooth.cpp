@@ -1,28 +1,28 @@
-#include "light_casters_point.h"
+#include "light_casters_spot_smooth.h"
 
 const int window_width = 800;
 const int window_height = 600;
 
 // Position of light source in world-space coordinates.
-glm::vec3 positionOfLightSource_for_3_5_2(1.2f, 1.0f, 2.0f);
+glm::vec3 positionOfLightSource_for_3_5_4(1.2f, 1.0f, 2.0f);
 
 // All settings are kept in an instance of the camera class.
-Camera camera_for_3_5_2(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+Camera camera_for_3_5_4(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-bool firstMouseEntry_for_3_5_2 = true;
-float previousCursorPosX_for_3_5_2 = (float) window_width / 2.0f;
-float previousCursorPosY_for_3_5_2 = (float) window_height / 2.0f;
+bool firstMouseEntry_for_3_5_4 = true;
+float previousCursorPosX_for_3_5_4 = (float) window_width / 2.0f;
+float previousCursorPosY_for_3_5_4 = (float) window_height / 2.0f;
 
 // The time difference between the end of renderings of the current frame and the previous frame.
 // We multiply all velocities with delta time value. The result is that when we have a large deltaTime in a frame,
 // meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to
 // balance it all out. When using this approach it does not matter if you have a very fast or slow PC, the velocity
 // of the camera will be balanced out accordingly so each user will have the same experience.
-float deltaTime_for_3_5_2 = 0.0f;
+float deltaTime_for_3_5_4 = 0.0f;
 // The time it took to render the previous frame.
-float previousFrameTime_for_3_5_2 = 0.0f;
+float previousFrameTime_for_3_5_4 = 0.0f;
 
-int draw_light_casters_point()
+int draw_light_casters_spot_smooth()
 {
 	// Initialize the GLFW library.
 	if (!glfwInit())
@@ -38,7 +38,7 @@ int draw_light_casters_point()
 
 	// Create a window and make the context of created window the main context on the current thread.
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"Lighting - Light casters, point", NULL, NULL);
+		"Lighting - Light casters, spot with smooth edges", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -49,9 +49,9 @@ int draw_light_casters_point()
 	glfwMakeContextCurrent(window);
 
 	// Register the callback functions after the window is created and before the render loop is started.
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_light_casters_point);
-	glfwSetCursorPosCallback(window, cursor_pos_callback_for_light_casters_point);
-	glfwSetScrollCallback(window, scroll_callback_for_light_casters_point);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_light_casters_spot_smooth);
+	glfwSetCursorPosCallback(window, cursor_pos_callback_for_light_casters_spot_smooth);
+	glfwSetScrollCallback(window, scroll_callback_for_light_casters_spot_smooth);
 
 	// Tell GLFW library to capture and hide our mouse cursor. Capturing the mouse cursor means fixating it to the
 	// center of application's window and only letting it move if application loses focus or quits.
@@ -77,22 +77,13 @@ int draw_light_casters_point()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Light_casters/vertex_shader_for_3_5_2.glsl", 
-		"Light_casters/fragment_shader_for_3_5_2.glsl");
+	ShaderProgram ourShaderProgram("Light_casters/vertex_shader_for_3_5_4.glsl", 
+		"Light_casters/fragment_shader_for_3_5_4.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
 
 		return ourShaderProgram.errorCode;
-	}
-	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
-	if (ourLightSourceShaderProgram.errorCode)
-	{
-		glfwTerminate();
-
-		return ourLightSourceShaderProgram.errorCode;
 	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
@@ -194,23 +185,6 @@ int draw_light_casters_point()
 	// Enable vertex texture coordinate attribute.
 	glEnableVertexAttribArray(2u);
 
-	// Create memory on the GPU where vertex data of light source will be stored.
-	unsigned int lightSourceVAO;
-	glGenVertexArrays(1, &lightSourceVAO);
-
-	// Bind (assign) the newly created VAO to OpenGL's context.
-	glBindVertexArray(lightSourceVAO);
-
-	// Bind (assign) the previously created VBO to OpenGL's context. We use the same VBO, because the light source
-	// object will use the same vertices as the object in scene (light source is also a 3D cube).
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
-	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0u);
-
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
@@ -255,11 +229,11 @@ int draw_light_casters_point()
 	{
 		// Nullth part: Calculate the new delta time and assign the current frame time to the previous frame time.
 		float currentFrameTime = static_cast<float>(glfwGetTime());
-		deltaTime_for_3_5_2 = currentFrameTime - previousFrameTime_for_3_5_2;
-		previousFrameTime_for_3_5_2 = currentFrameTime;
+		deltaTime_for_3_5_4 = currentFrameTime - previousFrameTime_for_3_5_4;
+		previousFrameTime_for_3_5_4 = currentFrameTime;
 
 		// First part: Process the user's input.
-		processInput_for_light_casters_point(window);
+		processInput_for_light_casters_spot_smooth(window);
 
 		// Second part: Rendering commands.
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -274,10 +248,6 @@ int draw_light_casters_point()
 		positionOfLightSource_for_3_4_2.y = glm::sin(time / 2.0f);
 		*/
 
-		// Activate the shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourShaderProgram.useProgram();
-
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
@@ -290,22 +260,36 @@ int draw_light_casters_point()
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
 		// 0.1f near plane and 100.0f far plane. Ratio of window's width and height is called the aspect ratio.
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_5_2.fov), 
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera_for_3_5_4.fov), 
 			(float) window_width / (float) window_height, 0.1f, 100.0f);
 		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
 
 		// The view matrix transforms world space coordinates to view space coordinates.
 		// We will transform our world (scene) by moving the camera using the keyboard.
-		glm::mat4 viewMatrix = camera_for_3_5_2.getCalculatedViewMatrix();
+		glm::mat4 viewMatrix = camera_for_3_5_4.getCalculatedViewMatrix();
 		// Set the view matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
 
 		// Set position of viewer to field "cameraPosition" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_5_2.cameraPosition);
+		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_5_4.cameraPosition);
+
+		// Spotlight source is a light source with a given position in world space that illuminates light rays
+		// ONLY IN A SPECIFIC DIRECTION, with its light rays fading out over distance. That means that only the
+		// objects within a certain radius of the spotlight's direction are lit and everything else stays dark. A
+		// spotlight in OpenGL is represented by: a world-space position, a direction and a cutoff angle that
+		// specifies the radius of the spotlight.
 
 		// Set position of light source to global variable "positionOfLightSource".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_2);
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_4);
+		// Set direction of light to field "cameraFront" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_4.cameraFront);
+		// Set cosine of cutoff angle to 12.5 degrees converted to radians. Result of dot product between two
+		// vectors is cosine of angle between them. In our case, those two vectors will be the "light's direction"
+		// (result of subtracting fragment's position from light source's position) and spotlight direction
+		// (camera's front vector). Calculating the inverse cosine is an expensive operation in shaders, so that's
+		// why we're sending a cosine of cutoff angle instead of cutoff angle itself.
+		ourShaderProgram.setFloatUniform("lightSource.cosOfCutoffAngle", glm::cos(glm::radians(12.5f)));
 
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
@@ -315,19 +299,17 @@ int draw_light_casters_point()
 		colorOfLight.y = glm::sin(time * 0.7f);
 		colorOfLight.z = glm::sin(time * 1.3f);
 		*/
-		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
-		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
+		// Set ambient component color of light source to (0.1f, 0.1f, 0.1f).
+		glm::vec3 ambientColorOfLight = glm::vec3(0.1f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
-		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
+		// Set diffuse component color of light source to (0.8f, 0.8f, 0.8f).
 		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
+		glm::vec3 diffuseColorOfLight = glm::vec3(0.8f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Point light source is a light source with a given position in world space that illuminates in all
-		// directions, with its light rays fading out over distance.
 		// The process of reducing the light's intensity over the distance a light ray travels is called ATTENUATION.
 		// Simple linear equation would produce unrealistic results which would look fake. Lights in the real
 		// world are generally quite bright when standing close by, but their brightness reduces in a linear
@@ -361,13 +343,12 @@ int draw_light_casters_point()
 		// Render 3D cube.
 		glBindVertexArray(VAO);
 		// We draw ten cubes.
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		for (unsigned int i = 0u; i < 10u; i++)
 		{
 			// The model matrix transforms local space coordinates to world space coordinates.
 			// We will transform every cube by rotating it once around the (1.0f, 0.3f, 0.5f) axis and translating
 			// it to its corresponding specified position.
-			modelMatrix = glm::mat4(1.0f);
+			glm::mat4 modelMatrix = glm::mat4(1.0f);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
 			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
 			// the angle's value from degrees.
@@ -390,36 +371,13 @@ int draw_light_casters_point()
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		// Activate the light source shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourLightSourceShaderProgram.useProgram();
-
-		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
-		// Set the view matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
-
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
-		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
-		// position of light source.
-		modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_5_2);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-		// Set the model matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
-
-		// Render light source, represented by a 3D cube.
-		glBindVertexArray(lightSourceVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	// On next drawing, reset first mouse entry indicator.
-	firstMouseEntry_for_3_5_2 = true;
+	firstMouseEntry_for_3_5_4 = true;
 
 	// De-allocate all resources once they're no longer needed.
 	glDeleteBuffers(1, &VBO);
@@ -434,13 +392,13 @@ int draw_light_casters_point()
 // Callback functions.
 
 // Function that will be called every time the application's window changes size.
-void framebuffer_size_callback_for_light_casters_point(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback_for_light_casters_spot_smooth(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Function that will be called every time the user moves the mouse while the application has focus.
-void cursor_pos_callback_for_light_casters_point(GLFWwindow* window, double xpos, double ypos)
+void cursor_pos_callback_for_light_casters_spot_smooth(GLFWwindow* window, double xpos, double ypos)
 {
 	// Calculate "camera's front" vector that acts as insurance that however we move, camera keeps looking
 	// straight ahead. Math's explained below.
@@ -453,32 +411,32 @@ void cursor_pos_callback_for_light_casters_point(GLFWwindow* window, double xpos
 	// camera would suddenly jump to point of mouse entry, which is usually far away from window's center.
 	float xPos = static_cast<float>(xpos);
 	float yPos = static_cast<float>(ypos);
-	if (firstMouseEntry_for_3_5_2)
+	if (firstMouseEntry_for_3_5_4)
 	{
-		previousCursorPosX_for_3_5_2 = xPos;
-		previousCursorPosY_for_3_5_2 = yPos;
-		firstMouseEntry_for_3_5_2 = false;
+		previousCursorPosX_for_3_5_4 = xPos;
+		previousCursorPosY_for_3_5_4 = yPos;
+		firstMouseEntry_for_3_5_4 = false;
 	}
 
 	// 1. step: calculate the mouse's offset since last frame.
-	float xOffset = xPos - previousCursorPosX_for_3_5_2;
+	float xOffset = xPos - previousCursorPosX_for_3_5_4;
 	// Order of subtraction is reversed, because y-coordinates range from bottom to top.
-	float yOffset = previousCursorPosY_for_3_5_2 - yPos;
-	previousCursorPosX_for_3_5_2 = xPos;
-	previousCursorPosY_for_3_5_2 = yPos;
+	float yOffset = previousCursorPosY_for_3_5_4 - yPos;
+	previousCursorPosX_for_3_5_4 = xPos;
+	previousCursorPosY_for_3_5_4 = yPos;
 
 	// 2. step onward: done in Camera class.
-	camera_for_3_5_2.processMouseMovement(xOffset, yOffset);
+	camera_for_3_5_4.processMouseMovement(xOffset, yOffset);
 }
 
 // Function that will be called every time the user scrolls the mouse's middle button.
-void scroll_callback_for_light_casters_point(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback_for_light_casters_spot_smooth(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera_for_3_5_2.processMouseScroll(static_cast<float>(yoffset));
+	camera_for_3_5_4.processMouseScroll(static_cast<float>(yoffset));
 }
 
 // Input processing function.
-void processInput_for_light_casters_point(GLFWwindow* window)
+void processInput_for_light_casters_spot_smooth(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -487,18 +445,18 @@ void processInput_for_light_casters_point(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera_for_3_5_2.processKeyboardInput("W", deltaTime_for_3_5_2);
+		camera_for_3_5_4.processKeyboardInput("W", deltaTime_for_3_5_4);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera_for_3_5_2.processKeyboardInput("S", deltaTime_for_3_5_2);
+		camera_for_3_5_4.processKeyboardInput("S", deltaTime_for_3_5_4);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera_for_3_5_2.processKeyboardInput("A", deltaTime_for_3_5_2);
+		camera_for_3_5_4.processKeyboardInput("A", deltaTime_for_3_5_4);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera_for_3_5_2.processKeyboardInput("D", deltaTime_for_3_5_2);
+		camera_for_3_5_4.processKeyboardInput("D", deltaTime_for_3_5_4);
 	}
 }

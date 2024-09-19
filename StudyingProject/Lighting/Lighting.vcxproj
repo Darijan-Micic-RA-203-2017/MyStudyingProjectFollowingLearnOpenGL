@@ -150,6 +150,7 @@
     <ClInclude Include="Light_casters\light_casters_directional.h" />
     <ClInclude Include="Light_casters\light_casters_point.h" />
     <ClInclude Include="Light_casters\light_casters_spot.h" />
+    <ClInclude Include="Light_casters\light_casters_spot_smooth.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Light_casters\light_casters_directional.cpp" />
     <ClCompile Include="Light_casters\light_casters_point.cpp" />
     <ClCompile Include="Light_casters\light_casters_spot.cpp" />
+    <ClCompile Include="Light_casters\light_casters_spot_smooth.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />
@@ -203,6 +205,8 @@
     <None Include="Light_casters\fragment_shader_for_3_5_2.glsl" />
     <None Include="Light_casters\vertex_shader_for_3_5_3.glsl" />
     <None Include="Light_casters\fragment_shader_for_3_5_3.glsl" />
+    <None Include="Light_casters\vertex_shader_for_3_5_4.glsl" />
+    <None Include="Light_casters\fragment_shader_for_3_5_4.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\brick_wall.jpg" />
