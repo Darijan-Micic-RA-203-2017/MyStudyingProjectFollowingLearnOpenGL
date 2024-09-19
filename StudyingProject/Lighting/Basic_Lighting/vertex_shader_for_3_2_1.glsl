@@ -20,7 +20,7 @@ void main()
 	// Constructor that takes a parameter of type "vec4" of class "vec3" discards the last row.
 	FragPos = vec3(modelMatrix * vec4(aPos, 1.0f));
 	// Multiply the normal vector with the normal matrix to ensure that normal vector is still perpendicular to
-	// vertex's surface. In other words, all transformations done in the model matrix are undone.
+	// vertex's surface. In other words, all transformations in the model matrix are undone.
 	Normal = normalMatrix * aNormal;
 	
 	// Vclip = Mprojection * Mview * Mmodel * Vlocal. Matrix multiplication is meant to be read from right.

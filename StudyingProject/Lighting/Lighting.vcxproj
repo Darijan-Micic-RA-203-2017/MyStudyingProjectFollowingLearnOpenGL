@@ -179,33 +179,23 @@
     <None Include="Colors\light_source_fragment_shader_for_3_1_1.glsl" />
     <None Include="Basic_Lighting\vertex_shader_for_3_2_1.glsl" />
     <None Include="Basic_Lighting\fragment_shader_for_3_2_1.glsl" />
-    <None Include="Basic_Lighting\vertex_shader_for_3_2_2.glsl" />
     <None Include="Basic_Lighting\fragment_shader_for_3_2_2.glsl" />
     <None Include="Basic_Lighting\vertex_shader_for_3_2_3.glsl" />
     <None Include="Basic_Lighting\fragment_shader_for_3_2_3.glsl" />
     <None Include="Basic_Lighting\vertex_shader_for_3_2_4.glsl" />
     <None Include="Basic_Lighting\fragment_shader_for_3_2_4.glsl" />
-    <None Include="Materials\vertex_shader_for_3_3_1.glsl" />
     <None Include="Materials\fragment_shader_for_3_3_1.glsl" />
-    <None Include="Materials\vertex_shader_for_3_3_2.glsl" />
     <None Include="Materials\fragment_shader_for_3_3_2.glsl" />
     <None Include="Materials\light_source_vertex_shader_for_3_3_2.glsl" />
     <None Include="Materials\light_source_fragment_shader_for_3_3_2.glsl" />
     <None Include="Lighting_maps\vertex_shader_for_3_4_1.glsl" />
     <None Include="Lighting_maps\fragment_shader_for_3_4_1.glsl" />
-    <None Include="Lighting_maps\vertex_shader_for_3_4_2.glsl" />
     <None Include="Lighting_maps\fragment_shader_for_3_4_2.glsl" />
-    <None Include="Lighting_maps\vertex_shader_for_3_4_3.glsl" />
     <None Include="Lighting_maps\fragment_shader_for_3_4_3.glsl" />
-    <None Include="Lighting_maps\vertex_shader_for_3_4_4.glsl" />
     <None Include="Lighting_maps\fragment_shader_for_3_4_4.glsl" />
-    <None Include="Light_casters\vertex_shader_for_3_5_1.glsl" />
     <None Include="Light_casters\fragment_shader_for_3_5_1.glsl" />
-    <None Include="Light_casters\vertex_shader_for_3_5_2.glsl" />
     <None Include="Light_casters\fragment_shader_for_3_5_2.glsl" />
-    <None Include="Light_casters\vertex_shader_for_3_5_3.glsl" />
     <None Include="Light_casters\fragment_shader_for_3_5_3.glsl" />
-    <None Include="Light_casters\vertex_shader_for_3_5_4.glsl" />
     <None Include="Light_casters\fragment_shader_for_3_5_4.glsl" />
   </ItemGroup>
   <ItemGroup>

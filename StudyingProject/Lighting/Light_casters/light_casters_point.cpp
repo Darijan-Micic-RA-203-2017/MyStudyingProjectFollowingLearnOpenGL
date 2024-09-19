@@ -77,7 +77,7 @@ int draw_light_casters_point()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Light_casters/vertex_shader_for_3_5_2.glsl", 
+	ShaderProgram ourShaderProgram("Lighting_maps/vertex_shader_for_3_4_1.glsl", 
 		"Light_casters/fragment_shader_for_3_5_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{

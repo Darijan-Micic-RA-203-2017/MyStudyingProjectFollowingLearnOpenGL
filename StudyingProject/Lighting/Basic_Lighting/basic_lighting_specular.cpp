@@ -77,7 +77,7 @@ int draw_basic_lighting_specular()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Basic_Lighting/vertex_shader_for_3_2_2.glsl", 
+	ShaderProgram ourShaderProgram("Basic_Lighting/vertex_shader_for_3_2_1.glsl", 
 		"Basic_Lighting/fragment_shader_for_3_2_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{

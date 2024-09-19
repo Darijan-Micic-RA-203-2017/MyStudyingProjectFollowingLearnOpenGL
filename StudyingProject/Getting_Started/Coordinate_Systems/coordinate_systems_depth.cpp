@@ -54,7 +54,8 @@ int draw_coordinate_systems_depth()
 	glEnable(GL_DEPTH_TEST);
 	
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Coordinate_Systems/vertex_shader_for_2_8_1.glsl", "Coordinate_Systems/fragment_shader_for_2_8_1.glsl");
+	ShaderProgram ourShaderProgram("Coordinate_Systems/vertex_shader_for_2_8_1.glsl", 
+		"Coordinate_Systems/fragment_shader_for_2_8_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();

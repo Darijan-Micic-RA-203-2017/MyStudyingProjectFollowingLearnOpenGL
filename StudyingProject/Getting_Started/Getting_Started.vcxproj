@@ -184,13 +184,11 @@
     <None Include="Shaders\fragment_shader_for_2_5_3.glsl" />
     <None Include="Textures\vertex_shader_for_2_6_1.glsl" />
     <None Include="Textures\fragment_shader_for_2_6_1.glsl" />
-    <None Include="Textures\vertex_shader_for_2_6_2.glsl" />
     <None Include="Textures\fragment_shader_for_2_6_2.glsl" />
     <None Include="Transformations\vertex_shader_for_2_7_1.glsl" />
     <None Include="Transformations\fragment_shader_for_2_7_1.glsl" />
     <None Include="Coordinate_Systems\vertex_shader_for_2_8_1.glsl" />
     <None Include="Coordinate_Systems\fragment_shader_for_2_8_1.glsl" />
-    <None Include="Camera\vertex_shader_for_2_9_1.glsl" />
     <None Include="Camera\fragment_shader_for_2_9_1.glsl" />
   </ItemGroup>
   <ItemGroup>

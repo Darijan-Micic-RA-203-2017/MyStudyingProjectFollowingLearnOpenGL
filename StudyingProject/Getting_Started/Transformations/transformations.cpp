@@ -44,7 +44,8 @@ int draw_transformations()
 	}
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Transformations/vertex_shader_for_2_7_1.glsl", "Transformations/fragment_shader_for_2_7_1.glsl");
+	ShaderProgram ourShaderProgram("Transformations/vertex_shader_for_2_7_1.glsl", 
+		"Transformations/fragment_shader_for_2_7_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();

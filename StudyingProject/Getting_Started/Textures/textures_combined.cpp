@@ -44,7 +44,8 @@ int draw_textures_combined()
 	}
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Textures/vertex_shader_for_2_6_2.glsl", "Textures/fragment_shader_for_2_6_2.glsl");
+	ShaderProgram ourShaderProgram("Textures/vertex_shader_for_2_6_1.glsl", 
+		"Textures/fragment_shader_for_2_6_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();

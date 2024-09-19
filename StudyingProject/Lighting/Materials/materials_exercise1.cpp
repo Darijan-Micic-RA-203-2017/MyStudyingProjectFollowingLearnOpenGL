@@ -77,7 +77,7 @@ int draw_materials_exercise1()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Materials/vertex_shader_for_3_3_2.glsl", 
+	ShaderProgram ourShaderProgram("Basic_Lighting/vertex_shader_for_3_2_1.glsl", 
 		"Materials/fragment_shader_for_3_3_2.glsl");
 	if (ourShaderProgram.errorCode)
 	{

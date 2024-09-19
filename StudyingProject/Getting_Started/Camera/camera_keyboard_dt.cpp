@@ -71,7 +71,8 @@ int draw_camera_keyboard_dt()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Camera/vertex_shader_for_2_9_1.glsl", "Camera/fragment_shader_for_2_9_1.glsl");
+	ShaderProgram ourShaderProgram("Coordinate_Systems/vertex_shader_for_2_8_1.glsl", 
+		"Camera/fragment_shader_for_2_9_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();

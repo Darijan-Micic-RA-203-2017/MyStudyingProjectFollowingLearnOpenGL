@@ -77,7 +77,7 @@ int draw_lighting_maps_exercise4()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compile our shaders and link our shader program using helper class.
-	ShaderProgram ourShaderProgram("Lighting_maps/vertex_shader_for_3_4_4.glsl", 
+	ShaderProgram ourShaderProgram("Lighting_maps/vertex_shader_for_3_4_1.glsl", 
 		"Lighting_maps/fragment_shader_for_3_4_4.glsl");
 	if (ourShaderProgram.errorCode)
 	{
