@@ -8,6 +8,8 @@ struct LightSource
 	// Direction of light (camera's front vector).
 	vec3 direction;
 	// Cosine of cutoff angle that specifies the radius of the spotlight.
+	// If the fragment is inside of the spotlight's radius (cone), it's fully lit.
+	// If the fragment is outside of the spotlight's radius (cone), it stays dark.
 	float cosOfCutoffAngle;
 
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want

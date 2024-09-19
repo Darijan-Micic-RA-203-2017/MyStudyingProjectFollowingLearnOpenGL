@@ -3,9 +3,6 @@
 const int window_width = 800;
 const int window_height = 600;
 
-// Position of light source in world-space coordinates.
-glm::vec3 positionOfLightSource_for_3_5_3(1.2f, 1.0f, 2.0f);
-
 // All settings are kept in an instance of the camera class.
 Camera camera_for_3_5_3(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -277,11 +274,15 @@ int draw_light_casters_spot()
 		// Spotlight source is a light source with a given position in world space that illuminates light rays
 		// ONLY IN A SPECIFIC DIRECTION, with its light rays fading out over distance. That means that only the
 		// objects within a certain radius of the spotlight's direction are lit and everything else stays dark. A
-		// spotlight in OpenGL is represented by: a world-space position, a direction and a cutoff angle that
-		// specifies the radius of the spotlight.
+		// spotlight in OpenGL is represented by:
+		// - world-space position;
+		// - direction;
+		// - cutoff angle, specifying the radius of the spotlight.
+		// If the fragment is inside of the spotlight's radius (cone), it's fully lit.
+		// If the fragment is outside of the spotlight's radius (cone), it stays dark.
 
-		// Set position of light source to global variable "positionOfLightSource".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_3);
+		// Set position of light source to field "cameraPosition" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_3.cameraPosition);
 		// Set direction of light to field "cameraFront" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_3.cameraFront);
 		// Set cosine of cutoff angle to 12.5 degrees converted to radians. Result of dot product between two
