@@ -5,6 +5,10 @@ struct LightSource
 {
 	// Position of light source in world space.
 	vec3 position;
+	// Direction of light (camera's front vector).
+	vec3 direction;
+	// Cosine of cutoff angle that specifies the radius of the spotlight.
+	float cosOfCutoffAngle;
 
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
 	// the ambient color to be too dominant.
@@ -61,12 +65,29 @@ void main()
 {
 	vec3 ambientColor = lightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
 
-	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
 	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
 	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
 	vec3 lightDirection = normalize(lightSource.position - FragPos);
+	// The cosine of angle between the "light's direction" and the spotlight's direction (camera's front vector).
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If fragment falls outside of spotlight's radius, calculated cosine will be smaller than cosine of cutoff
+	// angle. Cosine function has it's highest values when the angle is smallest. Spotlight's direction (camera's
+	// front vector) needs to be negated so that it points towards the light source (the camera itself).
+	float cosOfAngleBetweenLightDirAndSpotDir = dot(lightDirection, normalize(-lightSource.direction));
+	if (cosOfAngleBetweenLightDirAndSpotDir < lightSource.cosOfCutoffAngle)
+	{
+		// Perceived (reflected) color of the object is only the object's ambient color component, since it's
+		// outside of spotlight's radius.
+		vec3 resultingColorOfFragment = ambientColor;
+		FragColor = vec4(ambientColor, 1.0f);
+
+		return;
+	}
+
+	vec3 normal = normalize(Normal);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -100,8 +121,9 @@ void main()
 	// Fatt = 1.0f / (Kc + Kl * d + Kq * d^2).
 	float attenuationFactor = 1.0f / (lightSource.constantParameterOfAttenuation + 
 		lightSource.linearParameterOfAttenuation * d + lightSource.quadraticParameterOfAttenuation * pow(d, 2.0f));
-	// Use attenuation factor on each Phong lighting model's component of fragment's color.
-	ambientColor *= attenuationFactor;
+	// Use attenuation factor only on diffuse and specular Phong lighting model's components of fragment's color.
+	// Ambient component shouldn't be attenuated when using a spotlight. Doing so would result in light having a
+	// lower intensity inside of spotlight's radius than outside of it at greater distances.
 	diffuseColor *= attenuationFactor;
 	specularColor *= attenuationFactor;
 

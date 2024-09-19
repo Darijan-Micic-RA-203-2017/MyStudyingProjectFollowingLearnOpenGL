@@ -85,15 +85,6 @@ int draw_light_casters_spot()
 
 		return ourShaderProgram.errorCode;
 	}
-	// Compile our light source shaders and link our light source shader program using helper class.
-	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
-		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
-	if (ourLightSourceShaderProgram.errorCode)
-	{
-		glfwTerminate();
-
-		return ourLightSourceShaderProgram.errorCode;
-	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
@@ -194,23 +185,6 @@ int draw_light_casters_spot()
 	// Enable vertex texture coordinate attribute.
 	glEnableVertexAttribArray(2u);
 
-	// Create memory on the GPU where vertex data of light source will be stored.
-	unsigned int lightSourceVAO;
-	glGenVertexArrays(1, &lightSourceVAO);
-
-	// Bind (assign) the newly created VAO to OpenGL's context.
-	glBindVertexArray(lightSourceVAO);
-
-	// Bind (assign) the previously created VBO to OpenGL's context. We use the same VBO, because the light source
-	// object will use the same vertices as the object in scene (light source is also a 3D cube).
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
-	// Position attribute.
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
-	// Enable vertex position attribute.
-	glEnableVertexAttribArray(0u);
-
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
 	// This also means it stores its unbind calls, so
@@ -274,10 +248,6 @@ int draw_light_casters_spot()
 		positionOfLightSource_for_3_4_2.y = sin(time / 2.0f);
 		*/
 
-		// Activate the shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourShaderProgram.useProgram();
-
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
@@ -304,8 +274,23 @@ int draw_light_casters_spot()
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_5_3.cameraPosition);
 
+		// Spotlight source is a light source with a given position in world space that illuminates light rays
+		// ONLY IN A SPECIFIC DIRECTION, with its light rays fading out over distance. That means that only the
+		// objects within a certain radius of the spotlight's direction are lit and everything else stays dark. A
+		// spotlight in OpenGL is represented by: a world-space position, a direction and a cutoff angle that
+		// specifies the radius of the spotlight.
+
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_3);
+		// Set direction of light to field "cameraFront" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_3.cameraFront);
+		// Set cosine of cutoff angle to 12.5 degrees converted to radians. Result of dot product between two
+		// vectors is cosine of angle between them. In our case, those two vectors will be the "light's direction"
+		// (result of subtracting fragment's position from light source's position) and spotlight direction
+		// (camera's front vector). Calculating the inverse cosine is an expensive operation in shaders, so that's
+		// why we're sending a cosine of cutoff angle instead of cutoff angle itself.
+		ourShaderProgram.setFloatUniform("lightSource.cosOfCutoffAngle", glm::cos(glm::radians(12.5f)));
+
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
 		/*
@@ -314,20 +299,18 @@ int draw_light_casters_spot()
 		colorOfLight.y = sin(time * 0.7f);
 		colorOfLight.z = sin(time * 1.3f);
 		*/
-		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
-		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;
+		// Set ambient component color of light source to (0.1f, 0.1f, 0.1f).
+		glm::vec3 ambientColorOfLight = glm::vec3(0.1f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
-		// Set diffuse component color of light source to (0.5f, 0.5f, 0.5f).
+		// Set diffuse component color of light source to (0.8f, 0.8f, 0.8f).
 		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		glm::vec3 diffuseColorOfLight = glm::vec3(0.5f) * colorOfLight;
+		glm::vec3 diffuseColorOfLight = glm::vec3(0.8f) * colorOfLight;
 		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
 		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
 
-		// Point light source is a light source with a given position in world space that illuminates in all
-		// directions, with its light rays fading out over distance. The process of reducing the light's intensity
-		// over the distance a light ray travels is called ATTENUATION.
+		// The process of reducing the light's intensity over the distance a light ray travels is called ATTENUATION.
 		// Simple linear equation would produce unrealistic results which would look fake. Lights in the real
 		// world are generally quite bright when standing close by, but their brightness reduces in a linear
 		// fashion only up to a certain distance point. At that distance point, equation denominator's quadratic
@@ -360,13 +343,12 @@ int draw_light_casters_spot()
 		// Render 3D cube.
 		glBindVertexArray(VAO);
 		// We draw ten cubes.
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		for (unsigned int i = 0u; i < 10u; i++)
 		{
 			// The model matrix transforms local space coordinates to world space coordinates.
 			// We will transform every cube by rotating it once around the (1.0f, 0.3f, 0.5f) axis and translating
 			// it to its corresponding specified position.
-			modelMatrix = glm::mat4(1.0f);
+			glm::mat4 modelMatrix = glm::mat4(1.0f);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
 			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
 			// the angle's value from degrees.
@@ -389,29 +371,6 @@ int draw_light_casters_spot()
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-
-		// Activate the light source shader program.
-		// Every shader and rendering call from now on will use this shader program object.
-		ourLightSourceShaderProgram.useProgram();
-
-		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
-		// Set the view matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
-
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We will transform 3D cube that is object of our scene, thus copying it to become a representation of
-		// our light source. We will scale it to 1/5 of its initial size and finally translate it to specified
-		// position of light source.
-		modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, positionOfLightSource_for_3_5_3);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-		// Set the model matrix. This matrix changes each frame.
-		ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
-
-		// Render light source, represented by a 3D cube.
-		glBindVertexArray(lightSourceVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Third part: Swap buffers, check for events and call the events if they occured.
 		glfwSwapBuffers(window);
