@@ -545,9 +545,9 @@ void cursor_pos_callback_for_camera_mouse_zoom(GLFWwindow* window, double xpos, 
 	// 4. and final step: calculate ACTUAL camera's direction vector, the result of subtracting camera's position
 	// from camera's target (thus visually ending at camera's target, minuend of subtraction).
 	glm::vec3 direction = glm::vec3(0.0f);
-	direction.x = cos(glm::radians(pitch_for_2_9_3)) * cos(glm::radians(yaw_for_2_9_3));
-	direction.y = sin(glm::radians(pitch_for_2_9_3));
-	direction.z = cos(glm::radians(pitch_for_2_9_3)) * sin(glm::radians(yaw_for_2_9_3));
+	direction.x = glm::cos(glm::radians(pitch_for_2_9_3)) * glm::cos(glm::radians(yaw_for_2_9_3));
+	direction.y = glm::sin(glm::radians(pitch_for_2_9_3));
+	direction.z = glm::cos(glm::radians(pitch_for_2_9_3)) * glm::sin(glm::radians(yaw_for_2_9_3));
 	cameraFront_for_2_9_3 = glm::normalize(direction);
 }
 

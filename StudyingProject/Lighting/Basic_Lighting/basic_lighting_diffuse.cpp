@@ -6,7 +6,7 @@ const int window_height = 600;
 // Position of light source in world-space coordinates.
 glm::vec3 positionOfLightSource_for_3_2_1(1.2f, 1.0f, 2.0f);
 
-// All setting are kept in an instance of the camera class.
+// All settings are kept in an instance of the camera class.
 Camera camera_for_3_2_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_3_2_1 = true;
@@ -255,8 +255,10 @@ int draw_basic_lighting_diffuse()
 
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_1);
+
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
+
 		// Set color of object to coral.
 		ourShaderProgram.setFloatVec3Uniform("colorOfObject", glm::vec3(1.0f, 0.5f, 0.31f));
 

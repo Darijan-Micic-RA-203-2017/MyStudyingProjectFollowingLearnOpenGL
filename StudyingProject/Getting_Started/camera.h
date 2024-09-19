@@ -53,9 +53,9 @@ public:
 		// Calculate ACTUAL camera's direction vector, the result of subtracting camera's position from camera's
 		// target (thus visually ending at camera's target, minuend of subtraction).
 		glm::vec3 direction = glm::vec3(0.0f);
-		direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+		direction.x = glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw));
+		direction.y = glm::sin(glm::radians(pitch));
+		direction.z = glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw));
 		cameraFront = glm::normalize(direction);
 
 		// "Camera's direction". It's a bad name, because we actually need the direction TO camera.

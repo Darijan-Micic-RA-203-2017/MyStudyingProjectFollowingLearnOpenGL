@@ -6,7 +6,7 @@ const int window_height = 600;
 // Position of light source in world-space coordinates.
 glm::vec3 positionOfLightSource_for_3_2_2(1.2f, 1.0f, 2.0f);
 
-// All setting are kept in an instance of the camera class.
+// All settings are kept in an instance of the camera class.
 Camera camera_for_3_2_2(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_3_2_2 = true;
@@ -223,8 +223,8 @@ int draw_basic_lighting_specular()
 		// Move light source around the scene over time.
 		/*
 		float time = static_cast<float>(glfwGetTime());
-		positionOfLightSource_for_3_2_2.x = sin(time) * 2.0f + 1.0f;
-		positionOfLightSource_for_3_2_2.y = sin(time / 2.0f);
+		positionOfLightSource_for_3_2_2.x = glm::sin(time) * 2.0f + 1.0f;
+		positionOfLightSource_for_3_2_2.y = glm::sin(time / 2.0f);
 		*/
 
 		// Activate the shader program.
@@ -262,10 +262,13 @@ int draw_basic_lighting_specular()
 
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_2_2.cameraPosition);
+
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("positionOfLightSource", positionOfLightSource_for_3_2_2);
+
 		// Set color of light source to white.
 		ourShaderProgram.setFloatVec3Uniform("colorOfLightSource", glm::vec3(1.0f, 1.0f, 1.0f));
+
 		// Set color of object to coral.
 		ourShaderProgram.setFloatVec3Uniform("colorOfObject", glm::vec3(1.0f, 0.5f, 0.31f));
 

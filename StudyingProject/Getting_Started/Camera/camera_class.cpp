@@ -3,7 +3,7 @@
 const int window_width = 800;
 const int window_height = 600;
 
-// All setting are kept in an instance of the camera class.
+// All settings are kept in an instance of the camera class.
 Camera camera_for_2_9_4(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_2_9_4 = true;

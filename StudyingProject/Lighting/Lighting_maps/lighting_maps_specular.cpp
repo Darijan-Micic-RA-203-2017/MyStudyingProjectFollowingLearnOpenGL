@@ -6,7 +6,7 @@ const int window_height = 600;
 // Position of light source in world-space coordinates.
 glm::vec3 positionOfLightSource_for_3_4_2(1.2f, 1.0f, 2.0f);
 
-// All setting are kept in an instance of the camera class.
+// All settings are kept in an instance of the camera class.
 Camera camera_for_3_4_2(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_3_4_2 = true;
@@ -257,8 +257,8 @@ int draw_lighting_maps_specular()
 		// Move light source around the scene over time.
 		/*
 		float time = static_cast<float>(glfwGetTime());
-		positionOfLightSource_for_3_4_2.x = sin(time) * 2.0f + 1.0f;
-		positionOfLightSource_for_3_4_2.y = sin(time / 2.0f);
+		positionOfLightSource_for_3_4_2.x = glm::sin(time) * 2.0f + 1.0f;
+		positionOfLightSource_for_3_4_2.y = glm::sin(time / 2.0f);
 		*/
 
 		// Activate the shader program.
@@ -308,13 +308,14 @@ int draw_lighting_maps_specular()
 
 		// Set position of light source to global variable "positionOfLightSource".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_4_2);
+
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
 		/*
 		float time = static_cast<float>(glfwGetTime());
-		colorOfLight.x = sin(time * 2.0f);
-		colorOfLight.y = sin(time * 0.7f);
-		colorOfLight.z = sin(time * 1.3f);
+		colorOfLight.x = glm::sin(time * 2.0f);
+		colorOfLight.y = glm::sin(time * 0.7f);
+		colorOfLight.z = glm::sin(time * 1.3f);
 		*/
 		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
 		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;

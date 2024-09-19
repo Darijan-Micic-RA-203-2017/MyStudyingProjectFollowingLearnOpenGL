@@ -6,7 +6,7 @@ const int window_height = 600;
 // Direction of light, as vector pointing from directional light source infinitely far away from scene.
 glm::vec3 directionOfLight_for_3_5_1(-0.2f, -1.0f, -0.3f);
 
-// All setting are kept in an instance of the camera class.
+// All settings are kept in an instance of the camera class.
 Camera camera_for_3_5_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_3_5_1 = true;
@@ -244,8 +244,8 @@ int draw_light_casters_directional()
 		// Move light source around the scene over time.
 		/*
 		float time = static_cast<float>(glfwGetTime());
-		positionOfLightSource_for_3_4_2.x = sin(time) * 2.0f + 1.0f;
-		positionOfLightSource_for_3_4_2.y = sin(time / 2.0f);
+		positionOfLightSource_for_3_4_2.x = glm::sin(time) * 2.0f + 1.0f;
+		positionOfLightSource_for_3_4_2.y = glm::sin(time / 2.0f);
 		*/
 
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
@@ -281,13 +281,14 @@ int draw_light_casters_directional()
 
 		// Set direction of light to global variable "directionOfLight".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", directionOfLight_for_3_5_1);
+
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
 		/*
 		float time = static_cast<float>(glfwGetTime());
-		colorOfLight.x = sin(time * 2.0f);
-		colorOfLight.y = sin(time * 0.7f);
-		colorOfLight.z = sin(time * 1.3f);
+		colorOfLight.x = glm::sin(time * 2.0f);
+		colorOfLight.y = glm::sin(time * 0.7f);
+		colorOfLight.z = glm::sin(time * 1.3f);
 		*/
 		// Set ambient component color of light source to (0.2f, 0.2f, 0.2f).
 		glm::vec3 ambientColorOfLight = glm::vec3(0.2f) * colorOfLight;

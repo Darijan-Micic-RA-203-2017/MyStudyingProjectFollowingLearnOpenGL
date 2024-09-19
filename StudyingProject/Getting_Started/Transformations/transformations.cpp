@@ -297,7 +297,7 @@ int draw_transformations()
 		// Translate object to the top left corner of window.
 		transformationalMatrix = glm::translate(transformationalMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
 		// Scale object over time, using sin function.
-		float scalingFactor = static_cast<float>(sin(glfwGetTime()));
+		float scalingFactor = static_cast<float>(glm::sin(glfwGetTime()));
 		transformationalMatrix = glm::scale(transformationalMatrix, 
 			glm::vec3(scalingFactor, scalingFactor, scalingFactor));
 

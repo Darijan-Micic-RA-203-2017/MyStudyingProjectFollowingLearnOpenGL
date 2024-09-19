@@ -12,11 +12,6 @@
 class Camera
 {
 private:
-	// This vector acts as insurance that however we move, camera keeps looking straight ahead.
-	// Math's explained below. In 2. thing we need to manually create LookAt matrix - "camera's direction":
-	// glm::vec3 cameraTarget = cameraPosition + cameraFront;
-	// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 2.0f);
 	glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -36,6 +31,11 @@ private:
 	float yaw = -90.0f;
 public:
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+	// This vector acts as insurance that however we move, camera keeps looking straight ahead.
+	// Math's explained below. In 2. thing we need to manually create LookAt matrix - "camera's direction":
+	// glm::vec3 cameraTarget = cameraPosition + cameraFront;
+	// glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget) = glm::normalize(-cameraFront);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	float fov = 45.0f;
 
 	Camera(glm::vec3 cameraPosition, glm::vec3 cameraFront, glm::vec3 upVector)
@@ -53,9 +53,9 @@ public:
 		// Calculate ACTUAL camera's direction vector, the result of subtracting camera's position from camera's
 		// target (thus visually ending at camera's target, minuend of subtraction).
 		glm::vec3 direction = glm::vec3(0.0f);
-		direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+		direction.x = glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw));
+		direction.y = glm::sin(glm::radians(pitch));
+		direction.z = glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw));
 		cameraFront = glm::normalize(direction);
 
 		// "Camera's direction". It's a bad name, because we actually need the direction TO camera.

@@ -352,8 +352,8 @@ int draw_camera_circle()
 		float time = static_cast<float>(glfwGetTime());
 		// The smaller the circle is, the closer the camera is to the scene and vice-versa.
 		float radius = 10.0f;
-		float cameraPositionX = sin(time) * radius;
-		float cameraPositionZ = cos(time) * radius;
+		float cameraPositionX = glm::sin(time) * radius;
+		float cameraPositionZ = glm::cos(time) * radius;
 		glm::vec3 cameraPosition = glm::vec3(cameraPositionX, 0.0f, cameraPositionZ);
 		// 2. thing we need to create a LookAt matrix: the "camera's direction". It's a bad name, because we
 		// actually need the direction TO camera.
