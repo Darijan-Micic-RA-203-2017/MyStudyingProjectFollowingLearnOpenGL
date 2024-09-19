@@ -3,9 +3,6 @@
 const int window_width = 800;
 const int window_height = 600;
 
-// Position of light source in world-space coordinates.
-glm::vec3 positionOfLightSource_for_3_5_4(1.2f, 1.0f, 2.0f);
-
 // All settings are kept in an instance of the camera class.
 Camera camera_for_3_5_4(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -276,20 +273,38 @@ int draw_light_casters_spot_smooth()
 
 		// Spotlight source is a light source with a given position in world space that illuminates light rays
 		// ONLY IN A SPECIFIC DIRECTION, with its light rays fading out over distance. That means that only the
-		// objects within a certain radius of the spotlight's direction are lit and everything else stays dark. A
-		// spotlight in OpenGL is represented by: a world-space position, a direction and a cutoff angle that
-		// specifies the radius of the spotlight.
+		// objects within the inner cone of the spotlight's direction are fully lit. Objects between the inner and
+		// the outer cone of the spotlight's direction are partially lit. Objects outside of the outer cone of the
+		// spotlight's direction stay dark. A realistic spotlight in OpenGL is represented by:
+		// - world-space position;
+		// - direction;
+		// - inner cutoff angle, specifying the radius of the spotlight;
+		// - outer cutoff angle, allowing a gradual reducing of light's intensity through the space between the
+		// spotlight's cones.
+		// If the fragment is between the inner and the outer cone, its intensity should be in (0.0f, 1.0f) range.
+		// If the fragment is inside of the inner cone, its intensity should be CLAMPED TO 1.0f.
+		// If the fragment is outside of the outer cone, its intensity should be CLAMPED TO 0.0f.
+		// Equation of light's intensity "I" that represents edge clamping factor:
+		// I = (cos(theta) - cos(y)) / epsilon = (cos(theta) - cos(y)) / (cos(phi) - cos(y))
+		// theta - angle between the "light's direction" and the spotlight's direction
+		// phi - inner cutoff angle
+		// y - outer cutoff angle
 
-		// Set position of light source to global variable "positionOfLightSource".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", positionOfLightSource_for_3_5_4);
+		// Set position of light source to field "cameraPosition" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_4.cameraPosition);
 		// Set direction of light to field "cameraFront" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_4.cameraFront);
-		// Set cosine of cutoff angle to 12.5 degrees converted to radians. Result of dot product between two
-		// vectors is cosine of angle between them. In our case, those two vectors will be the "light's direction"
-		// (result of subtracting fragment's position from light source's position) and spotlight direction
-		// (camera's front vector). Calculating the inverse cosine is an expensive operation in shaders, so that's
-		// why we're sending a cosine of cutoff angle instead of cutoff angle itself.
-		ourShaderProgram.setFloatUniform("lightSource.cosOfCutoffAngle", glm::cos(glm::radians(12.5f)));
+		// Set cosine of inner cutoff angle to 12.5 degrees converted to radians. Inner cutoff angle is the angle
+		// between the "light's direction" and the inner cone's vector (equal to its radius).
+		// Result of dot product between two vectors is cosine of angle between them. In our case, those two
+		// vectors will be the "light's direction" (result of subtracting fragment's position from light source's
+		// position) and spotlight direction (camera's front vector). Calculating the inverse cosine is an
+		// expensive operation in shaders, so that's why we're sending a cosine of cutoff angle instead of cutoff
+		// angle itself.
+		ourShaderProgram.setFloatUniform("lightSource.cosOfInnerCutoffAngle", glm::cos(glm::radians(12.5f)));
+		// Set cosine of outer cutoff angle to 17.5 degrees converted to radians. Outer cutoff angle is the angle
+		// between the "light's direction" and the outer cone's vector (equal to its radius). -||-
+		ourShaderProgram.setFloatUniform("lightSource.cosOfOuterCutoffAngle", glm::cos(glm::radians(17.5f)));
 
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);

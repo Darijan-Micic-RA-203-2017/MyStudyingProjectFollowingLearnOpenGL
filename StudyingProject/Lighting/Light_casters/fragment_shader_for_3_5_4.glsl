@@ -8,7 +8,13 @@ struct LightSource
 	// Direction of light (camera's front vector).
 	vec3 direction;
 	// Cosine of cutoff angle that specifies the radius of the spotlight.
-	float cosOfCutoffAngle;
+	// If the fragment is between the inner and the outer cone, its intensity should be in (0.0f, 1.0f) range.
+	// If the fragment is inside of the inner cone, its intensity should be CLAMPED TO 1.0f.
+	float cosOfInnerCutoffAngle;
+	// Cosine of cutoff angle that specifies the outer edge of the spotlight.
+	// If the fragment is between the inner and the outer cone, its intensity should be in (0.0f, 1.0f) range.
+	// If the fragment is outside of the outer cone, its intensity should be CLAMPED TO 0.0f.
+	float cosOfOuterCutoffAngle;
 
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
 	// the ambient color to be too dominant.
@@ -65,29 +71,12 @@ void main()
 {
 	vec3 ambientColor = lightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
 
+	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
 	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
 	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
 	vec3 lightDirection = normalize(lightSource.position - FragPos);
-	// The cosine of angle between the "light's direction" and the spotlight's direction (camera's front vector).
-	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
-	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
-	// If fragment falls outside of spotlight's radius, calculated cosine will be smaller than cosine of cutoff
-	// angle. Cosine function has it's highest values when the angle is smallest. Spotlight's direction (camera's
-	// front vector) needs to be negated so that it points towards the light source (the camera itself).
-	float cosOfAngleBetweenLightDirAndSpotDir = dot(lightDirection, normalize(-lightSource.direction));
-	if (cosOfAngleBetweenLightDirAndSpotDir < lightSource.cosOfCutoffAngle)
-	{
-		// Perceived (reflected) color of the object is only the object's ambient color component, since it's
-		// outside of spotlight's radius.
-		vec3 resultingColorOfFragment = ambientColor;
-		FragColor = vec4(ambientColor, 1.0f);
-
-		return;
-	}
-
-	vec3 normal = normalize(Normal);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -113,6 +102,33 @@ void main()
 	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
 	vec3 specularColor = lightSource.specularColor * 
 		(specularFactor * vec3(texture(material.specularMap, TexCoords)));
+
+	// The cosine of angle between the "light's direction" and the spotlight's direction (camera's front vector).
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If fragment falls outside of spotlight's radius, calculated cosine will be smaller than cosine of cutoff
+	// angle. Cosine function has it's highest values when the angle is smallest. Spotlight's direction (camera's
+	// front vector) needs to be negated so that it points towards the light source (the camera itself).
+	float cosOfAngleBetweenLightDirAndSpotDir = dot(lightDirection, normalize(-lightSource.direction));
+	// Calculate width of ring between the spotlight's outer cone and inner cone.
+	// epsilon = (cos(phi) - cos(y))
+	// phi - inner cutoff angle
+	// y - outer cutoff angle
+	float epsilon = lightSource.cosOfInnerCutoffAngle - lightSource.cosOfOuterCutoffAngle;
+	// Calculate edge smoothing factor, which is basically the intensity of light "I". We are thinking of
+	// intensity of light in regards to where the fragment is positioned relative to spotlight's inner and outer
+	// cones. Make sure to clamp calculated intensity to [0.0f, 1.0f] range using GLSL's built-in "clamp" function.
+	// I = (cos(theta) - cos(y)) / epsilon = (cos(theta) - cos(y)) / (cos(phi) - cos(y)).
+	// theta - angle beteeen the "light's direction" and the spotlight's direction
+	// phi - inner cutoff angle
+	// y - outer cutoff angle
+	float edgeSmoothingFactor = 
+		clamp((cosOfAngleBetweenLightDirAndSpotDir - lightSource.cosOfOuterCutoffAngle) / epsilon, 0.0f, 1.0f);
+	// Use edge smoothing factor only on diffuse and specular Phong lighting model's components of fragment's color.
+	// Ambient component shouldn't be smoothed when using a spotlight. Doing so would result in light having a
+	// lower intensity inside of spotlight's radius than outside of it at greater distances.
+	diffuseColor *= edgeSmoothingFactor;
+	specularColor *= edgeSmoothingFactor;
 
 	// Calculate distance between fragment and light source using GLSL's built-in "length" function.
 	float d = length(lightSource.position - FragPos);
