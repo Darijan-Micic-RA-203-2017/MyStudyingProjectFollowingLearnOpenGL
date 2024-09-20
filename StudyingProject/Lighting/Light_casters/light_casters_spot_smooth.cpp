@@ -290,10 +290,10 @@ int draw_light_casters_spot_smooth()
 		// phi - inner cutoff angle
 		// y - outer cutoff angle
 
-		// Set position of light source to field "cameraPosition" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_4.cameraPosition);
 		// Set direction of light to field "cameraFront" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_4.cameraFront);
+		// Set position of light source to field "cameraPosition" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_4.cameraPosition);
 		// Set cosine of inner cutoff angle to 12.5 degrees converted to radians. Inner cutoff angle is the angle
 		// between the "light's direction" and the inner cone's vector (equal to its radius).
 		// Result of dot product between two vectors is cosine of angle between them. In our case, those two
@@ -341,8 +341,8 @@ int draw_light_casters_spot_smooth()
 		// d = 50.0f:       1.0f             0.09f              0.032f
 		// REFERENCE: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
 
-		// Set constant parameter of attenuation to 0.0f.
-		float constantParameterOfAttenuation = 0.0f;
+		// Set constant parameter of attenuation to 1.0f.
+		float constantParameterOfAttenuation = 1.0f;
 		ourShaderProgram.setFloatUniform("lightSource.constantParameterOfAttenuation", constantParameterOfAttenuation);
 		// Set linear parameter of attenuation to 0.09f.
 		float linearParameterOfAttenuation = 0.09f;

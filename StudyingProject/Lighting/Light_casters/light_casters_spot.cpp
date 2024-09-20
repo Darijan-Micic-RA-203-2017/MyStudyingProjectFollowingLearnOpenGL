@@ -281,10 +281,10 @@ int draw_light_casters_spot()
 		// If the fragment is inside of the spotlight's radius (cone), it's fully lit.
 		// If the fragment is outside of the spotlight's radius (cone), it stays dark.
 
-		// Set position of light source to field "cameraPosition" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_3.cameraPosition);
 		// Set direction of light to field "cameraFront" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_5_3.cameraFront);
+		// Set position of light source to field "cameraPosition" of global object "camera".
+		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_5_3.cameraPosition);
 		// Set cosine of cutoff angle to 12.5 degrees converted to radians. Result of dot product between two
 		// vectors is cosine of angle between them. In our case, those two vectors will be the "light's direction"
 		// (result of subtracting fragment's position from light source's position) and spotlight direction
@@ -327,8 +327,8 @@ int draw_light_casters_spot()
 		// d = 50.0f:       1.0f             0.09f              0.032f
 		// REFERENCE: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
 
-		// Set constant parameter of attenuation to 0.0f.
-		float constantParameterOfAttenuation = 0.0f;
+		// Set constant parameter of attenuation to 1.0f.
+		float constantParameterOfAttenuation = 1.0f;
 		ourShaderProgram.setFloatUniform("lightSource.constantParameterOfAttenuation", constantParameterOfAttenuation);
 		// Set linear parameter of attenuation to 0.09f.
 		float linearParameterOfAttenuation = 0.09f;
