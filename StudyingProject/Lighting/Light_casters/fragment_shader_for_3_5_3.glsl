@@ -3,10 +3,10 @@
 // "LightSource" structure contains 4 necessary properties of the light source.
 struct LightSource
 {
-	// Position of light source in world space.
-	vec3 position;
 	// Direction of light (camera's front vector).
 	vec3 direction;
+	// Position of light source in world space (camera's position).
+	vec3 position;
 	// Cosine of cutoff angle that specifies the radius of the spotlight.
 	// If the fragment is inside of the spotlight's radius (cone), it's fully lit.
 	// If the fragment is outside of the spotlight's radius (cone), it stays dark.

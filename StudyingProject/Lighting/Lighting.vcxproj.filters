@@ -76,6 +76,9 @@
     <ClInclude Include="Light_casters\light_casters_spot_smooth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Multiple_lights\multiple_lights.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -130,6 +133,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Light_casters\light_casters_spot_smooth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multiple_lights\multiple_lights.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -204,6 +210,9 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="Light_casters\fragment_shader_for_3_5_4.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Multiple_lights\fragment_shader_for_3_6_1.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

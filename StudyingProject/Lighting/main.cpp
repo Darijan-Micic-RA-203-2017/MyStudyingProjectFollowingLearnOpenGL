@@ -13,6 +13,7 @@
 #include "Light_casters/light_casters_point.h"
 #include "Light_casters/light_casters_spot.h"
 #include "Light_casters/light_casters_spot_smooth.h"
+#include "Multiple_lights/multiple_lights.h"
 
 int main()
 {
@@ -21,7 +22,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 15}: ";
+		std::cout << "Enter argument from set {1, ..., 16}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -99,6 +100,11 @@ int main()
 		case 15:
 			returnValue = draw_light_casters_spot_smooth();
 			std::cout << "\"Lighting - Light casters, spot with smooth edges\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 16:
+			returnValue = draw_multiple_lights();
+			std::cout << "\"Lighting - Multiple lights\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
