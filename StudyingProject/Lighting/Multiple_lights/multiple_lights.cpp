@@ -291,9 +291,9 @@ int draw_multiple_lights()
 		// y - outer cutoff angle
 
 		// Set direction of light to field "cameraFront" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.direction", camera_for_3_6_1.cameraFront);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.direction", camera_for_3_6_1.cameraFront);
 		// Set position of light source to field "cameraPosition" of global object "camera".
-		ourShaderProgram.setFloatVec3Uniform("lightSource.position", camera_for_3_6_1.cameraPosition);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.position", camera_for_3_6_1.cameraPosition);
 		// Set cosine of inner cutoff angle to 12.5 degrees converted to radians. Inner cutoff angle is the angle
 		// between the "light's direction" and the inner cone's vector (equal to its radius).
 		// Result of dot product between two vectors is cosine of angle between them. In our case, those two
@@ -301,10 +301,10 @@ int draw_multiple_lights()
 		// position) and spotlight direction (camera's front vector). Calculating the inverse cosine is an
 		// expensive operation in shaders, so that's why we're sending a cosine of cutoff angle instead of cutoff
 		// angle itself.
-		ourShaderProgram.setFloatUniform("lightSource.cosOfInnerCutoffAngle", glm::cos(glm::radians(12.5f)));
+		ourShaderProgram.setFloatUniform("spotlight.cosOfInnerCutoffAngle", glm::cos(glm::radians(12.5f)));
 		// Set cosine of outer cutoff angle to 17.5 degrees converted to radians. Outer cutoff angle is the angle
 		// between the "light's direction" and the outer cone's vector (equal to its radius). -||-
-		ourShaderProgram.setFloatUniform("lightSource.cosOfOuterCutoffAngle", glm::cos(glm::radians(17.5f)));
+		ourShaderProgram.setFloatUniform("spotlight.cosOfOuterCutoffAngle", glm::cos(glm::radians(17.5f)));
 
 		// Change color of light over time.
 		glm::vec3 colorOfLight = glm::vec3(1.0f);
@@ -316,14 +316,14 @@ int draw_multiple_lights()
 		*/
 		// Set ambient component color of light source to (0.1f, 0.1f, 0.1f).
 		glm::vec3 ambientColorOfLight = glm::vec3(0.1f) * colorOfLight;
-		ourShaderProgram.setFloatVec3Uniform("lightSource.ambientColor", ambientColorOfLight);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.ambientColor", ambientColorOfLight);
 		// Set diffuse component color of light source to (0.8f, 0.8f, 0.8f).
 		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
 		glm::vec3 diffuseColorOfLight = glm::vec3(0.8f) * colorOfLight;
-		ourShaderProgram.setFloatVec3Uniform("lightSource.diffuseColor", diffuseColorOfLight);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.diffuseColor", diffuseColorOfLight);
 		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
 		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
-		ourShaderProgram.setFloatVec3Uniform("lightSource.specularColor", specularColorOfLight);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.specularColor", specularColorOfLight);
 
 		// The process of reducing the light's intensity over the distance a light ray travels is called ATTENUATION.
 		// Simple linear equation would produce unrealistic results which would look fake. Lights in the real
@@ -343,13 +343,13 @@ int draw_multiple_lights()
 
 		// Set constant parameter of attenuation to 1.0f.
 		float constantParameterOfAttenuation = 1.0f;
-		ourShaderProgram.setFloatUniform("lightSource.constantParameterOfAttenuation", constantParameterOfAttenuation);
+		ourShaderProgram.setFloatUniform("spotlight.constantParameterOfAttenuation", constantParameterOfAttenuation);
 		// Set linear parameter of attenuation to 0.09f.
 		float linearParameterOfAttenuation = 0.09f;
-		ourShaderProgram.setFloatUniform("lightSource.linearParameterOfAttenuation", linearParameterOfAttenuation);
+		ourShaderProgram.setFloatUniform("spotlight.linearParameterOfAttenuation", linearParameterOfAttenuation);
 		// Set quadratic parameter of attenuation to 0.032f.
 		float quadraticParameterOfAttenuation = 0.032f;
-		ourShaderProgram.setFloatUniform("lightSource.quadraticParameterOfAttenuation", quadraticParameterOfAttenuation);
+		ourShaderProgram.setFloatUniform("spotlight.quadraticParameterOfAttenuation", quadraticParameterOfAttenuation);
 
 		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
 		float shininessOfHighlight = 32.0f;

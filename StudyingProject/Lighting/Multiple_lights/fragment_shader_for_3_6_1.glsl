@@ -67,16 +67,33 @@ uniform Spotlight spotlight;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
 uniform Material material;
 
+// Functions in GLSL are just like functions in C. We have a function name, a return type and we need to declare
+// a prototype at the top of the code file if the function hasn't yet been declared before the main function.
+// We'll create a different function for each type of light source.
+vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection);
+
 void main()
 {
-	vec3 ambientColor = spotlight.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
-
 	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
 	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
 	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
 	vec3 lightDirection = normalize(spotlight.position - FragPos);
+
+	// Perceived (reflected) color of the object is calculated by doing an addition of effects from all
+	// directional light sources, point light sources and spotlights.
+	vec3 resultingColorOfFragment = vec3(0.0f);
+	resultingColorOfFragment += calculateColorOfFragmentGottenFromSpotlight(spotlight, normal, lightDirection);
+
+	FragColor = vec4(resultingColorOfFragment, 1.0f);
+}
+
+// Utility function for calculating color of fragment gotten from spotlight.
+vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection)
+{
+	vec3 ambientColor = spotlight.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
+
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -146,4 +163,6 @@ void main()
 	// ambient color, diffuse color and specular color.
 	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor;
 	FragColor = vec4(resultingColorOfFragment, 1.0f);
+
+	return resultingColorOfFragment;
 }
