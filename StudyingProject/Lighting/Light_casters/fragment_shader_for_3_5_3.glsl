@@ -1,11 +1,11 @@
 #version 330 core
 
-// "LightSource" structure contains 4 necessary properties of the light source.
+// "LightSource" structure contains 10 necessary properties of the spotlight.
 struct LightSource
 {
 	// Direction of light (camera's front vector).
 	vec3 direction;
-	// Position of light source in world space (camera's position).
+	// Position of spotlight in world space (camera's position).
 	vec3 position;
 	// Cosine of cutoff angle that specifies the radius of the spotlight.
 	// If the fragment is inside of the spotlight's radius (cone), it's fully lit.
@@ -58,7 +58,7 @@ out vec4 FragColor;
 
 // Pass the position of viewer (needed for specular component of Phong lighting model).
 uniform vec3 positionOfViewer;
-// Pass the light source (needed for all 3 components of Phong lighting model).
+// Pass the spotlight.
 uniform LightSource lightSource;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
 uniform Material material;

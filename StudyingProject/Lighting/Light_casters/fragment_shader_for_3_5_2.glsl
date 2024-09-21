@@ -1,9 +1,9 @@
 #version 330 core
 
-// "LightSource" structure contains 4 necessary properties of the light source.
+// "LightSource" structure contains 7 necessary properties of the point light source.
 struct LightSource
 {
-	// Position of light source in world space.
+	// Position of point light source in world space.
 	vec3 position;
 
 	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
@@ -52,7 +52,7 @@ out vec4 FragColor;
 
 // Pass the position of viewer (needed for specular component of Phong lighting model).
 uniform vec3 positionOfViewer;
-// Pass the light source (needed for all 3 components of Phong lighting model).
+// Pass the point light source.
 uniform LightSource lightSource;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
 uniform Material material;

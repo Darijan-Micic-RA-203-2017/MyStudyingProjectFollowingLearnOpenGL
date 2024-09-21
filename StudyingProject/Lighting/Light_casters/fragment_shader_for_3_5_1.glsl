@@ -1,6 +1,6 @@
 #version 330 core
 
-// "LightSource" structure contains 4 necessary properties of the light source.
+// "LightSource" structure contains 4 necessary properties of the directional light source.
 struct LightSource
 {
 	// Direction of light in world space. Directional light source is modeled to be infinitely far away from all
@@ -42,7 +42,7 @@ out vec4 FragColor;
 
 // Pass the position of viewer (needed for specular component of Phong lighting model).
 uniform vec3 positionOfViewer;
-// Pass the light source (needed for all 3 components of Phong lighting model).
+// Pass the directional light source.
 uniform LightSource lightSource;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
 uniform Material material;
