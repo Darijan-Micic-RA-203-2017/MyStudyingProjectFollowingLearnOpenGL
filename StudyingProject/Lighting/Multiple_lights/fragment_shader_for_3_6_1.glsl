@@ -1,5 +1,23 @@
 #version 330 core
 
+// "DirectionalLightSource" structure contains 4 necessary properties of the directional light source.
+struct DirectionalLightSource
+{
+	// Direction of light in world space. Directional light source is modeled to be infinitely far away from all
+	// objects, which makes the light rays it's emitting to be parallel to each other. It looks like all light rays
+	// are coming from the same direction, regardless of where the object and the viewer are positioned.
+	// Position of light source no longer matters, so it is replaced with direction of light.
+	vec3 direction;
+
+	// Intensity of the ambient lighting component. It's usually set to a low intensity, because we don't want
+	// the ambient color to be too dominant.
+	vec3 ambientColor;
+	// Intensity of the diffuse lighting component. It's usually set to the exact color we'd like light to have.
+	vec3 diffuseColor;
+	// Intensity of the specular lighting component. It's usually kept at vec3(1.0f), shining at full intensity.
+	vec3 specularColor;
+};
+
 // "Spotlight" structure contains 10 necessary properties of the spotlight.
 struct Spotlight
 {
@@ -62,6 +80,8 @@ out vec4 FragColor;
 
 // Pass the position of viewer (needed for specular component of Phong lighting model).
 uniform vec3 positionOfViewer;
+// Pass the directional light source.
+uniform DirectionalLightSource directionalLightSource;
 // Pass the spotlight.
 uniform Spotlight spotlight;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
@@ -70,6 +90,8 @@ uniform Material material;
 // Functions in GLSL are just like functions in C. We have a function name, a return type and we need to declare
 // a prototype at the top of the code file if the function hasn't yet been declared before the main function.
 // We'll create a different function for each type of light source.
+vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSource directionalLightSource, 
+	vec3 normal, vec3 lightDirection);
 vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection);
 
 void main()
@@ -84,12 +106,54 @@ void main()
 	// Perceived (reflected) color of the object is calculated by doing an addition of effects from all
 	// directional light sources, point light sources and spotlights.
 	vec3 resultingColorOfFragment = vec3(0.0f);
+	resultingColorOfFragment += calculateColorOfFragmentGottenFromDirectionalLightSource(directionalLightSource, 
+		normal, lightDirection);
 	resultingColorOfFragment += calculateColorOfFragmentGottenFromSpotlight(spotlight, normal, lightDirection);
 
 	FragColor = vec4(resultingColorOfFragment, 1.0f);
 }
 
-// Utility function for calculating color of fragment gotten from spotlight.
+// Utility function for calculating the color of fragment gotten from a directional light source.
+vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSource directionalLightSource, 
+	vec3 normal, vec3 lightDirection)
+{
+	vec3 ambientColor = directionalLightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
+	
+	// The cosine of angle at which light comes at fragment.
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If light emitted from light source comes directly at fragment (at angle of 0 degrees), diffuse factor will
+	// be 1 and fragment will be the brightest it can be. The larger the angle at which light comes at fragment
+	// is, the less bright that fragment will be. We use "max" function because we do not want the diffuse factor
+	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
+	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
+	vec3 diffuseColor = directionalLightSource.diffuseColor * 
+		(diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
+
+	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
+	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
+	// need to negate light direction vector calculated as part of diffuse component.
+	vec3 reflectionDirection = reflect(-lightDirection, normal);
+	// The cosine of angle at which reflection comes at viewer.
+	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
+	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
+	// If reflected light comes directly at viewer (at angle of 0 degrees), specular factor will be 1 and
+	// highlight will be the brightest it can be. The larger the angle between light reflection and view direction
+	// is, the highlight will be less bright. We use "max" function because we do not want the specular factor
+	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
+	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
+	vec3 specularColor = directionalLightSource.specularColor * 
+		(specularFactor * vec3(texture(material.specularMap, TexCoords)));
+
+	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
+	// ambient color, diffuse color and specular color.
+	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor;
+
+	return resultingColorOfFragment;
+}
+
+// Utility function for calculating the color of fragment gotten from a spotlight.
 vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection)
 {
 	vec3 ambientColor = spotlight.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
@@ -162,7 +226,6 @@ vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 norma
 	// Perceived (reflected) color of the object in Phong lighting model is calculated by doing an addition of
 	// ambient color, diffuse color and specular color.
 	vec3 resultingColorOfFragment = ambientColor + diffuseColor + specularColor;
-	FragColor = vec4(resultingColorOfFragment, 1.0f);
 
 	return resultingColorOfFragment;
 }
