@@ -1,11 +1,11 @@
 #version 330 core
 
-// "LightSource" structure contains 4 necessary properties of the light source.
-struct LightSource
+// "Spotlight" structure contains 10 necessary properties of the spotlight.
+struct Spotlight
 {
 	// Direction of light (camera's front vector).
 	vec3 direction;
-	// Position of light source in world space (camera's position).
+	// Position of spotlight in world space (camera's position).
 	vec3 position;
 	// Cosine of cutoff angle that specifies the radius of the spotlight.
 	// If the fragment is between the inner and the outer cone, its intensity should be in (0.0f, 1.0f) range.
@@ -62,21 +62,21 @@ out vec4 FragColor;
 
 // Pass the position of viewer (needed for specular component of Phong lighting model).
 uniform vec3 positionOfViewer;
-// Pass the light source (needed for all 3 components of Phong lighting model).
-uniform LightSource lightSource;
+// Pass the spotlight.
+uniform Spotlight spotlight;
 // Pass the material of object (needed for all 3 components of Phong lighting model).
 uniform Material material;
 
 void main()
 {
-	vec3 ambientColor = lightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
+	vec3 ambientColor = spotlight.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
 
 	vec3 normal = normalize(Normal);
 	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
 	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
 	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
-	vec3 lightDirection = normalize(lightSource.position - FragPos);
+	vec3 lightDirection = normalize(spotlight.position - FragPos);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -85,7 +85,7 @@ void main()
 	// is, the less bright that fragment will be. We use "max" function because we do not want the diffuse factor
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
-	vec3 diffuseColor = lightSource.diffuseColor * (diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
+	vec3 diffuseColor = spotlight.diffuseColor * (diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
 
 	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
 	vec3 viewDirection = normalize(positionOfViewer - FragPos);
@@ -100,8 +100,7 @@ void main()
 	// is, the highlight will be less bright. We use "max" function because we do not want the specular factor
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float specularFactor = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessOfHighlight);
-	vec3 specularColor = lightSource.specularColor * 
-		(specularFactor * vec3(texture(material.specularMap, TexCoords)));
+	vec3 specularColor = spotlight.specularColor * (specularFactor * vec3(texture(material.specularMap, TexCoords)));
 
 	// The cosine of angle between the "light's direction" and the spotlight's direction (camera's front vector).
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
@@ -109,12 +108,12 @@ void main()
 	// If fragment falls outside of spotlight's radius, calculated cosine will be smaller than cosine of cutoff
 	// angle. Cosine function has it's highest values when the angle is smallest. Spotlight's direction (camera's
 	// front vector) needs to be negated so that it points towards the light source (the camera itself).
-	float cosOfAngleBetweenLightDirAndSpotDir = dot(lightDirection, normalize(-lightSource.direction));
+	float cosOfAngleBetweenLightDirAndSpotDir = dot(lightDirection, normalize(-spotlight.direction));
 	// Calculate width of ring between the spotlight's outer cone and inner cone.
 	// epsilon = (cos(phi) - cos(y))
 	// phi - inner cutoff angle
 	// y - outer cutoff angle
-	float epsilon = lightSource.cosOfInnerCutoffAngle - lightSource.cosOfOuterCutoffAngle;
+	float epsilon = spotlight.cosOfInnerCutoffAngle - spotlight.cosOfOuterCutoffAngle;
 	// Calculate edge smoothing factor, which is basically the intensity of light "I". We are thinking of
 	// intensity of light in regards to where the fragment is positioned relative to spotlight's inner and outer
 	// cones. Make sure to clamp calculated intensity to [0.0f, 1.0f] range using GLSL's built-in "clamp" function.
@@ -123,7 +122,7 @@ void main()
 	// phi - inner cutoff angle
 	// y - outer cutoff angle
 	float edgeSmoothingFactor = 
-		clamp((cosOfAngleBetweenLightDirAndSpotDir - lightSource.cosOfOuterCutoffAngle) / epsilon, 0.0f, 1.0f);
+		clamp((cosOfAngleBetweenLightDirAndSpotDir - spotlight.cosOfOuterCutoffAngle) / epsilon, 0.0f, 1.0f);
 	// Use edge smoothing factor only on diffuse and specular Phong lighting model's components of fragment's color.
 	// Ambient component shouldn't be smoothed when using a spotlight. Doing so would result in light having a
 	// lower intensity inside of spotlight's radius than outside of it at greater distances.
@@ -131,12 +130,12 @@ void main()
 	specularColor *= edgeSmoothingFactor;
 
 	// Calculate distance between fragment and light source using GLSL's built-in "length" function.
-	float d = length(lightSource.position - FragPos);
+	float d = length(spotlight.position - FragPos);
 	// Calculate attenuation factor "Fatt". Attenuation factor is the measure of light's leftover intensity at a
 	// given distance "d" between fragment and light source. Higher the distance, the more fading out will happen.
 	// Fatt = 1.0f / (Kc + Kl * d + Kq * d^2).
-	float attenuationFactor = 1.0f / (lightSource.constantParameterOfAttenuation + 
-		lightSource.linearParameterOfAttenuation * d + lightSource.quadraticParameterOfAttenuation * pow(d, 2.0f));
+	float attenuationFactor = 1.0f / (spotlight.constantParameterOfAttenuation + 
+		spotlight.linearParameterOfAttenuation * d + spotlight.quadraticParameterOfAttenuation * pow(d, 2.0f));
 	// Use attenuation factor only on diffuse and specular Phong lighting model's components of fragment's color.
 	// Ambient component shouldn't be attenuated when using a spotlight. Doing so would result in light having a
 	// lower intensity inside of spotlight's radius than outside of it at greater distances.
