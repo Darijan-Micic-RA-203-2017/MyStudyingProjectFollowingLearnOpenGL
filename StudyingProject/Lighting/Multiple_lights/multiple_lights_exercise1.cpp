@@ -75,7 +75,7 @@ int draw_multiple_lights_exercise1()
 
 	// Compile our shaders and link our shader program using helper class.
 	ShaderProgram ourShaderProgram("Lighting_maps/vertex_shader_for_3_4_1.glsl", 
-		"Multiple_lights/fragment_shader_for_3_6_2.glsl");
+		"Multiple_lights/fragment_shader_for_3_6_1.glsl");
 	if (ourShaderProgram.errorCode)
 	{
 		glfwTerminate();
@@ -165,6 +165,13 @@ int draw_multiple_lights_exercise1()
 		glm::vec3(2.3f, -3.3f, -4.0f), 
 		glm::vec3(-4.0f,  2.0f, -12.0f), 
 		glm::vec3(0.0f,  0.0f, -3.0f)
+	};
+	// Colors of our four point light sources.
+	glm::vec3 colorsOfPointLightSources[] = {
+		glm::vec3(1.0f, 0.6f, 0.0f), 
+		glm::vec3(1.0f, 0.0f, 0.0f), 
+		glm::vec3(1.0f, 1.0, 0.0), 
+		glm::vec3(0.2f, 0.2f, 1.0f)
 	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
@@ -266,7 +273,7 @@ int draw_multiple_lights_exercise1()
 		processInput_for_multiple_lights_exercise1(window);
 
 		// Second part: Rendering commands.
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.75f, 0.52f, 0.3f, 1.0f);
 		// Since we're now using a depth buffer, we also want to clear it before each rendering iteration.
 		// Otherwise, the depth information of the previous frame would remain in the buffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -314,40 +321,45 @@ int draw_multiple_lights_exercise1()
 		// Preferably, we should use a more efficient uniform approach called UNIFORM BUFFER OBJECTS. We'll discuss
 		// them in the "Advanced GLSL" tutorial.
 
+		// DESERT SCENE:
 		// Directional light source.
-		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.direction", -0.2f, -1.0f, -0.3f);
-		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.ambientColor", 0.05f, 0.05f, 0.05f);
-		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.diffuseColor", 0.4f, 0.4f, 0.4f);
-		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.specularColor", 0.5f, 0.5f, 0.5f);
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.ambientColor", glm::vec3(0.3f, 0.24f, 0.14f));
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.diffuseColor", glm::vec3(0.7f, 0.42f, 0.26f));
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.specularColor", glm::vec3(0.5f, 0.5f, 0.5f));
 		// Point light source #1.
 		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].position", positionsOfPointLightSources[0]);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].ambientColor", 0.05f, 0.05f, 0.05f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].diffuseColor", 0.8f, 0.8f, 0.8f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].ambientColor", 
+			0.1f * colorsOfPointLightSources[0]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].diffuseColor", colorsOfPointLightSources[0]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].specularColor", colorsOfPointLightSources[0]);
 		ourShaderProgram.setFloatUniform("pointLightSources[0].constantParameterOfAttenuation", 1.0f);
 		ourShaderProgram.setFloatUniform("pointLightSources[0].linearParameterOfAttenuation", 0.09f);
 		ourShaderProgram.setFloatUniform("pointLightSources[0].quadraticParameterOfAttenuation", 0.032f);
 		// Point light source #2.
 		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].position", positionsOfPointLightSources[1]);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].ambientColor", 0.05f, 0.05f, 0.05f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].diffuseColor", 0.8f, 0.8f, 0.8f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].ambientColor", 
+			0.1f * colorsOfPointLightSources[1]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].diffuseColor", colorsOfPointLightSources[1]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].specularColor", colorsOfPointLightSources[1]);
 		ourShaderProgram.setFloatUniform("pointLightSources[1].constantParameterOfAttenuation", 1.0f);
 		ourShaderProgram.setFloatUniform("pointLightSources[1].linearParameterOfAttenuation", 0.09f);
 		ourShaderProgram.setFloatUniform("pointLightSources[1].quadraticParameterOfAttenuation", 0.032f);
 		// Point light source #3.
 		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].position", positionsOfPointLightSources[2]);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].ambientColor", 0.05f, 0.05f, 0.05f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].diffuseColor", 0.8f, 0.8f, 0.8f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].ambientColor", 
+			0.1f * colorsOfPointLightSources[2]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].diffuseColor", colorsOfPointLightSources[2]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].specularColor", colorsOfPointLightSources[2]);
 		ourShaderProgram.setFloatUniform("pointLightSources[2].constantParameterOfAttenuation", 1.0f);
 		ourShaderProgram.setFloatUniform("pointLightSources[2].linearParameterOfAttenuation", 0.09f);
 		ourShaderProgram.setFloatUniform("pointLightSources[2].quadraticParameterOfAttenuation", 0.032f);
 		// Point light source #4.
 		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].position", positionsOfPointLightSources[3]);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].ambientColor", 0.05f, 0.05f, 0.05f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].diffuseColor", 0.8f, 0.8f, 0.8f);
-		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].ambientColor", 
+			0.1f * colorsOfPointLightSources[3]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].diffuseColor", colorsOfPointLightSources[3]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].specularColor", colorsOfPointLightSources[3]);
 		ourShaderProgram.setFloatUniform("pointLightSources[3].constantParameterOfAttenuation", 1.0f);
 		ourShaderProgram.setFloatUniform("pointLightSources[3].linearParameterOfAttenuation", 0.09f);
 		ourShaderProgram.setFloatUniform("pointLightSources[3].quadraticParameterOfAttenuation", 0.032f);
@@ -355,10 +367,10 @@ int draw_multiple_lights_exercise1()
 		ourShaderProgram.setFloatVec3Uniform("spotlight.direction", camera_for_3_6_2.cameraFront);
 		ourShaderProgram.setFloatVec3Uniform("spotlight.position", camera_for_3_6_2.cameraPosition);
 		ourShaderProgram.setFloatUniform("spotlight.cosOfInnerCutoffAngle", glm::cos(glm::radians(12.5f)));
-		ourShaderProgram.setFloatUniform("spotlight.cosOfOuterCutoffAngle", glm::cos(glm::radians(15.0f)));
-		ourShaderProgram.setFloatVec3Uniform("spotlight.ambientColor", 0.0f, 0.0f, 0.0f);
-		ourShaderProgram.setFloatVec3Uniform("spotlight.diffuseColor", 1.0f, 1.0f, 1.0f);
-		ourShaderProgram.setFloatVec3Uniform("spotlight.specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("spotlight.cosOfOuterCutoffAngle", glm::cos(glm::radians(13.0f)));
+		ourShaderProgram.setFloatVec3Uniform("spotlight.ambientColor", glm::vec3(0.0f, 0.0f, 0.0f));
+		ourShaderProgram.setFloatVec3Uniform("spotlight.diffuseColor", glm::vec3(0.8f, 0.8f, 0.0f));
+		ourShaderProgram.setFloatVec3Uniform("spotlight.specularColor", glm::vec3(0.8f, 0.8f, 0.0f));
 		ourShaderProgram.setFloatUniform("spotlight.constantParameterOfAttenuation", 1.0f);
 		ourShaderProgram.setFloatUniform("spotlight.linearParameterOfAttenuation", 0.09f);
 		ourShaderProgram.setFloatUniform("spotlight.quadraticParameterOfAttenuation", 0.032f);
