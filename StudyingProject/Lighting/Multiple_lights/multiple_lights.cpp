@@ -82,6 +82,15 @@ int draw_multiple_lights()
 
 		return ourShaderProgram.errorCode;
 	}
+	// Compile our light source shaders and link our light source shader program using helper class.
+	ShaderProgram ourLightSourceShaderProgram("Colors/light_source_vertex_shader_for_3_1_1.glsl", 
+		"Colors/light_source_fragment_shader_for_3_1_1.glsl");
+	if (ourLightSourceShaderProgram.errorCode)
+	{
+		glfwTerminate();
+
+		return ourLightSourceShaderProgram.errorCode;
+	}
 
 	// Vertices in normalized device coordinates system (from -1.0f to 1.0f).
 	// We will turn our 2D plane into a 3D cube. In order to render a cube, we need 36 vertices
@@ -150,6 +159,13 @@ int draw_multiple_lights()
 		glm::vec3(1.5f,  0.2f, -1.5f), 
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+	// World space position of our four point light sources.
+	glm::vec3 positionsOfPointLightSources[] = {
+		glm::vec3(0.7f,  0.2f,  2.0f), 
+		glm::vec3(2.3f, -3.3f, -4.0f), 
+		glm::vec3(-4.0f,  2.0f, -12.0f), 
+		glm::vec3(0.0f,  0.0f, -3.0f)
+	};
 
 	// Create memory on the GPU where vertex data and index data will be stored.
 	// Said data will be handled by VAO and vertex/element buffer objects inside that VAO.
@@ -181,6 +197,23 @@ int draw_multiple_lights()
 	glVertexAttribPointer(2u, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (6 * sizeof(float)));
 	// Enable vertex texture coordinate attribute.
 	glEnableVertexAttribArray(2u);
+
+	// Create memory on the GPU where vertex data of light source will be stored.
+	unsigned int lightSourceVAO;
+	glGenVertexArrays(1, &lightSourceVAO);
+
+	// Bind (assign) the newly created VAO to OpenGL's context.
+	glBindVertexArray(lightSourceVAO);
+
+	// Bind (assign) the previously created VBO to OpenGL's context. We use the same VBO, because the light source
+	// object will use the same vertices as the object in scene (light source is also a 3D cube).
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	// Tell OpenGL how it should interpret vertex data, per vertex attribute.
+	// Position attribute.
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
+	// Enable vertex position attribute.
+	glEnableVertexAttribArray(0u);
 
 	// Unbind VBO and VAO for safety reasons. This is not neccessary.
 	// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
@@ -245,6 +278,10 @@ int draw_multiple_lights()
 		positionOfLightSource_for_3_4_2.y = glm::sin(time / 2.0f);
 		*/
 
+		// Activate the shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		ourShaderProgram.useProgram();
+
 		// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
 		// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
 		// always active by default, so it isn't necessary to manually activate any texture unit if only one
@@ -271,85 +308,60 @@ int draw_multiple_lights()
 		// Set position of viewer to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("positionOfViewer", camera_for_3_6_1.cameraPosition);
 
-		// Spotlight source is a light source with a given position in world space that illuminates light rays
-		// ONLY IN A SPECIFIC DIRECTION, with its light rays fading out over distance. That means that only the
-		// objects within the inner cone of the spotlight's direction are fully lit. Objects between the inner and
-		// the outer cone of the spotlight's direction are partially lit. Objects outside of the outer cone of the
-		// spotlight's direction stay dark. A realistic spotlight in OpenGL is represented by:
-		// - world-space position;
-		// - direction;
-		// - inner cutoff angle, specifying the radius of the spotlight;
-		// - outer cutoff angle, allowing a gradual reducing of light's intensity through the space between the
-		// spotlight's cones.
-		// If the fragment is between the inner and the outer cone, its intensity should be in (0.0f, 1.0f) range.
-		// If the fragment is inside of the inner cone, its intensity should be CLAMPED TO 1.0f.
-		// If the fragment is outside of the outer cone, its intensity should be CLAMPED TO 0.0f.
-		// Equation of light's intensity "I" that represents edge clamping factor:
-		// I = (cos(theta) - cos(y)) / epsilon = (cos(theta) - cos(y)) / (cos(phi) - cos(y))
-		// theta - angle between the "light's direction" and the spotlight's direction
-		// phi - inner cutoff angle
-		// y - outer cutoff angle
+		// Set all uniforms for all six light sources we have in our scene. We have to set them manually and
+		// index the proper "PointLightSource" structure in the array to set each uniform variable. This can be
+		// done cleaner by defining each type of light source as a class and setting their values there.
+		// Preferably, we should use a more efficient uniform approach called UNIFORM BUFFER OBJECTS. We'll discuss
+		// them in the "Advanced GLSL" tutorial.
 
-		// Set direction of light to field "cameraFront" of global object "camera".
+		// Directional light source.
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.direction", -0.2f, -1.0f, -0.3f);
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.ambientColor", 0.05f, 0.05f, 0.05f);
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.diffuseColor", 0.4f, 0.4f, 0.4f);
+		ourShaderProgram.setFloatVec3Uniform("directionalLightSource.specularColor", 0.5f, 0.5f, 0.5f);
+		// Point light source #1.
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].position", positionsOfPointLightSources[0]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].ambientColor", 0.05f, 0.05f, 0.05f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].diffuseColor", 0.8f, 0.8f, 0.8f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[0].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[0].constantParameterOfAttenuation", 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[0].linearParameterOfAttenuation", 0.09f);
+		ourShaderProgram.setFloatUniform("pointLightSources[0].quadraticParameterOfAttenuation", 0.032f);
+		// Point light source #2.
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].position", positionsOfPointLightSources[1]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].ambientColor", 0.05f, 0.05f, 0.05f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].diffuseColor", 0.8f, 0.8f, 0.8f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[1].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[1].constantParameterOfAttenuation", 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[1].linearParameterOfAttenuation", 0.09f);
+		ourShaderProgram.setFloatUniform("pointLightSources[1].quadraticParameterOfAttenuation", 0.032f);
+		// Point light source #3.
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].position", positionsOfPointLightSources[2]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].ambientColor", 0.05f, 0.05f, 0.05f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].diffuseColor", 0.8f, 0.8f, 0.8f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[2].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[2].constantParameterOfAttenuation", 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[2].linearParameterOfAttenuation", 0.09f);
+		ourShaderProgram.setFloatUniform("pointLightSources[2].quadraticParameterOfAttenuation", 0.032f);
+		// Point light source #4.
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].position", positionsOfPointLightSources[3]);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].ambientColor", 0.05f, 0.05f, 0.05f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].diffuseColor", 0.8f, 0.8f, 0.8f);
+		ourShaderProgram.setFloatVec3Uniform("pointLightSources[3].specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[3].constantParameterOfAttenuation", 1.0f);
+		ourShaderProgram.setFloatUniform("pointLightSources[3].linearParameterOfAttenuation", 0.09f);
+		ourShaderProgram.setFloatUniform("pointLightSources[3].quadraticParameterOfAttenuation", 0.032f);
+		// Spotlight.
 		ourShaderProgram.setFloatVec3Uniform("spotlight.direction", camera_for_3_6_1.cameraFront);
-		// Set position of light source to field "cameraPosition" of global object "camera".
 		ourShaderProgram.setFloatVec3Uniform("spotlight.position", camera_for_3_6_1.cameraPosition);
-		// Set cosine of inner cutoff angle to 12.5 degrees converted to radians. Inner cutoff angle is the angle
-		// between the "light's direction" and the inner cone's vector (equal to its radius).
-		// Result of dot product between two vectors is cosine of angle between them. In our case, those two
-		// vectors will be the "light's direction" (result of subtracting fragment's position from light source's
-		// position) and spotlight direction (camera's front vector). Calculating the inverse cosine is an
-		// expensive operation in shaders, so that's why we're sending a cosine of cutoff angle instead of cutoff
-		// angle itself.
 		ourShaderProgram.setFloatUniform("spotlight.cosOfInnerCutoffAngle", glm::cos(glm::radians(12.5f)));
-		// Set cosine of outer cutoff angle to 17.5 degrees converted to radians. Outer cutoff angle is the angle
-		// between the "light's direction" and the outer cone's vector (equal to its radius). -||-
-		ourShaderProgram.setFloatUniform("spotlight.cosOfOuterCutoffAngle", glm::cos(glm::radians(17.5f)));
-
-		// Change color of light over time.
-		glm::vec3 colorOfLight = glm::vec3(1.0f);
-		/*
-		float time = static_cast<float>(glfwGetTime());
-		colorOfLight.x = glm::sin(time * 2.0f);
-		colorOfLight.y = glm::sin(time * 0.7f);
-		colorOfLight.z = glm::sin(time * 1.3f);
-		*/
-		// Set ambient component color of light source to (0.1f, 0.1f, 0.1f).
-		glm::vec3 ambientColorOfLight = glm::vec3(0.1f) * colorOfLight;
-		ourShaderProgram.setFloatVec3Uniform("spotlight.ambientColor", ambientColorOfLight);
-		// Set diffuse component color of light source to (0.8f, 0.8f, 0.8f).
-		// We will darken the light emitted from light source a bit. Usually it's white (1.0f, 1.0f, 1.0f).
-		glm::vec3 diffuseColorOfLight = glm::vec3(0.8f) * colorOfLight;
-		ourShaderProgram.setFloatVec3Uniform("spotlight.diffuseColor", diffuseColorOfLight);
-		// Set specular component color of light source to (1.0f, 1.0f, 1.0f).
-		glm::vec3 specularColorOfLight = glm::vec3(1.0f);
-		ourShaderProgram.setFloatVec3Uniform("spotlight.specularColor", specularColorOfLight);
-
-		// The process of reducing the light's intensity over the distance a light ray travels is called ATTENUATION.
-		// Simple linear equation would produce unrealistic results which would look fake. Lights in the real
-		// world are generally quite bright when standing close by, but their brightness reduces in a linear
-		// fashion only up to a certain distance point. At that distance point, equation denominator's quadratic
-		// part becomes greater than its linear part and light intensity starts reducing much quicker. Curve of
-		// light intensity's reducing eventually becomes flatter, so reducing happens at a slower pace.
-		// Equation of attenuation factor "Fatt" for specified distance "d":
-		// Fatt = 1.0f / (Kc + Kl * d + Kq * d^2).
-		// Choosing the right values of attenuation parameters depends on multiple things:
-		// environment, distance we want the light to cover, type of light etc. In our environment, a distance of
-		// 32.0f to 100.0f is usually enough for most lights.
-		// We want the light to cover the distance of 50.0f units.
-		//           constant parameter linear parameter quadratic parameter
-		// d = 50.0f:       1.0f             0.09f              0.032f
-		// REFERENCE: https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
-
-		// Set constant parameter of attenuation to 1.0f.
-		float constantParameterOfAttenuation = 1.0f;
-		ourShaderProgram.setFloatUniform("spotlight.constantParameterOfAttenuation", constantParameterOfAttenuation);
-		// Set linear parameter of attenuation to 0.09f.
-		float linearParameterOfAttenuation = 0.09f;
-		ourShaderProgram.setFloatUniform("spotlight.linearParameterOfAttenuation", linearParameterOfAttenuation);
-		// Set quadratic parameter of attenuation to 0.032f.
-		float quadraticParameterOfAttenuation = 0.032f;
-		ourShaderProgram.setFloatUniform("spotlight.quadraticParameterOfAttenuation", quadraticParameterOfAttenuation);
+		ourShaderProgram.setFloatUniform("spotlight.cosOfOuterCutoffAngle", glm::cos(glm::radians(15.0f)));
+		ourShaderProgram.setFloatVec3Uniform("spotlight.ambientColor", 0.0f, 0.0f, 0.0f);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.diffuseColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatVec3Uniform("spotlight.specularColor", 1.0f, 1.0f, 1.0f);
+		ourShaderProgram.setFloatUniform("spotlight.constantParameterOfAttenuation", 1.0f);
+		ourShaderProgram.setFloatUniform("spotlight.linearParameterOfAttenuation", 0.09f);
+		ourShaderProgram.setFloatUniform("spotlight.quadraticParameterOfAttenuation", 0.032f);
 
 		// Set shininess of highlight to 32. This impacts the scattering and radius of specular highlight.
 		float shininessOfHighlight = 32.0f;
@@ -358,12 +370,13 @@ int draw_multiple_lights()
 		// Render 3D cube.
 		glBindVertexArray(VAO);
 		// We draw ten cubes.
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		for (unsigned int i = 0u; i < 10u; i++)
 		{
 			// The model matrix transforms local space coordinates to world space coordinates.
 			// We will transform every cube by rotating it once around the (1.0f, 0.3f, 0.5f) axis and translating
 			// it to its corresponding specified position.
-			glm::mat4 modelMatrix = glm::mat4(1.0f);
+			modelMatrix = glm::mat4(1.0f);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(positionsOfCubes[i]));
 			// GLM's "rotate" function requires the provided angle to be specified in radians, so we convert
 			// the angle's value from degrees.
@@ -382,6 +395,33 @@ int draw_multiple_lights()
 			glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
 			// Set the normal matrix. This matrix changes each frame.
 			ourShaderProgram.setFloatMat3Uniform("normalMatrix", normalMatrix);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
+		// Activate the light source shader program.
+		// Every shader and rendering call from now on will use this shader program object.
+		ourLightSourceShaderProgram.useProgram();
+
+		// Set the projection matrix. Because we are implementing zooming, this matrix now changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
+		// Set the view matrix. This matrix changes each frame.
+		ourLightSourceShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
+
+		// Render light source, represented by a 3D cube.
+		glBindVertexArray(lightSourceVAO);
+		// We draw four cubes, representing point light sources.
+		for (unsigned int i = 0u; i < 4u; i++)
+		{
+			// The model matrix transforms local space coordinates to world space coordinates.
+			// We will transform 3D cube that is object of our scene, thus copying it to become a representation
+			// of our point light source. We will scale it to 1/5 of its initial size and finally translate it to
+			// specified position of point light source.
+			modelMatrix = glm::mat4(1.0f);
+			modelMatrix = glm::translate(modelMatrix, positionsOfPointLightSources[i]);
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+			// Set the model matrix. This matrix changes each frame.
+			ourLightSourceShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
