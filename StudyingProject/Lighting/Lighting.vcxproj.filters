@@ -79,6 +79,9 @@
     <ClInclude Include="Multiple_lights\multiple_lights.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Multiple_lights\multiple_lights_exercise1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -136,6 +139,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Multiple_lights\multiple_lights.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multiple_lights\multiple_lights_exercise1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

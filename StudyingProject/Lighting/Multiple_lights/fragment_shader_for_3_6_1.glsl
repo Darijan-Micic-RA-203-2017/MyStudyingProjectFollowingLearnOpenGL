@@ -1,5 +1,7 @@
 #version 330 core
 
+#define NUMBER_OF_POINT_LIGHTS 4
+
 // "DirectionalLightSource" structure contains 4 necessary properties of the directional light source.
 struct DirectionalLightSource
 {
@@ -17,7 +19,6 @@ struct DirectionalLightSource
 	// Intensity of the specular lighting component. It's usually kept at vec3(1.0f), shining at full intensity.
 	vec3 specularColor;
 };
-#define NUMBER_OF_POINT_LIGHTS 4
 
 // "PointLightSource" structure contains 7 necessary properties of the point light source.
 struct PointLightSource

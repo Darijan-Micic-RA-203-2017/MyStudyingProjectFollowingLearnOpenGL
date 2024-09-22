@@ -152,6 +152,7 @@
     <ClInclude Include="Light_casters\light_casters_spot.h" />
     <ClInclude Include="Light_casters\light_casters_spot_smooth.h" />
     <ClInclude Include="Multiple_lights\multiple_lights.h" />
+    <ClInclude Include="Multiple_lights\multiple_lights_exercise1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Light_casters\light_casters_spot.cpp" />
     <ClCompile Include="Light_casters\light_casters_spot_smooth.cpp" />
     <ClCompile Include="Multiple_lights\multiple_lights.cpp" />
+    <ClCompile Include="Multiple_lights\multiple_lights_exercise1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Colors\vertex_shader_for_3_1_1.glsl" />

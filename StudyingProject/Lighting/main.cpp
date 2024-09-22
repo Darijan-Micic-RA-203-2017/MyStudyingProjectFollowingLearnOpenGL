@@ -14,6 +14,7 @@
 #include "Light_casters/light_casters_spot.h"
 #include "Light_casters/light_casters_spot_smooth.h"
 #include "Multiple_lights/multiple_lights.h"
+#include "Multiple_lights/multiple_lights_exercise1.h"
 
 int main()
 {
@@ -22,7 +23,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 16}: ";
+		std::cout << "Enter argument from set {1, ..., 17}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -105,6 +106,11 @@ int main()
 		case 16:
 			returnValue = draw_multiple_lights();
 			std::cout << "\"Lighting - Multiple lights\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
+			break;
+		case 17:
+			returnValue = draw_multiple_lights_exercise1();
+			std::cout << "\"Lighting - Multiple lights, exercise 1\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
