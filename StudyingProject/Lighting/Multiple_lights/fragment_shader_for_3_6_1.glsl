@@ -123,41 +123,46 @@ uniform Material material;
 // a prototype at the top of the code file if the function hasn't yet been declared before the main function.
 // We'll create a different function for each type of light source.
 vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSource directionalLightSource, 
-	vec3 normal, vec3 lightDirection);
+	vec3 normal, vec3 viewDirection);
 vec3 calculateColorOfFragmentGottenFromPointLightSource(PointLightSource pointLightSource, vec3 normal, 
-	vec3 lightDirection);
-vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection);
+	vec3 viewDirection);
+vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 viewDirection);
 
 void main()
 {
 	vec3 normal = normalize(Normal);
-	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
-	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
+	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position.
+	// The "view direction" is counted by subtracting fragment's position from the viewer's position.
 	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
-	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
-	vec3 lightDirection = normalize(spotlight.position - FragPos);
+	// operand of subtraction). Therefore, we want it to end on viewer's position, pointing to it.
+	vec3 viewDirection = normalize(positionOfViewer - FragPos);
 
 	// Perceived (reflected) color of the object is calculated by doing an addition of colors gotten from all
 	// directional light sources, point light sources and spotlights.
 	vec3 resultingColorOfFragment = vec3(0.0f);
 	resultingColorOfFragment += calculateColorOfFragmentGottenFromDirectionalLightSource(directionalLightSource, 
-		normal, lightDirection);
+		normal, viewDirection);
 	for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++)
 	{
 		resultingColorOfFragment += calculateColorOfFragmentGottenFromPointLightSource(pointLightSources[i], 
-			normal, lightDirection);
+			normal, viewDirection);
 	}
-	resultingColorOfFragment += calculateColorOfFragmentGottenFromSpotlight(spotlight, normal, lightDirection);
+	resultingColorOfFragment += calculateColorOfFragmentGottenFromSpotlight(spotlight, normal, viewDirection);
 
 	FragColor = vec4(resultingColorOfFragment, 1.0f);
 }
 
 // Utility function for calculating the color of fragment gotten from a directional light source.
 vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSource directionalLightSource, 
-	vec3 normal, vec3 lightDirection)
+	vec3 normal, vec3 viewDirection)
 {
 	vec3 ambientColor = directionalLightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
-	
+
+	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
+	// The "light's direction", now that position of light source is replaced with direction of light, is counted
+	// by negating direction of light. People usually specify direction of light as vector pointing to object's
+	// surface, so that's why negating is necessary.
+	vec3 lightDirection = normalize(-directionalLightSource.direction);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -168,9 +173,7 @@ vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSo
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
 	vec3 diffuseColor = directionalLightSource.diffuseColor * 
 		(diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
-
-	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
-	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	
 	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
 	// need to negate light direction vector calculated as part of diffuse component.
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
@@ -193,10 +196,15 @@ vec3 calculateColorOfFragmentGottenFromDirectionalLightSource(DirectionalLightSo
 }
 
 vec3 calculateColorOfFragmentGottenFromPointLightSource(PointLightSource pointLightSource, vec3 normal, 
-	vec3 lightDirection)
+	vec3 viewDirection)
 {
 	vec3 ambientColor = pointLightSource.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
-	
+
+	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
+	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
+	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
+	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
+	vec3 lightDirection = normalize(pointLightSource.position - FragPos);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -207,9 +215,7 @@ vec3 calculateColorOfFragmentGottenFromPointLightSource(PointLightSource pointLi
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
 	vec3 diffuseColor = pointLightSource.diffuseColor * 
 		(diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
-
-	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
-	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	
 	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
 	// need to negate light direction vector calculated as part of diffuse component.
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
@@ -245,10 +251,15 @@ vec3 calculateColorOfFragmentGottenFromPointLightSource(PointLightSource pointLi
 }
 
 // Utility function for calculating the color of fragment gotten from a spotlight.
-vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 lightDirection)
+vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 normal, vec3 viewDirection)
 {
 	vec3 ambientColor = spotlight.ambientColor * vec3(texture(material.diffuseMap, TexCoords));
 
+	// The "light's direction". It's a bad name, because we actually need the direction TO light source.
+	// The "light's direction" is counted by subtracting fragment's position from the light source's position.
+	// Vector visually ends at the minuend (first operand of subtraction) and starts at the subtrahend (second
+	// operand of subtraction). Therefore, we want it to end on light source's position, pointing to it.
+	vec3 lightDirection = normalize(spotlight.position - FragPos);
 	// The cosine of angle at which light comes at fragment.
 	// For      vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle).
 	// For unit vectors v and w: dot(v, w) = ||v|| * ||w|| * cos(angle) = 1 * 1 * cos(angle) = cos(angle).
@@ -258,9 +269,7 @@ vec3 calculateColorOfFragmentGottenFromSpotlight(Spotlight spotlight, vec3 norma
 	// to be negative. Lighting for negative colors is not well defined and we avoid working with negative colors.
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
 	vec3 diffuseColor = spotlight.diffuseColor * (diffuseFactor * vec3(texture(material.diffuseMap, TexCoords)));
-
-	// The "view direction". It's a bad name, because we actually need the direction TO viewer's position. -||-
-	vec3 viewDirection = normalize(positionOfViewer - FragPos);
+	
 	// "reflect" function expects the first argument to be a vector pointing from light source to fragment, so we
 	// need to negate light direction vector calculated as part of diffuse component.
 	vec3 reflectionDirection = reflect(-lightDirection, normal);

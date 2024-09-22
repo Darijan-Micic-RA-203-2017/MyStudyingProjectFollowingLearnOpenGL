@@ -449,6 +449,7 @@ int draw_multiple_lights_exercise1()
 	// De-allocate all resources once they're no longer needed.
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &lightSourceVAO);
 
 	// Terminate the GLFW library, which frees up all allocated resources.
 	glfwTerminate();
