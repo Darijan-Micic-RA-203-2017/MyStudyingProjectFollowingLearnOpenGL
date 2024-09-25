@@ -65,13 +65,11 @@ private:
 		}
 	}
 
-	// Translate an "aiMesh*" object to our own "Mesh" object.
+	// Translate an "aiMesh" object to our own "Mesh" object.
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene)
 	{
+		// Translate each "aiVector3D" object to our own "Vertex" structure.
 		vector<Vertex> vertices;
-		vector<unsigned int> indices;
-		vector<Texture> textures;
-
 		for (unsigned int i = 0u; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
@@ -105,6 +103,22 @@ private:
 
 			vertices.push_back(vertex);
 		}
+
+		// Translate each "aiFace" object to "unsigned int" variable.
+		vector<unsigned int> indices;
+		for (unsigned int i = 0u; i < mesh->mNumFaces; i++)
+		{
+			// "Assimp" library defines each mesh as having an array of faces, where each face represents a single
+			// primitive. In our case, since we used the "aiProcess_Triangulate" post-processing option, all faces
+			// are always triangles ("GL_TRIANGLES").
+			aiFace face = mesh->mFaces[i];
+			for (unsigned int j = 0u; j < face.mNumIndices; j++)
+			{
+				indices.push_back(face.mIndices[j]);
+			}
+		}
+
+		vector<Texture> textures;
 
 		return Mesh(vertices, indices, textures);
 	}
