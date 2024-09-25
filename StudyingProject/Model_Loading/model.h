@@ -45,7 +45,26 @@ private:
 		processNode(scene->mRootNode, scene);
 	}
 
-	void processNode(aiNode* node, const aiScene* scene);
+	// Each "Mesh" object contains a list of indices of meshes contained in the "Scene" object that belong to that
+	// mesh. Function "processNode" is recursive, it keeps calling itself until all child nodes of "Scene" object
+	// are processed, starting from the root node (the only child of "Scene" object).
+	void processNode(aiNode* node, const aiScene* scene)
+	{
+		// Retrieve all meshes that belong to the current node, as indicated by the set of mesh indices stored in
+		// the current node. Then process each mesh and add them to the global set of meshes in our "Model" class.
+		for (unsigned int i = 0u; i < node->mNumMeshes; i++)
+		{
+			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			meshes.push_back(processMesh(mesh, scene));
+		}
+
+		// Recursively call "processNode" method for all children of current node.
+		for (unsigned int i = 0u; i < node->mNumChildren; i++)
+		{
+			processNode(node->mChildren[i], scene);
+		}
+	}
+
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadTexturesOfMaterial(aiMaterial* material, aiTextureType type, string nameOfType);
 public:
