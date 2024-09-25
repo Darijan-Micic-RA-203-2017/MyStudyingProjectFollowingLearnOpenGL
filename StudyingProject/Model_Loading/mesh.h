@@ -106,6 +106,59 @@ public:
 		setupMesh();
 	}
 
-	void drawUsing(ShaderProgram& shaderProgram);
+	// Before rendering the mesh, we first want to bind the appropriate textures. However, we don't know how many
+	// textures the mesh has and of what type, nor does the mesh have any textures at all. In order to set the
+	// texture units and the samplers in the shader program, we need to get creative.
+	// One way of solving this problem is to assume a certain naming convention. Each diffuse map will be named
+	// "texture_diffuseN", each specular map will be named "texture_specularN" and each emission map will be named
+	// "texture_emissionN". Number "N" is from set {1, ..., maximum number of texture samplers allowed}. By using
+	// this naming convention, we can process any amount of textures on a single mesh and the shader developer is
+	// free to use as many textures as they want by defining the proper texture samplers.
+	void drawUsing(ShaderProgram& shaderProgram)
+	{
+		unsigned int diffuseMapNumber = 1u;
+		unsigned int specularMapNumber = 1u;
+		unsigned int emissionMapNumber = 1u;
+		for (unsigned int i = 0u; i < textures.size(); i++)
+		{
+			// Retrieve the texture number ("N" in "{texture_type}N").
+			string typeOfTexture = textures[i].type;
+			string number = "";
+			if (typeOfTexture == "texture_diffuse")
+			{
+				number = to_string(++diffuseMapNumber);
+			}
+			else if (typeOfTexture == "texture_specular")
+			{
+				number = to_string(++specularMapNumber);
+			}
+			else if (typeOfTexture == "texture_emission")
+			{
+				number = to_string(++emissionMapNumber);
+			}
+			// Tell OpenGL to which texture unit the shader sampler belongs to, by setting the shader sampler.
+			// Prefix "material." has to be added because texture samplers are fields of "Material" structure.
+			shaderProgram.setIntegerUniform(("material." + typeOfTexture + number).c_str(), i);
+
+			// Activate texture unit (one of 16). After activating a texture unit, a subsequent "glBindTexture"
+			// call will bind that texture to the currently active texture unit. Texture unit "GL_TEXTURE0" is
+			// always active by default, so it isn't necessary to manually activate any texture unit if only one
+			// texture is used (like in examples previous to "Textures, combined").
+			glActiveTexture(GL_TEXTURE0 + i);
+			// Bind (assign) the texture to OpenGL's context.
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		}
+
+		glActiveTexture(GL_TEXTURE0);
+
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+		// Unbind VAO for safety reasons. This is not neccessary.
+		// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.
+		// This also means it stores its unbind calls, so
+		// DO NOT EVER unbind EBO before unbinding VAO, otherwise it won't have a configured EBO.
+		glBindVertexArray(0u);
+	}
 };
 #endif
