@@ -65,7 +65,50 @@ private:
 		}
 	}
 
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	// Translate an "aiMesh*" object to our own "Mesh" object.
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene)
+	{
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
+
+		for (unsigned int i = 0u; i < mesh->mNumVertices; i++)
+		{
+			Vertex vertex;
+
+			glm::vec3 position = glm::vec3(0.0f);
+			position.x = mesh->mVertices[i].x;
+			position.y = mesh->mVertices[i].y;
+			position.z = mesh->mVertices[i].z;
+			vertex.position = position;
+
+			glm::vec3 normal = glm::vec3(0.0f);
+			normal.x = mesh->mNormals[i].x;
+			normal.y = mesh->mNormals[i].y;
+			normal.z = mesh->mNormals[i].z;
+			vertex.normal = normal;
+
+			glm::vec2 texCoords = glm::vec2(0.0f);
+			// "Assimp" library allows the model to have up to 8 different texture coordinates per vertex. We're
+			// not going to use 8 of them, but only the first set of texture coordinates. Model may not have any
+			// texture coordinates at all, so that's why an "if"-branch is needed.
+			if (mesh->mTextureCoords[0u])
+			{
+				texCoords.x = mesh->mTextureCoords[0u][i].x;
+				texCoords.y = mesh->mTextureCoords[0u][i].y;
+				vertex.texCoords = texCoords;
+			}
+			else
+			{
+				vertex.texCoords = texCoords;
+			}
+
+			vertices.push_back(vertex);
+		}
+
+		return Mesh(vertices, indices, textures);
+	}
+
 	vector<Texture> loadTexturesOfMaterial(aiMaterial* material, aiTextureType type, string nameOfType);
 public:
 	Model(const char* path)
