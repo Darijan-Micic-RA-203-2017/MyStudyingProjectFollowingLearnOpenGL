@@ -133,11 +133,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="shader_program.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
