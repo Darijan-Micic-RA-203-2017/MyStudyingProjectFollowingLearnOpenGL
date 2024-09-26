@@ -101,12 +101,8 @@ private:
 			{
 				texCoords.x = mesh->mTextureCoords[0u][i].x;
 				texCoords.y = mesh->mTextureCoords[0u][i].y;
-				vertex.texCoords = texCoords;
 			}
-			else
-			{
-				vertex.texCoords = texCoords;
-			}
+			vertex.texCoords = texCoords;
 
 			vertices.push_back(vertex);
 		}
