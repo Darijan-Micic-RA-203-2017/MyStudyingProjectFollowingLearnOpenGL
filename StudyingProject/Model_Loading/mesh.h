@@ -24,11 +24,14 @@ struct Vertex
 
 // "Texture" structure contains the minimum of things a texture needs:
 // 1) id;
-// 2) type - diffuse, specular or emission map.
+// 2) type - diffuse, specular or emission map;
+// 3) path - local path of texture image file (we make the assumption that the model and its textures are located
+//           in the same directory).
 struct Texture
 {
 	unsigned int id;
 	string type;
+	string path;
 };
 
 // MESH is a single drawable subentity (submodel, subshape) of the model.
