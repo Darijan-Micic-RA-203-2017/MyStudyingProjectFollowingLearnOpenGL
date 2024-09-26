@@ -53,7 +53,7 @@ public:
 			GLenum format = 0u;
 			switch (numberOfColorChannelsInTextureImage)
 			{
-			case 2:
+			case 1:
 				format = GL_RED;
 				break;
 			case 3:
