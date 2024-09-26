@@ -18,6 +18,11 @@ using namespace std;
 class Model
 {
 private:
+	// Most scenes reuse several of their textures for several meshes. For example, a house can have granite
+	// texture for its walls, but also for its floor, ceilings, staircase, etc. Loading textures is an expensive
+	// operation, so we want to load and generate only textures that we haven't already "grabbed" in previously
+	// processed meshes.
+	vector<Texture> loadedTextures;
 	vector<Mesh> meshes;
 	string directory;
 
@@ -168,14 +173,30 @@ private:
 			// Retrieve the location of the texture file.
 			aiString str;
 			material->GetTexture(type, i, &str);
+			// If the path of one of the loaded textures matches the path of the current texture of the material,
+			// we use that loaded texture and move on to the next texture of the material.
+			bool textureAlreadyLoaded = false;
+			for (unsigned int j = 0u; j < loadedTextures.size(); j++)
+			{
+				if (strcmp(loadedTextures[j].path.data(), str.C_Str()) == 0)
+				{
+					textures.push_back(loadedTextures[j]);
+					textureAlreadyLoaded = true;
 
-			// Load the texture from file.
-			Texture texture;
-			texture.id = loadTextureFromFile(str.C_Str(), directory);
-			texture.type = nameOfType;
-			texture.path = str.C_Str();
+					break;
+				}
+			}
 
-			textures.push_back(texture);
+			// Load the texture from file if we haven't yet "grabbed" it in previously processed meshes.
+			if (!textureAlreadyLoaded)
+			{
+				Texture texture;
+				texture.id = loadTextureFromFile(str.C_Str(), directory);
+				texture.type = nameOfType;
+				texture.path = str.C_Str();
+
+				textures.push_back(texture);
+			}
 		}
 
 		return textures;
