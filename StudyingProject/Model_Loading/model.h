@@ -251,7 +251,7 @@ private:
 				glBindTexture(GL_TEXTURE_2D, 0u);
 				glDeleteTextures(1, &texture);
 
-				return;
+				return 0u;
 			}
 
 			// Generate a texture using the previously loaded image data (pixels).

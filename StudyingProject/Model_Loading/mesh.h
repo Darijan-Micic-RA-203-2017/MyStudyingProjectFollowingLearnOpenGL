@@ -29,7 +29,7 @@ struct Vertex
 //           in the same directory).
 struct Texture
 {
-	unsigned int id;
+	unsigned int id = 0u;
 	string type;
 	string path;
 };
@@ -152,6 +152,7 @@ public:
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 
+		// It's good practice to return everything to default after configuration is done.
 		glActiveTexture(GL_TEXTURE0);
 
 		glBindVertexArray(VAO);
