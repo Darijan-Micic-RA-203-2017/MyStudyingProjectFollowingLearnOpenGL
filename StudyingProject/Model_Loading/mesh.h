@@ -129,15 +129,15 @@ public:
 			string number = "";
 			if (typeOfTexture == "texture_diffuse")
 			{
-				number = to_string(++diffuseMapNumber);
+				number = to_string(diffuseMapNumber++);
 			}
 			else if (typeOfTexture == "texture_specular")
 			{
-				number = to_string(++specularMapNumber);
+				number = to_string(specularMapNumber++);
 			}
 			else if (typeOfTexture == "texture_emission")
 			{
-				number = to_string(++emissionMapNumber);
+				number = to_string(emissionMapNumber++);
 			}
 			// Tell OpenGL to which texture unit the shader sampler belongs to, by setting the shader sampler.
 			// Prefix "material." has to be added because texture samplers are fields of "Material" structure.

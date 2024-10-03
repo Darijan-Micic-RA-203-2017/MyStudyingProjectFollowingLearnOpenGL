@@ -36,12 +36,10 @@ private:
 		// "aiProcess_Triangulate" - tells Assimp that if the model doesn't entirely consist of triangles, it
 		// should transform all the model's primitive shapes to triangles first.
 		// "aiProcess_FlipUVs"     - tells Assimp to flip the texture coordinates on the y-axis where necessary.
-		// This option is basically a replacement for using "stb_image" library's
-		// "stbi_set_flip_vertically_on_load(true)" method (in "Getting_Started" and "Lighting" projects).
 		const aiScene* scene = modelImporter.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 		if (!scene || !scene->mRootNode || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
 		{
-			cout << "An error occured while loading the model!\n" << modelImporter.GetErrorString() << endl;
+			cout << "An error occurred while loading the model!\n" << modelImporter.GetErrorString() << endl;
 
 			return;
 		}
@@ -162,8 +160,8 @@ private:
 	// (if possible). 
 	vector<Texture> loadTexturesOfMaterial(aiMaterial* material, aiTextureType type, string nameOfType)
 	{
-		// Iterate over all the texture locations of the given type of texture.
 		vector<Texture> textures;
+		// Iterate over all the texture locations of the given type of texture.
 		for (unsigned int i = 0u; i < material->GetTextureCount(type); i++)
 		{
 			// Retrieve the location of the texture file.
@@ -187,7 +185,7 @@ private:
 			if (!textureAlreadyLoaded)
 			{
 				Texture texture;
-				texture.id = loadTextureFromFile(str.C_Str(), directory);
+				texture.id = loadTextureFromFile(str.C_Str());
 				texture.type = nameOfType;
 				texture.path = str.C_Str();
 
@@ -200,7 +198,7 @@ private:
 
 	// Load the texture image file, create the texture, set texture wrapping and filtering parameters and finally
 	// generate the texture and all its required mipmaps.
-	unsigned int loadTextureFromFile(const char* path, const string& directory)
+	unsigned int loadTextureFromFile(const char* path)
 	{
 		// Create memory on the GPU where texture will be stored.
 		unsigned int texture;
@@ -225,8 +223,7 @@ private:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		// Form the filename by concatenation.
-		string filename = string(path);
-		filename = directory + "/" + filename;
+		string filename = directory + string("/") + string(path);
 		// Load the image that will be used as a texture.
 		int textureImageWidth, textureImageHeight, numberOfColorChannelsInTextureImage;
 		unsigned char* pixels = stbi_load(filename.c_str(), &textureImageWidth, &textureImageHeight, 
