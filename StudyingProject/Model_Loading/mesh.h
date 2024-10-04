@@ -24,7 +24,7 @@ struct Vertex
 
 // "Texture" structure contains the minimum of things a texture needs:
 // 1) id;
-// 2) type - diffuse, specular or emission map;
+// 2) type - diffuse, specular or emissive map;
 // 3) path - local path of texture image file (we make the assumption that the model and its textures are located
 //           in the same directory).
 struct Texture
@@ -113,15 +113,15 @@ public:
 	// textures the mesh has and of what type, nor does the mesh have any textures at all. In order to set the
 	// texture units and the samplers in the shader program, we need to get creative.
 	// One way of solving this problem is to assume a certain naming convention. Each diffuse map will be named
-	// "texture_diffuseN", each specular map will be named "texture_specularN" and each emission map will be named
-	// "texture_emissionN". Number "N" is from set {1, ..., maximum number of texture samplers allowed}. By using
+	// "texture_diffuseN", each specular map will be named "texture_specularN" and each emissive map will be named
+	// "texture_emissiveN". Number "N" is from set {1, ..., maximum number of texture samplers allowed}. By using
 	// this naming convention, we can process any amount of textures on a single mesh and the shader developer is
 	// free to use as many textures as they want by defining the proper texture samplers.
 	void drawUsing(ShaderProgram& shaderProgram)
 	{
 		unsigned int diffuseMapNumber = 1u;
 		unsigned int specularMapNumber = 1u;
-		unsigned int emissionMapNumber = 1u;
+		unsigned int emissiveMapNumber = 1u;
 		for (unsigned int i = 0u; i < textures.size(); i++)
 		{
 			// Retrieve the texture number ("N" in "{texture_type}N").
@@ -135,9 +135,9 @@ public:
 			{
 				number = to_string(specularMapNumber++);
 			}
-			else if (typeOfTexture == "texture_emission")
+			else if (typeOfTexture == "texture_emissive")
 			{
-				number = to_string(emissionMapNumber++);
+				number = to_string(emissiveMapNumber++);
 			}
 			// Tell OpenGL to which texture unit the shader sampler belongs to, by setting the shader sampler.
 			// Prefix "material." has to be added because texture samplers are fields of "Material" structure.
@@ -156,7 +156,7 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, 0);
 
 		// Unbind VAO for safety reasons. This is not neccessary.
 		// VAO stores the glBindBuffer calls when the target is GL_ELEMENT_ARRAY_BUFFER.

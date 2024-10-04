@@ -238,7 +238,7 @@
     <Image Include="resources\steel_border_specular.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\matrix_emission.jpg">
+    <Image Include="resources\matrix_emissive.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

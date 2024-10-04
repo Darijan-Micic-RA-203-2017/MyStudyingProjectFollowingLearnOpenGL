@@ -139,11 +139,11 @@ private:
 			// textures vector.
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-			vector<Texture> emissionMaps = 
-				loadTexturesOfMaterial(meshMaterial, aiTextureType_EMISSIVE, "texture_emission");
-			// Insert all emission maps (from the beginning to the end of the returned vector) to the end of the
+			vector<Texture> emissiveMaps = 
+				loadTexturesOfMaterial(meshMaterial, aiTextureType_EMISSIVE, "texture_emissive");
+			// Insert all emissive maps (from the beginning to the end of the returned vector) to the end of the
 			// textures vector.
-			textures.insert(textures.end(), emissionMaps.begin(), emissionMaps.end());
+			textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());
 		}
 
 		return Mesh(vertices, indices, textures);

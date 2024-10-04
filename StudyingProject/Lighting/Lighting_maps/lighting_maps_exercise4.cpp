@@ -223,14 +223,14 @@ int draw_lighting_maps_exercise4()
 
 		return specularMap.errorCode;
 	}
-	// Generate emission map texture, set its wrapping and filtering parameters, load image-to-become-texture
+	// Generate emissive map texture, set its wrapping and filtering parameters, load image-to-become-texture
 	// from file system and generate all the required mipmaps using helper class.
-	Texture emissionMap("resources/matrix_emission.jpg");
-	if (emissionMap.errorCode)
+	Texture emissiveMap("resources/matrix_emissive.jpg");
+	if (emissiveMap.errorCode)
 	{
 		glfwTerminate();
 
-		return emissionMap.errorCode;
+		return emissiveMap.errorCode;
 	}
 
 	// Unbind texture for safety reasons. This is not neccessary.
@@ -245,7 +245,7 @@ int draw_lighting_maps_exercise4()
 	// Tell OpenGL to which texture unit each shader sampler belongs to, by setting each sampler.
 	ourShaderProgram.setIntegerUniform("material.diffuseMap", 0);
 	ourShaderProgram.setIntegerUniform("material.specularMap", 1);
-	ourShaderProgram.setIntegerUniform("material.emissionMap", 2);
+	ourShaderProgram.setIntegerUniform("material.emissiveMap", 2);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -284,7 +284,7 @@ int draw_lighting_maps_exercise4()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularMap.id);
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, emissionMap.id);
+		glBindTexture(GL_TEXTURE_2D, emissiveMap.id);
 
 		// The projection matrix transforms view space coordinates to clip space coordinates.
 		// We will use the perspective projection with varying field of view (FOV) that user sets by scrolling,
