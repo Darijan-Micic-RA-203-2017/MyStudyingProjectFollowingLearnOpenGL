@@ -83,6 +83,11 @@ int draw_model_loading()
 		return ourShaderProgram.errorCode;
 	}
 
+	// Activate the shader program.
+	// Every shader and rendering call from now on will use this shader program object.
+	// SHADER PROGRAM MUST BE ACTIVATED BEFORE MODEL LOADING IN ORDER TO SUCCESSFULLY SET THE UNIFORM VARIABLES!
+	ourShaderProgram.useProgram();
+
 	// Tell "stb_image.h" library to flip the y-axis during image loading. This call is necessary because
 	// OpenGL expects the 0.0f coordinate on the y-axis to be on the bottom side of the image, but images
 	// usually have 0.0f at the top of the y-axis.
@@ -95,9 +100,14 @@ int draw_model_loading()
 	// Draw in wireframe mode. Default polygon rasterization mode is GL_FILL for both sides.
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 
-	// Activate the shader program.
-	// Every shader and rendering call from now on will use this shader program object.
-	ourShaderProgram.useProgram();
+	// The model matrix transforms local space coordinates to world space coordinates.
+	// We won't perform any transformations.
+	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+	// Set the model matrix. IN THIS PARTICULAR CASE, I SET THE MODEL MATRIX OUTSIDE OF THE RENDERING LOOP TO
+	// REDUCE PROCESSING TIME AND MEMORY COSTS!
+	ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
 	// Rendering loop.
 	while (!glfwWindowShouldClose(window))
@@ -129,14 +139,6 @@ int draw_model_loading()
 		glm::mat4 viewMatrix = camera_for_4_3_1.getCalculatedViewMatrix();
 		// Set the view matrix. This matrix changes each frame.
 		ourShaderProgram.setFloatMat4Uniform("viewMatrix", viewMatrix);
-
-		// The model matrix transforms local space coordinates to world space coordinates.
-		// We won't perform any transformations.
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
-		// Set the model matrix. This matrix changes each frame.
-		ourShaderProgram.setFloatMat4Uniform("modelMatrix", modelMatrix);
 
 		// Render backpack.
 		backpack.drawUsing(ourShaderProgram);
