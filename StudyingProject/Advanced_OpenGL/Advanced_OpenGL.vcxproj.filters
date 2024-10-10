@@ -39,4 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\marble.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\metal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
