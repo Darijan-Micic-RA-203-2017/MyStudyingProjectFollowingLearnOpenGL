@@ -141,11 +141,17 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Depth_testing\depth_testing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Depth_testing\depth_testing.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Depth_testing\vertex_shader_for_5_1_1.glsl" />
+    <None Include="Depth_testing\fragment_shader_for_5_1_1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\marble.jpg" />
