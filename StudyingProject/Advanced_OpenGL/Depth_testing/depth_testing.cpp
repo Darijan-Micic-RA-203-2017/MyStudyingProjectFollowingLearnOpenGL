@@ -3,6 +3,9 @@
 const int window_width = 800;
 const int window_height = 600;
 
+float depthOfNearPlane_for_5_1_1 = 0.1f;
+float depthOfFarPlane_for_5_1_1 = 100.0f;
+
 Camera camera_for_5_1_1(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 bool firstMouseEntry_for_5_1_1 = true;
@@ -64,8 +67,9 @@ int draw_depth_testing()
 	// Default value of "glDepthFunc" function is "GL_LESS" - fragment will pass the depth test if its depth value
 	// is less than the stored depth value.
 	// Depth buffer contains values in range [0.0f, 1.0f], but the fragment's z-value in view space is in range
-	// [near plane depth, far plane depth]. The equation to transform the fragment's depth values in view space is
-	// embedded into the projection matrix and it looks like this: Fdepth = (1/z - 1/near) / (1/far - 1/near).
+	// [depth of near plane, depth of far plane]. The equation to transform the fragment's depth values in view
+	// space is embedded into the projection matrix and it looks like this:
+	// Fdepth = (1/z - 1/near) / (1/far - 1/near).
 	// glDepthFunc(GL_ALWAYS);
 
 	ShaderProgram ourShaderProgram("Depth_testing/vertex_shader_for_5_1_1.glsl", 
@@ -206,6 +210,9 @@ int draw_depth_testing()
 	ourShaderProgram.setIntegerUniform("marbleTexture", 0);
 	ourShaderProgram.setIntegerUniform("metalTexture", 1);
 
+	ourShaderProgram.setFloatUniform("depthOfNearPlane", depthOfNearPlane_for_5_1_1);
+	ourShaderProgram.setFloatUniform("depthOfFarPlane", depthOfFarPlane_for_5_1_1);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		float currentFrameTime = static_cast<float>(glfwGetTime());
@@ -223,7 +230,7 @@ int draw_depth_testing()
 		glBindTexture(GL_TEXTURE_2D, metalTexture.id);
 
 		glm::mat4 projectionMatrix = glm::perspective(camera_for_5_1_1.fov, 
-			(float) window_width / (float) window_height, 0.1f, 100.0f);
+			(float) window_width / (float) window_height, depthOfNearPlane_for_5_1_1, depthOfFarPlane_for_5_1_1);
 		ourShaderProgram.setFloatMat4Uniform("projectionMatrix", projectionMatrix);
 
 		glm::mat4 viewMatrix = camera_for_5_1_1.getCalculatedViewMatrix();
