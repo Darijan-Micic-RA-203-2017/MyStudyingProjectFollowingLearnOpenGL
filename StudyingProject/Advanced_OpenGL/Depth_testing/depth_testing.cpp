@@ -58,6 +58,15 @@ int draw_depth_testing()
 	// Luckily, OpenGL stores depth information in a buffer called the z-buffer that allows OpenGL to decide
 	// when to or not to draw over a pixel. Using the z-buffer we can configure OpenGL to do depth testing.
 	glEnable(GL_DEPTH_TEST);
+	// OpenGL allows modification of the comparison operators it uses for the depth testing of fragment.
+	// Depth testing is a comparison of the fragment's depth value and the stored depth value. If the fragment
+	// passes the depth test, the stored depth value will be replaced with the fragment's depth value.
+	// Default value of "glDepthFunc" function is "GL_LESS" - fragment will pass the depth test if its depth value
+	// is less than the stored depth value.
+	// Depth buffer contains values in range [0.0f, 1.0f], but the fragment's z-value in view space is in range
+	// [near plane depth, far plane depth]. The equation to transform the fragment's depth values in view space is
+	// embedded into the projection matrix and it looks like this: Fdepth = (1/z - 1/near) / (1/far - 1/near).
+	// glDepthFunc(GL_ALWAYS);
 
 	ShaderProgram ourShaderProgram("Depth_testing/vertex_shader_for_5_1_1.glsl", 
 		"Depth_testing/fragment_shader_for_5_1_1.glsl");
