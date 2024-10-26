@@ -1,4 +1,4 @@
-﻿#include "zadatak_01.h"
+#include "vezbe_03_zadatak_01.h"
 
 int window_width_for_3_1 = 800;
 int window_height_for_3_1 = 600;
@@ -44,8 +44,8 @@ int draw_vezbe_03_zadatak_01()
 		return 3;
 	}
 
-	ShaderProgram shaderProgram("Vezbe_03/Zadatak_01/vertex_shader_for_3_1.glsl", 
-		"Vezbe_03/Zadatak_01/fragment_shader_for_3_1.glsl");
+	ShaderProgram shaderProgram("Vezbe_03/Zadatak_01/vertex_shader_for_03_01.glsl", 
+		"Vezbe_03/Zadatak_01/fragment_shader_for_03_01.glsl");
 	if (shaderProgram.errorCode)
 	{
 		glfwTerminate();

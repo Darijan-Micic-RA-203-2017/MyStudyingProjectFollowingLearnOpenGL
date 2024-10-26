@@ -1,4 +1,4 @@
-#include "Vezbe_03/Zadatak_01/zadatak_01.h"
+#include "Vezbe_03/Zadatak_01/vezbe_03_zadatak_01.h"
 
 int main()
 {
