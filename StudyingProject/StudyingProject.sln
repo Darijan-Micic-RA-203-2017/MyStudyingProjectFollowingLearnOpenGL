@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Model_Loading", "Model_Load
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Advanced_OpenGL", "Advanced_OpenGL\Advanced_OpenGL.vcxproj", "{B946431F-268B-4092-8CDA-35002CFF0566}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RG_vezbe", "RG_vezbe\RG_vezbe.vcxproj", "{ED36C7DD-0A71-4340-AA33-FC5C7780B453}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{B946431F-268B-4092-8CDA-35002CFF0566}.Release|x64.Build.0 = Release|x64
 		{B946431F-268B-4092-8CDA-35002CFF0566}.Release|x86.ActiveCfg = Release|Win32
 		{B946431F-268B-4092-8CDA-35002CFF0566}.Release|x86.Build.0 = Release|Win32
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Debug|x64.ActiveCfg = Debug|x64
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Debug|x64.Build.0 = Debug|x64
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Debug|x86.ActiveCfg = Debug|Win32
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Debug|x86.Build.0 = Debug|Win32
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Release|x64.ActiveCfg = Release|x64
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Release|x64.Build.0 = Release|x64
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Release|x86.ActiveCfg = Release|Win32
+		{ED36C7DD-0A71-4340-AA33-FC5C7780B453}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
