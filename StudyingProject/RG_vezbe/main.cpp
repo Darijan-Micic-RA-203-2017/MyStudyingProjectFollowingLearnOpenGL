@@ -14,7 +14,7 @@ int main()
 		{
 		case 1:
 			returnValue = draw_vezbe_03_zadatak_01();
-			std::cout << "\"Vezbe 3 - Zadatak 1\" exited with return value " 
+			std::cout << "\"Vebe 3 - zadatak 1\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
 		default:
