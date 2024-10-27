@@ -1,9 +1,9 @@
 #include "vezbe_03_zadatak_01.h"
 
-int window_width_for_3_1 = 800;
-int window_height_for_3_1 = 600;
+int window_width_for_03_01 = 800;
+int window_height_for_03_01 = 600;
 
-float colorOfBackground_for_3_1[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+float colorOfBackground_for_03_01[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
 /* Zadatak 1
 Napisati program koji crta ljubičasti, jednakokraki trougao u gornjem desnom kvadrantu prozora, na tamno sivoj
@@ -23,7 +23,7 @@ int draw_vezbe_03_zadatak_01()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(window_width_for_3_1, window_height_for_3_1, 
+	GLFWwindow* window = glfwCreateWindow(window_width_for_03_01, window_height_for_03_01, 
 		"Vežbe 3 - zadatak 1", NULL, NULL);
 	if (window == NULL)
 	{
@@ -84,15 +84,16 @@ int draw_vezbe_03_zadatak_01()
 	{
 		processInput_for_vezbe_03_zadatak_01(window);
 
-		glClearColor(colorOfBackground_for_3_1[0], colorOfBackground_for_3_1[1], colorOfBackground_for_3_1[2], 
-			colorOfBackground_for_3_1[3]);
+		glClearColor(colorOfBackground_for_03_01[0], colorOfBackground_for_03_01[1], colorOfBackground_for_03_01[2], 
+			colorOfBackground_for_03_01[3]);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// The first two parameters of "glViewport" function are the coordinates of the bottom left corner of the
 		// screen space, while the last two parameters are the width and the height of screen space.
-		glViewport(window_width_for_3_1 / 2, window_height_for_3_1 / 2, 
-			window_width_for_3_1 / 2, window_height_for_3_1 / 2);
+		glViewport(window_width_for_03_01 / 2, window_height_for_03_01 / 2, 
+			window_width_for_03_01 / 2, window_height_for_03_01 / 2);
 		glBindVertexArray(VAO);
+		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
@@ -106,8 +107,8 @@ int draw_vezbe_03_zadatak_01()
 
 void framebuffer_size_callback_for_vezbe_03_zadatak_01(GLFWwindow* window, int width, int height)
 {
-	window_width_for_3_1 = width;
-	window_height_for_3_1 = height;
+	window_width_for_03_01 = width;
+	window_height_for_03_01 = height;
 
 	glViewport(0, 0, width, height);
 }
@@ -123,15 +124,15 @@ void processInput_for_vezbe_03_zadatak_01(GLFWwindow* window)
 	{
 		for (unsigned int i = 0u; i < 4u; i++)
 		{
-			colorOfBackground_for_3_1[i] = 1.0f;
+			colorOfBackground_for_03_01[i] = 1.0f;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		for (unsigned int i = 0u; i < 3u; i++)
 		{
-			colorOfBackground_for_3_1[i] = 0.1f;
+			colorOfBackground_for_03_01[i] = 0.1f;
 		}
-		colorOfBackground_for_3_1[3] = 1.0f;
+		colorOfBackground_for_03_01[3] = 1.0f;
 	}
 }

@@ -108,7 +108,9 @@ int draw_vezbe_03_zadatak_02()
 		// screen space, while the last two parameters are the width and the height of screen space.
 		glViewport(0, 0, window_width_for_03_02 / 2, window_height_for_03_02);
 		glBindVertexArray(serbianFlagVAO);
-		glDrawElements(GL_TRIANGLES, sizeof(indicesOfSerbianFlag), GL_UNSIGNED_INT, (void*) 0);
+		// Parameters: primitive, total number of indices to be read, type of indices, offset from the beginning of the
+		// indices array (after which we start reading the previously specified total number of indices to be read).
+		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, (void*) 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
