@@ -40,13 +40,21 @@ int draw_vezbe_03_zadatak_02()
 		return 3;
 	}
 
-	ShaderProgram shaderProgram("Vezbe_03/Zadatak_02/vertex_shader_for_03_02.glsl", 
-		"Vezbe_03/Zadatak_02/fragment_shader_for_03_02.glsl");
-	if (shaderProgram.errorCode)
+	ShaderProgram serbianFlagShaderProgram("Vezbe_03/Zadatak_02/vertex_shader_of_serbian_flag_for_03_02.glsl", 
+		"Vezbe_03/Zadatak_02/fragment_shader_of_serbian_flag_for_03_02.glsl");
+	if (serbianFlagShaderProgram.errorCode)
 	{
 		glfwTerminate();
 
-		return shaderProgram.errorCode;
+		return serbianFlagShaderProgram.errorCode;
+	}
+	ShaderProgram japaneseFlagShaderProgram("Vezbe_03/Zadatak_02/vertex_shader_of_japanese_flag_for_03_02.glsl", 
+		"Vezbe_03/Zadatak_02/fragment_shader_of_japanese_flag_for_03_02.glsl");
+	if (japaneseFlagShaderProgram.errorCode)
+	{
+		glfwTerminate();
+
+		return japaneseFlagShaderProgram.errorCode;
 	}
 
 	float verticesOfSerbianFlag[] = {
@@ -95,14 +103,14 @@ int draw_vezbe_03_zadatak_02()
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
-	shaderProgram.useProgram();
-
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput_for_vezbe_03_zadatak_02(window);
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		serbianFlagShaderProgram.useProgram();
 
 		// The first two parameters of "glViewport" function are the coordinates of the bottom left corner of the
 		// screen space, while the last two parameters are the width and the height of screen space.

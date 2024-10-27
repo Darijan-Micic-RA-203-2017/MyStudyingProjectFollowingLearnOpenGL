@@ -53,6 +53,12 @@
     <None Include="Vezbe_03\Zadatak_02\fragment_shader_of_serbian_flag_for_03_02.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="Vezbe_03\Zadatak_02\vertex_shader_of_japanese_flag_for_03_02.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Vezbe_03\Zadatak_02\fragment_shader_of_japanese_flag_for_03_02.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
