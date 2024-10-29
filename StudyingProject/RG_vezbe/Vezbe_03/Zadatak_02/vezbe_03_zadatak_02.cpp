@@ -1,5 +1,8 @@
+// Number of coordinate axes for the cirle. Since the cirle is a 2D shape, we usually use 2 coordinates to describe the
+// position of a point belonging to the circle - (x, y).
+#define NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE 2u
 // Number of discrete points the circle consists of. The circle is a set of connected points bounding the disc (plane area).
-// Judging from my own observations, circle seems continuous to the eye when its resolution is greater than or equal to 24.
+// Judging from my own observations, the circle seems round to the eye when its resolution is greater than or equal to 24.
 #define RESOLUTION_OF_CIRCLE 30u
 
 #include "vezbe_03_zadatak_02.h"
@@ -85,17 +88,24 @@ int draw_vezbe_03_zadatak_02()
 		9u, 10u, 11u
 	};
 
-	// We draw the circle using the "GL_TRIANGLE_FAN" primitive. The circle is approximated as a polygon - collection of
-	// discrete points at the same distance from the central point. The rasterization connects these discrete points by
-	// straight lines. The total number of vertices we need is 2 * circle's resolution + 4. We multiply circle's resolution
-	// with the number of needed coordinates (2, x and y) and add 4 vertices for circle's center and angle of zero degrees.
-	float verticesOfJapaneseFlag[2u * RESOLUTION_OF_CIRCLE + 4u];
+	// We draw the circle using the "GL_TRIANGLE_FAN" primitive. It's impossible for the computer to draw the circle to
+	// perfection, because the screen is a matrix of square-shaped pixels. Therefore, the circle is approximated as a
+	// polygon - collection of discrete points at the same distance from the central point. The rasterization connects these
+	// discrete points by straight lines. The total number of vertices we need is:
+	// NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * RESOLUTION_OF_CIRCLE + 2u * NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE.
+	// We multiply circle's resolution with number of coordinate axes and add the double amount of coordinate axes for
+	// circle to account for circle's center and repeated angle of zero degrees (angle of 360 degrees).
+	float verticesOfJapaneseFlag[NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * RESOLUTION_OF_CIRCLE 
+		+ 2u * NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE];
 	// Set the radius of the circle.
 	float r = 0.5f;
 	// Set the first vertex to be the center of the circle.
-	verticesOfJapaneseFlag[0u] = 0.0f;
-	verticesOfJapaneseFlag[1u] = 0.0f;
+	for (unsigned int i = 0u; i < NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE; i++)
+	{
+		verticesOfJapaneseFlag[i] = 0.0f;
+	}
 	// In order to close the circle, we need to add the (cos(0.0f), sin(0.0f)) vertex twice.
+	// Angle of 0.0f degrees === angle of 360.0f degrees.
 	// That's why we use the less or equal ("<=") comparator in the "for" loop.
 	for (unsigned int i = 0u; i <= RESOLUTION_OF_CIRCLE; i++)
 	{
@@ -106,8 +116,10 @@ int draw_vezbe_03_zadatak_02()
 		// Therefore, x-coordinate and y-coordinate of the point on circle are calculated by the following equations:
 		// Vx = r * cos((pi / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE))).
 		// Vy = r * sin((pi / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE))).
-		verticesOfJapaneseFlag[2u + 2u * i] = r * cos((3.141592f / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE)));
-		verticesOfJapaneseFlag[2u + 2u * i + 1u] = r * sin((3.141592f / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE)));
+		verticesOfJapaneseFlag[NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE + NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * i] = 
+			r * cos((3.141592f / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE)));
+		verticesOfJapaneseFlag[NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE + NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * i + 1u] = 
+			r * sin((3.141592f / 180.0f) * (i * (360.0f / RESOLUTION_OF_CIRCLE)));
 	}
 
 	unsigned int serbianFlagVAO, japaneseFlagVAO;
@@ -136,7 +148,8 @@ int draw_vezbe_03_zadatak_02()
 	glBindBuffer(GL_ARRAY_BUFFER, japaneseFlagVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfJapaneseFlag), verticesOfJapaneseFlag, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0u, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE, GL_FLOAT, GL_FALSE, 
+		NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * sizeof(float), (void*) 0);
 	glEnableVertexAttribArray(0u);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
@@ -166,7 +179,10 @@ int draw_vezbe_03_zadatak_02()
 		glViewport(window_width_for_03_02 / 2, 0, window_width_for_03_02 / 2, window_height_for_03_02);
 		glBindVertexArray(japaneseFlagVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
-		glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(verticesOfJapaneseFlag));
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 
+			sizeof(verticesOfJapaneseFlag) / (NUMBER_OF_COORDINATE_AXES_FOR_CIRCLE * sizeof(float)));
+		// We draw RESOLUTION_OF_CIRCLE + 2 vertices, which is the quotient (the result of the division) of the size of
+		// circle's vertices array and the size of a single coordinate of vertex.
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
