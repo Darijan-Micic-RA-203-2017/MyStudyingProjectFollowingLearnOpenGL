@@ -132,11 +132,13 @@
     <ClInclude Include="shader_program.h" />
     <ClInclude Include="Vezbe_03\Zadatak_01\vezbe_03_zadatak_01.h" />
     <ClInclude Include="Vezbe_03\Zadatak_02\vezbe_03_zadatak_02.h" />
+    <ClInclude Include="Vezbe_03\Zadatak_03\vezbe_03_zadatak_03.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_01\vezbe_03_zadatak_01.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_02\vezbe_03_zadatak_02.cpp" />
+    <ClCompile Include="Vezbe_03\Zadatak_03\vezbe_03_zadatak_03.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Vezbe_03\Zadatak_01\vertex_shader_for_03_01.glsl" />
@@ -145,6 +147,8 @@
     <None Include="Vezbe_03\Zadatak_02\fragment_shader_of_serbian_flag_for_03_02.glsl" />
     <None Include="Vezbe_03\Zadatak_02\vertex_shader_of_japanese_flag_for_03_02.glsl" />
     <None Include="Vezbe_03\Zadatak_02\fragment_shader_of_japanese_flag_for_03_02.glsl" />
+    <None Include="Vezbe_03\Zadatak_03\vertex_shader_for_03_03.glsl" />
+    <None Include="Vezbe_03\Zadatak_03\fragment_shader_for_03_03.glsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
