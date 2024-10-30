@@ -93,7 +93,8 @@ int draw_vezbe_03_zadatak_03()
 	{
 		processInput_for_vezbe_03_zadatak_03(window);
 
-		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+		float colorOfBackground = static_cast<float>(abs(cos(glfwGetTime())));
+		glClearColor(colorOfBackground, colorOfBackground, colorOfBackground, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glBindVertexArray(boundingStripeVAO);
