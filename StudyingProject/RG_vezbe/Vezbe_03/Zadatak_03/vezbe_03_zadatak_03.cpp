@@ -1,8 +1,13 @@
 #include "vezbe_03_zadatak_03.h"
 
-const int window_width = 800;
-const int window_height = 600;
+int window_width = 500;
+int window_height = 500;
 
+/* Zadatak 3
+Napisati program koji crta šarenu traku proizvoljnih boja oko ivica prozora koji je dimenzija 500x500, a na sredini ekrana
+prvo slovo svog imena proizvoljne boje na svetlo sivoj pozadini. Širina trake iznosi 30 % širine jednog kvadranta. Debljina
+linija slova mora biti veća od 1 piksela. Boja pozadine se tokom vremena smenjuje od potpuno bele do potpuno crne boje.
+*/
 int draw_vezbe_03_zadatak_03()
 {
 	if (glfwInit() != GLFW_TRUE)
@@ -16,7 +21,7 @@ int draw_vezbe_03_zadatak_03()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
-		"Ve�be 3 - zadatak 3", NULL, NULL);
+		"Vežbe 3 - zadatak 3", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
@@ -45,27 +50,42 @@ int draw_vezbe_03_zadatak_03()
 		return shaderProgram.errorCode;
 	}
 
-	float vertices[] = {
-		0.0f, 0.0f, 0.0f
+	float verticesOfBoundingStripe[] = {
+		// When drawing using the "GL_TRIANGLE_STRIP" primitive, vertices should be ordered so that the last two vertices
+		// of the previous triangle consist a triangle coupled with the following vertex. In order to compensate for the
+		// change in face orientation, OpenGL will automatically change the order of drawing so the user doesn't have to
+		// worry about that.
+		// position   // color
+		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 
+		 0.7f,  0.7f, 0.5f, 0.0f, 0.5f, 
+		 1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 
+		 0.7f, -0.7f, 0.5f, 0.2f, 1.0f, 
+		-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 
+		-0.7f, -0.7f, 0.0f, 0.5f, 0.5f, 
+		-1.0f,  1.0f, 0.5f, 0.1f, 0.5f, 
+		-0.7f,  0.7f, 0.5f, 0.0f, 0.5f, 
+		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 
+		 0.7f,  0.7f, 0.5f, 0.0f, 0.5f
 	};
+	int strideOfVertexOfBoundingStripe = 5 * sizeof(float);
 
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
+	unsigned int boundingStripeVAO;
+	glGenVertexArrays(1, &boundingStripeVAO);
+	unsigned int boundingStripeVBO;
+	glGenBuffers(1, &boundingStripeVBO);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(boundingStripeVAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, boundingStripeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfBoundingStripe), verticesOfBoundingStripe, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 2, GL_FLOAT, GL_FALSE, strideOfVertexOfBoundingStripe, (void*) 0);
 	glEnableVertexAttribArray(0u);
+	glVertexAttribPointer(1u, 3, GL_FLOAT, GL_FALSE, strideOfVertexOfBoundingStripe, (void*) (2 * sizeof(float)));
+	glEnableVertexAttribArray(1u);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
-
-	glPointSize(7.5f);
 
 	shaderProgram.useProgram();
 
@@ -73,11 +93,14 @@ int draw_vezbe_03_zadatak_03()
 	{
 		processInput_for_vezbe_03_zadatak_03(window);
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_POINTS, 0, 1);
+		glBindVertexArray(boundingStripeVAO);
+		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(verticesOfBoundingStripe) / strideOfVertexOfBoundingStripe);
+		// We draw 10 vertices, which is the quotient (the result of the division) of the size of bounding stripe's
+		// vertices array and the size of a single vertex in it.
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -90,6 +113,9 @@ int draw_vezbe_03_zadatak_03()
 
 void framebuffer_size_callback_for_vezbe_03_zadatak_03(GLFWwindow* window, int width, int height)
 {
+	window_width = width;
+	window_height = height;
+
 	glViewport(0, 0, width, height);
 }
 
