@@ -3,6 +3,14 @@
 int window_width_for_03_04 = 800;
 int window_height_for_03_04 = 600;
 
+const float squareSideLength_for_03_04 = 0.4f;
+
+float movementOfSquareOnXAxis_for_03_04 = 0.0f;
+float movementOfSquareOnYAxis_for_03_04 = 0.0f;
+
+float deltaTime_for_03_04 = 0.0f;
+float previousFrameTime_for_03_04 = 0.0f;
+
 /* Zadatak 4
 Nacrtati proizvoljnu plavu zvezdu na proizvoljnoj poziciji. Nacrtati poluprovidan kvadrat na centru ekrana, čija je
 stranica duga 20% jednog kvadranta i uraditi sledeće funkcionalnosti tastera:
@@ -66,22 +74,14 @@ int draw_vezbe_03_zadatak_04()
 
 		return shaderProgram.errorCode;
 	}
+	ShaderProgram squareShaderProgram("Vezbe_03/Zadatak_04/vertex_shader_of_square_for_03_04.glsl", 
+		"Vezbe_03/Zadatak_04/fragment_shader_for_03_04.glsl");
+	if (squareShaderProgram.errorCode)
+	{
+		glfwTerminate();
 
-	float verticesOfTriangle[] = {
-		// position        // color
-		-0.4f, -0.4f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
-		 0.4f, -0.4f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
-		 0.0f,  0.4f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-	};
-	float verticesOfSquare[] = {
-		// position         // color
-		-0.4f, -0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
-		 0.4f, -0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
-		-0.4f,  0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
-		-0.4f,  0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
-		 0.4f, -0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
-		 0.4f,  0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f
-	};
+		return squareShaderProgram.errorCode;
+	}
 
 	// Star has 5 vertices, but I have to add 2 more for its center and another drawing of vertex at angle of 0.0f degrees.
 	float verticesOfStar[7u * 5u + 2u * 7u];
@@ -102,14 +102,41 @@ int draw_vezbe_03_zadatak_04()
 		verticesOfStar[7u + 7u * i + 6u] = 1.0f;
 	}
 
-	unsigned int triangleVAO, squareVAO, starVAO;
+	float verticesOfTriangle[] = {
+		// position                                               // color
+		-squareSideLength_for_03_04, -squareSideLength_for_03_04, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
+		 squareSideLength_for_03_04, -squareSideLength_for_03_04, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
+		 0.0f,                        squareSideLength_for_03_04, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	};
+
+	float verticesOfSquare[] = {
+		// position                                               // color
+		-squareSideLength_for_03_04, -squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
+		 squareSideLength_for_03_04, -squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
+		-squareSideLength_for_03_04,  squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
+		-squareSideLength_for_03_04,  squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
+		 squareSideLength_for_03_04, -squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f, 
+		 squareSideLength_for_03_04,  squareSideLength_for_03_04, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f
+	};
+
+	unsigned int starVAO, triangleVAO, squareVAO;
+	glGenVertexArrays(1, &starVAO);
 	glGenVertexArrays(1, &triangleVAO);
 	glGenVertexArrays(1, &squareVAO);
-	glGenVertexArrays(1, &starVAO);
-	unsigned int triangleVBO, squareVBO, starVBO;
+	unsigned int starVBO, triangleVBO, squareVBO;
+	glGenBuffers(1, &starVBO);
 	glGenBuffers(1, &triangleVBO);
 	glGenBuffers(1, &squareVBO);
-	glGenBuffers(1, &starVBO);
+
+	glBindVertexArray(starVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, starVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfStar), verticesOfStar, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
+	glEnableVertexAttribArray(0u);
+	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
+	glEnableVertexAttribArray(1u);
 
 	glBindVertexArray(triangleVAO);
 
@@ -131,43 +158,46 @@ int draw_vezbe_03_zadatak_04()
 	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
 	glEnableVertexAttribArray(1u);
 
-	glBindVertexArray(starVAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, starVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfStar), verticesOfStar, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
-	glEnableVertexAttribArray(0u);
-	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
-	glEnableVertexAttribArray(1u);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
 
-	shaderProgram.useProgram();
-
 	while (!glfwWindowShouldClose(window))
 	{
+		float currentFrameTime = static_cast<float>(glfwGetTime());
+		deltaTime_for_03_04 = currentFrameTime - previousFrameTime_for_03_04;
+		previousFrameTime_for_03_04 = currentFrameTime;
+
 		processInput_for_vezbe_03_zadatak_04(window);
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindVertexArray(triangleVAO);
-		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
-		glBindVertexArray(squareVAO);
-		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		shaderProgram.useProgram();
 
 		glBindVertexArray(starVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
 
+		glBindVertexArray(triangleVAO);
+		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		squareShaderProgram.useProgram();
+
+		// Update square position uniforms.
+		squareShaderProgram.setFloatUniform("movementOfSquareOnXAxis", movementOfSquareOnXAxis_for_03_04);
+		squareShaderProgram.setFloatUniform("movementOfSquareOnYAxis", movementOfSquareOnYAxis_for_03_04);
+
+		glBindVertexArray(squareVAO);
+		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	movementOfSquareOnXAxis_for_03_04 = 0.0f;
+	movementOfSquareOnYAxis_for_03_04 = 0.0f;
 
 	glfwTerminate();
 
@@ -187,5 +217,40 @@ void processInput_for_vezbe_03_zadatak_04(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+	}
+
+	float movementSpeed = 0.25f * deltaTime_for_03_04;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		if (movementOfSquareOnXAxis_for_03_04 >= -1.0f + squareSideLength_for_03_04)
+		{
+			movementOfSquareOnXAxis_for_03_04 -= movementSpeed;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		if (movementOfSquareOnXAxis_for_03_04 <= 1.0f - squareSideLength_for_03_04)
+		{
+			movementOfSquareOnXAxis_for_03_04 += movementSpeed;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		if (movementOfSquareOnYAxis_for_03_04 <= 1.0f - squareSideLength_for_03_04)
+		{
+			movementOfSquareOnYAxis_for_03_04 += movementSpeed;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		if (movementOfSquareOnYAxis_for_03_04 >= -1.0f + squareSideLength_for_03_04)
+		{
+			movementOfSquareOnYAxis_for_03_04 -= movementSpeed;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		movementOfSquareOnXAxis_for_03_04 = 0.0f;
+		movementOfSquareOnYAxis_for_03_04 = 0.0f;
 	}
 }
