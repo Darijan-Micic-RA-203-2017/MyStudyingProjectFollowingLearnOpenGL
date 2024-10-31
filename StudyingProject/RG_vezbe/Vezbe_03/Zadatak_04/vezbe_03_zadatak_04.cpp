@@ -55,7 +55,8 @@ int draw_vezbe_03_zadatak_04()
 	// We blend colors by setting the blending function with the "glBlendFunc" function. Its parameters:
 	// - the source color factor (the factor of the output variable of the fragment shader);
 	// - the destination color factor (the factor of the color of the fragment we are drawing over).
-	glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+	// glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ShaderProgram shaderProgram("Vezbe_03/Zadatak_04/vertex_shader_for_03_04.glsl", 
 		"Vezbe_03/Zadatak_04/fragment_shader_for_03_04.glsl");
@@ -82,12 +83,33 @@ int draw_vezbe_03_zadatak_04()
 		 0.4f,  0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.5f
 	};
 
-	unsigned int triangleVAO, squareVAO;
+	// Star has 5 vertices, but I have to add 2 more for its center and another drawing of vertex at angle of 0.0f degrees.
+	float verticesOfStar[7u * 5u + 2u * 7u];
+	// Set the radius of the circle.
+	float r = 0.175f;
+	verticesOfStar[0u] = 0.7f; verticesOfStar[1u] = 0.7f; verticesOfStar[2u] = 0.0f; // position
+	verticesOfStar[3u] = 0.0f; verticesOfStar[4u] = 1.0f; verticesOfStar[5u] = 1.0f; verticesOfStar[6u] = 1.0f; // color
+	for (unsigned int i = 0u; i <= 5u; i++)
+	{
+		// position
+		verticesOfStar[7u + 7u * i] = r * cos((3.141592f / 180.0f) * (i * (360.0f / 5.0f))) + 0.7f;
+		verticesOfStar[7u + 7u * i + 1u] = r * sin((3.141592f / 180.0f) * (i * (360.0f / 5.0f))) + 0.7f;
+		verticesOfStar[7u + 7u * i + 2u] = 0.0f;
+		// color
+		verticesOfStar[7u + 7u * i + 3u] = 0.0f;
+		verticesOfStar[7u + 7u * i + 4u] = 0.0f;
+		verticesOfStar[7u + 7u * i + 5u] = 1.0f;
+		verticesOfStar[7u + 7u * i + 6u] = 1.0f;
+	}
+
+	unsigned int triangleVAO, squareVAO, starVAO;
 	glGenVertexArrays(1, &triangleVAO);
 	glGenVertexArrays(1, &squareVAO);
-	unsigned int triangleVBO, squareVBO;
+	glGenVertexArrays(1, &starVAO);
+	unsigned int triangleVBO, squareVBO, starVBO;
 	glGenBuffers(1, &triangleVBO);
 	glGenBuffers(1, &squareVBO);
+	glGenBuffers(1, &starVBO);
 
 	glBindVertexArray(triangleVAO);
 
@@ -103,6 +125,16 @@ int draw_vezbe_03_zadatak_04()
 
 	glBindBuffer(GL_ARRAY_BUFFER, squareVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfSquare), verticesOfSquare, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
+	glEnableVertexAttribArray(0u);
+	glVertexAttribPointer(1u, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) (3 * sizeof(float)));
+	glEnableVertexAttribArray(1u);
+
+	glBindVertexArray(starVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, starVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfStar), verticesOfStar, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*) 0);
 	glEnableVertexAttribArray(0u);
@@ -128,6 +160,10 @@ int draw_vezbe_03_zadatak_04()
 		glBindVertexArray(squareVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindVertexArray(starVAO);
+		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
