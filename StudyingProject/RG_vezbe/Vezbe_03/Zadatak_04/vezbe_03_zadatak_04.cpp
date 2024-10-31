@@ -8,6 +8,8 @@ const float squareSideLength_for_03_04 = 0.4f;
 float movementOfSquareOnXAxis_for_03_04 = 0.0f;
 float movementOfSquareOnYAxis_for_03_04 = 0.0f;
 
+GLenum polygonModeOfSquare_for_03_04 = GL_FILL;
+
 float deltaTime_for_03_04 = 0.0f;
 float previousFrameTime_for_03_04 = 0.0f;
 
@@ -56,15 +58,6 @@ int draw_vezbe_03_zadatak_04()
 
 		return 3;
 	}
-
-	// Configure global OpenGL state.
-	// Enable blending.
-	glEnable(GL_BLEND);
-	// We blend colors by setting the blending function with the "glBlendFunc" function. Its parameters:
-	// - the source color factor (the factor of the output variable of the fragment shader);
-	// - the destination color factor (the factor of the color of the fragment we are drawing over).
-	// glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ShaderProgram shaderProgram("Vezbe_03/Zadatak_04/vertex_shader_for_03_04.glsl", 
 		"Vezbe_03/Zadatak_04/fragment_shader_for_03_04.glsl");
@@ -172,6 +165,7 @@ int draw_vezbe_03_zadatak_04()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		shaderProgram.useProgram();
 
 		glBindVertexArray(starVAO);
@@ -182,6 +176,7 @@ int draw_vezbe_03_zadatak_04()
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		glPolygonMode(GL_FRONT_AND_BACK, polygonModeOfSquare_for_03_04);
 		squareShaderProgram.useProgram();
 
 		// Update square position uniforms.
@@ -252,5 +247,35 @@ void processInput_for_vezbe_03_zadatak_04(GLFWwindow* window)
 	{
 		movementOfSquareOnXAxis_for_03_04 = 0.0f;
 		movementOfSquareOnYAxis_for_03_04 = 0.0f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		polygonModeOfSquare_for_03_04 = GL_POINT;
+
+		glEnable(GL_PROGRAM_POINT_SIZE);
+		glPointSize(4.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		polygonModeOfSquare_for_03_04 = GL_LINE;
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+	{
+		polygonModeOfSquare_for_03_04 = GL_FILL;
+	}
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+	{
+		// Disable blending.
+		glDisable(GL_BLEND);
+	}
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+	{
+		// Enable blending.
+		glEnable(GL_BLEND);
+		// We blend colors by setting the blending function with the "glBlendFunc" function. Its parameters:
+		// 1) the source color factor - the factor of the output variable of the fragment shader;
+		// 2) the destination color factor - the factor of the color of the fragment we are drawing over.
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 }
