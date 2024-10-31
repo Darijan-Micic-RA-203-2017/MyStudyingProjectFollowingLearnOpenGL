@@ -80,6 +80,9 @@
     <None Include="Vezbe_03\Zadatak_04\vertex_shader_for_03_04.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="Vezbe_03\Zadatak_04\vertex_shader_of_square_for_03_04.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
     <None Include="Vezbe_03\Zadatak_04\fragment_shader_for_03_04.glsl">
       <Filter>Shader Files</Filter>
     </None>

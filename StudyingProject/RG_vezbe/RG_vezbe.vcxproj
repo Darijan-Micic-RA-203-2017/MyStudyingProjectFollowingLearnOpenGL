@@ -152,6 +152,7 @@
     <None Include="Vezbe_03\Zadatak_03\vertex_shader_for_03_03.glsl" />
     <None Include="Vezbe_03\Zadatak_03\fragment_shader_for_03_03.glsl" />
     <None Include="Vezbe_03\Zadatak_04\vertex_shader_for_03_04.glsl" />
+    <None Include="Vezbe_03\Zadatak_04\vertex_shader_of_square_for_03_04.glsl" />
     <None Include="Vezbe_03\Zadatak_04\fragment_shader_for_03_04.glsl" />
   </ItemGroup>
   <ItemGroup>
