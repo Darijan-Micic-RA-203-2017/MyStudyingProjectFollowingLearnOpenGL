@@ -1,6 +1,7 @@
 #include "Vezbe_03/Zadatak_01/vezbe_03_zadatak_01.h"
 #include "Vezbe_03/Zadatak_02/vezbe_03_zadatak_02.h"
 #include "Vezbe_03/Zadatak_03/vezbe_03_zadatak_03.h"
+#include "Vezbe_03/Zadatak_04/vezbe_03_zadatak_04.h"
 
 int main()
 {
@@ -9,7 +10,7 @@ int main()
 	int argument = 0;
 	while (argument != -1)
 	{
-		std::cout << "Enter argument from set {1, ..., 3}: ";
+		std::cout << "Enter argument from set {1, ..., 4}: ";
 		std::cin >> argument;
 
 		switch (argument)
@@ -29,6 +30,10 @@ int main()
 			std::cout << "\"Vebe 3 - zadatak 3\" exited with return value " 
 				<< returnValue << ".\n" << std::endl;
 			break;
+		case 4:
+			returnValue = draw_vezbe_03_zadatak_04();
+			std::cout << "\"Vebe 3 - zadatak 4\" exited with return value " 
+				<< returnValue << ".\n" << std::endl;
 		default:
 			break;
 		}
