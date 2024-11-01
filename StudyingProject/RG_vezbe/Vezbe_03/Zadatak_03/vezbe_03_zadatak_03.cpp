@@ -5,8 +5,8 @@
 
 #include "vezbe_03_zadatak_03.h"
 
-int window_width = 500;
-int window_height = 500;
+int window_width_for_03_03 = 500;
+int window_height_for_03_03 = 500;
 
 /* Zadatak 3
 Napisati program koji crta šarenu traku proizvoljnih boja oko ivica prozora koji je dimenzija 500x500, a na sredini ekrana
@@ -25,7 +25,7 @@ int draw_vezbe_03_zadatak_03()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, 
+	GLFWwindow* window = glfwCreateWindow(window_width_for_03_03, window_height_for_03_03, 
 		"Vežbe 3 - zadatak 3", NULL, NULL);
 	if (window == NULL)
 	{
@@ -137,14 +137,12 @@ int draw_vezbe_03_zadatak_03()
 		glClearColor(colorOfBackground, colorOfBackground, colorOfBackground, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glBindVertexArray(boundingStripeVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(verticesOfBoundingStripe) / (5 * sizeof(float)));
 		// We draw 10 vertices, which is the quotient (the result of the division) of the size of bounding stripe's
 		// vertices array and the size of a single vertex in it.
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glBindVertexArray(letterDVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
 		glDrawArrays(GL_LINE_LOOP, 0, sizeof(verticesOfLetterD) / (5 * sizeof(float)));
@@ -162,8 +160,8 @@ int draw_vezbe_03_zadatak_03()
 
 void framebuffer_size_callback_for_vezbe_03_zadatak_03(GLFWwindow* window, int width, int height)
 {
-	window_width = width;
-	window_height = height;
+	window_width_for_03_03 = width;
+	window_height_for_03_03 = height;
 
 	glViewport(0, 0, width, height);
 }
