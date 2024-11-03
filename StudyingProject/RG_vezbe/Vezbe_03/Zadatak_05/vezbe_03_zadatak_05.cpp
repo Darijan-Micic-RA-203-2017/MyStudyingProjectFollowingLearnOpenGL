@@ -70,8 +70,8 @@ int draw_vezbe_03_zadatak_05()
 	}
 
 	float verticesOfPoint[] = {
-		// position   // color
-		 0.0f,  0.0f, 1.0f, 0.0f, 0.0f
+		// position
+		 0.0f,  0.0f
 	};
 
 	unsigned int pointVAO;
@@ -84,10 +84,8 @@ int draw_vezbe_03_zadatak_05()
 	glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfPoint), verticesOfPoint, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0u, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0u, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*) 0);
 	glEnableVertexAttribArray(0u);
-	glVertexAttribPointer(1u, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (2 * sizeof(float)));
-	glEnableVertexAttribArray(1u);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0u);
 	glBindVertexArray(0u);
@@ -102,12 +100,16 @@ int draw_vezbe_03_zadatak_05()
 
 		processInput_for_vezbe_03_zadatak_05(window);
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		// We intentionally don't clear the trail left by the point.
+		// This task (practice 3 - task 5) is basically a tutorial for drawing stuff with straight lines.
 
 		// Update point position uniforms.
 		shaderProgram.setFloatUniform("movementOfPointOnXAxis", movementOfPointOnXAxis_for_03_05);
 		shaderProgram.setFloatUniform("movementOfPointOnYAxis", movementOfPointOnYAxis_for_03_05);
+
+		float greenColorAmount = abs(sin(currentFrameTime));
+		// Update green color amount uniform.
+		shaderProgram.setFloatUniform("greenColorAmount", greenColorAmount);
 
 		glBindVertexArray(pointVAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
@@ -137,7 +139,7 @@ void processInput_for_vezbe_03_zadatak_05(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	float movementSpeed = 0.75f * deltaTime_for_03_05;
+	float movementSpeed = 0.5f * deltaTime_for_03_05;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		movementOfPointOnYAxis_for_03_05 += movementSpeed;
@@ -179,6 +181,10 @@ void processInput_for_vezbe_03_zadatak_05(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 	{
+		// Clear the trail left by the point.
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		movementOfPointOnXAxis_for_03_05 = 0.0f;
 		movementOfPointOnYAxis_for_03_05 = 0.0f;
 	}
