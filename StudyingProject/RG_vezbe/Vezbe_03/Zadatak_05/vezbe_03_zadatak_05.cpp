@@ -1,7 +1,9 @@
 #include "vezbe_03_zadatak_05.h"
 
-int window_width_for_03_05 = 800;
-int window_height_for_03_05 = 600;
+// When using the full screen mode, the window's width and height have to match the display resolution in order to maintain
+// the correspondence of the screen space coordinates.
+int window_width_for_03_05 = 1366;
+int window_height_for_03_05 = 768;
 
 float pointSize_for_03_05 = 7.0f;
 
@@ -30,12 +32,9 @@ int draw_vezbe_03_zadatak_05()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	/*
+	// Use the full screen to show the application's screen space.
 	GLFWwindow* window = glfwCreateWindow(window_width_for_03_05, window_height_for_03_05, 
 		"Vežbe 3 - zadatak 5", glfwGetPrimaryMonitor(), NULL);
-	*/
-	GLFWwindow* window = glfwCreateWindow(window_width_for_03_05, window_height_for_03_05, 
-		"Vežbe 3 - zadatak 5", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Window was not created!" << std::endl;
