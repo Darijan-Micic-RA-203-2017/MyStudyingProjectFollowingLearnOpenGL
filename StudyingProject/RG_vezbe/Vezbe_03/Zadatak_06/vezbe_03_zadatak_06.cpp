@@ -130,9 +130,14 @@ void framebuffer_size_callback_for_vezbe_03_zadatak_06(GLFWwindow* window, int w
 
 void processInput_for_vezbe_03_zadatak_06(GLFWwindow* window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	// Close the window if the triangle reaches the bottom right corner of the screen space.
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS 
+		|| (movementOfTriangleOnXAxis_for_03_06 == 1.0f - triangleSideLength_for_03_06 
+			&& movementOfTriangleOnYAxis_for_03_06 == -1.0f + triangleSideLength_for_03_06))
 	{
 		glfwSetWindowShouldClose(window, true);
+
+		return;
 	}
 
 	float movementSpeed = 0.5f * deltaTime_for_03_06;
