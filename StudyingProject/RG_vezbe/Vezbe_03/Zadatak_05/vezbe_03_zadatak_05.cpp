@@ -107,7 +107,12 @@ int draw_vezbe_03_zadatak_05()
 		shaderProgram.setFloatUniform("movementOfPointOnXAxis", movementOfPointOnXAxis_for_03_05);
 		shaderProgram.setFloatUniform("movementOfPointOnYAxis", movementOfPointOnYAxis_for_03_05);
 
-		float greenColorAmount = abs(sin(currentFrameTime));
+		// Change the point's color from red to yellow over time and increase the pace of that change the further the point
+		// is from the center of the screen space.
+		// 0.01f is added so the point will change color even in the center of the screen space.
+		float greenColorAmount = abs(sin(
+			(10.0f * (0.01f + abs(movementOfPointOnXAxis_for_03_05) + abs(movementOfPointOnYAxis_for_03_05))) 
+				* currentFrameTime));
 		// Update green color amount uniform.
 		shaderProgram.setFloatUniform("greenColorAmount", greenColorAmount);
 
