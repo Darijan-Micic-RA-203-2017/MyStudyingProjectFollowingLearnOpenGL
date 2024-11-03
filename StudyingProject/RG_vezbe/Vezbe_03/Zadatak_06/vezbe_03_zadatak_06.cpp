@@ -64,7 +64,7 @@ int draw_vezbe_03_zadatak_06()
 		// position
 		-triangleSideLength_for_03_06, -triangleSideLength_for_03_06, 
 		 triangleSideLength_for_03_06, -triangleSideLength_for_03_06, 
-		 triangleSideLength_for_03_06,  triangleSideLength_for_03_06
+		 0.0f,                          triangleSideLength_for_03_06
 	};
 
 	unsigned int VAO;
@@ -99,6 +99,10 @@ int draw_vezbe_03_zadatak_06()
 		// Update triangle position uniforms.
 		shaderProgram.setFloatUniform("movementOfTriangleOnXAxis", movementOfTriangleOnXAxis_for_03_06);
 		shaderProgram.setFloatUniform("movementOfTriangleOnYAxis", movementOfTriangleOnYAxis_for_03_06);
+
+		// Update window dimensions uniforms.
+		shaderProgram.setIntegerUniform("windowWidth", window_width_for_03_06);
+		shaderProgram.setIntegerUniform("windowHeight", window_height_for_03_06);
 
 		glBindVertexArray(VAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
