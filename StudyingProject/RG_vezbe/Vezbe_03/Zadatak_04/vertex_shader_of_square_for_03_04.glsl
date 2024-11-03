@@ -14,6 +14,5 @@ void main()
 
 	float positionOnXAxis = aPos.x + movementOfSquareOnXAxis;
 	float positionOnYAxis = aPos.y + movementOfSquareOnYAxis;
-
 	gl_Position = vec4(positionOnXAxis, positionOnYAxis, aPos.z, 1.0f);
 }

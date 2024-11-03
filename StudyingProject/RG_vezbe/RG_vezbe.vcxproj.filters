@@ -37,6 +37,9 @@
     <ClInclude Include="Vezbe_03\Zadatak_05\vezbe_03_zadatak_05.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vezbe_03\Zadatak_05\vezbe_03_zadatak_05.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,6 +102,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="Vezbe_03\Zadatak_05\fragment_shader_for_03_05.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Vezbe_03\Zadatak_06\vertex_shader_for_03_06.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="Vezbe_03\Zadatak_06\fragment_shader_for_03_06.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
