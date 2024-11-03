@@ -144,6 +144,8 @@ void processInput_for_vezbe_03_zadatak_05(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+
+		return;
 	}
 
 	float movementSpeed = 0.5f * deltaTime_for_03_05;

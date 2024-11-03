@@ -118,6 +118,8 @@ void processInput_for_vezbe_03_zadatak_01(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+
+		return;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
