@@ -123,6 +123,9 @@ int draw_vezbe_03_zadatak_05()
 		glfwPollEvents();
 	}
 
+	movementOfPointOnXAxis_for_03_05 = 0.0f;
+	movementOfPointOnYAxis_for_03_05 = 0.0f;
+
 	glfwTerminate();
 
 	return 0;

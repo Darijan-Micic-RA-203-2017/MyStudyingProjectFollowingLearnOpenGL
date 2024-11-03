@@ -138,30 +138,34 @@ void processInput_for_vezbe_03_zadatak_06(GLFWwindow* window)
 	float movementSpeed = 0.5f * deltaTime_for_03_06;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		if (movementOfTriangleOnYAxis_for_03_06 < 1.0f - triangleSideLength_for_03_06)
+		movementOfTriangleOnYAxis_for_03_06 += movementSpeed;
+		if (movementOfTriangleOnYAxis_for_03_06 > 1.0f - triangleSideLength_for_03_06)
 		{
-			movementOfTriangleOnYAxis_for_03_06 += movementSpeed;
+			movementOfTriangleOnYAxis_for_03_06 = 1.0f - triangleSideLength_for_03_06;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		if (movementOfTriangleOnYAxis_for_03_06 > -1.0f + triangleSideLength_for_03_06)
+		movementOfTriangleOnYAxis_for_03_06 -= movementSpeed;
+		if (movementOfTriangleOnYAxis_for_03_06 < -1.0f + triangleSideLength_for_03_06)
 		{
-			movementOfTriangleOnYAxis_for_03_06 -= movementSpeed;
+			movementOfTriangleOnYAxis_for_03_06 = -1.0f + triangleSideLength_for_03_06;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		if (movementOfTriangleOnXAxis_for_03_06 > -1.0f + triangleSideLength_for_03_06)
+		movementOfTriangleOnXAxis_for_03_06 -= movementSpeed;
+		if (movementOfTriangleOnXAxis_for_03_06 < -1.0f + triangleSideLength_for_03_06)
 		{
-			movementOfTriangleOnXAxis_for_03_06 -= movementSpeed;
+			movementOfTriangleOnXAxis_for_03_06 = -1.0f + triangleSideLength_for_03_06;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		if (movementOfTriangleOnXAxis_for_03_06 < 1.0f - triangleSideLength_for_03_06)
+		movementOfTriangleOnXAxis_for_03_06 += movementSpeed;
+		if (movementOfTriangleOnXAxis_for_03_06 > 1.0f - triangleSideLength_for_03_06)
 		{
-			movementOfTriangleOnXAxis_for_03_06 += movementSpeed;
+			movementOfTriangleOnXAxis_for_03_06 = 1.0f - triangleSideLength_for_03_06;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)

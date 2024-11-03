@@ -59,6 +59,13 @@ int draw_vezbe_03_zadatak_04()
 		return 3;
 	}
 
+	// Enable blending.
+	glEnable(GL_BLEND);
+	// We blend colors by setting the blending function with the "glBlendFunc" function. Its parameters:
+	// 1) the source color factor - the factor of the output variable of the fragment shader;
+	// 2) the destination color factor - the factor of the color of the fragment we are drawing over.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	ShaderProgram shaderProgram("Vezbe_03/Zadatak_04/vertex_shader_for_03_04.glsl", 
 		"Vezbe_03/Zadatak_04/fragment_shader_for_03_04.glsl");
 	if (shaderProgram.errorCode)
@@ -214,33 +221,37 @@ void processInput_for_vezbe_03_zadatak_04(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	float movementSpeed = 0.25f * deltaTime_for_03_04;
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		if (movementOfSquareOnXAxis_for_03_04 >= -1.0f + squareSideLength_for_03_04)
-		{
-			movementOfSquareOnXAxis_for_03_04 -= movementSpeed;
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		if (movementOfSquareOnXAxis_for_03_04 <= 1.0f - squareSideLength_for_03_04)
-		{
-			movementOfSquareOnXAxis_for_03_04 += movementSpeed;
-		}
-	}
+	float movementSpeed = 0.5f * deltaTime_for_03_04;
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		if (movementOfSquareOnYAxis_for_03_04 <= 1.0f - squareSideLength_for_03_04)
+		movementOfSquareOnYAxis_for_03_04 += movementSpeed;
+		if (movementOfSquareOnYAxis_for_03_04 > 1.0f - squareSideLength_for_03_04)
 		{
-			movementOfSquareOnYAxis_for_03_04 += movementSpeed;
+			movementOfSquareOnYAxis_for_03_04 = 1.0f - squareSideLength_for_03_04;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		if (movementOfSquareOnYAxis_for_03_04 >= -1.0f + squareSideLength_for_03_04)
+		movementOfSquareOnYAxis_for_03_04 -= movementSpeed;
+		if (movementOfSquareOnYAxis_for_03_04 < -1.0f + squareSideLength_for_03_04)
 		{
-			movementOfSquareOnYAxis_for_03_04 -= movementSpeed;
+			movementOfSquareOnYAxis_for_03_04 = -1.0f + squareSideLength_for_03_04;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		movementOfSquareOnXAxis_for_03_04 -= movementSpeed;
+		if (movementOfSquareOnXAxis_for_03_04 < -1.0f + squareSideLength_for_03_04)
+		{
+			movementOfSquareOnXAxis_for_03_04 = -1.0f + squareSideLength_for_03_04;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		movementOfSquareOnXAxis_for_03_04 += movementSpeed;
+		if (movementOfSquareOnXAxis_for_03_04 > 1.0f - squareSideLength_for_03_04)
+		{
+			movementOfSquareOnXAxis_for_03_04 = 1.0f - squareSideLength_for_03_04;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
