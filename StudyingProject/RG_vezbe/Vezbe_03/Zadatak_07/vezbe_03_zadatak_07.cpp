@@ -56,13 +56,13 @@ int draw_vezbe_03_zadatak_07()
 	float vertices[] = {
 		// position                                                                 // color
 		// first triangle, set to be above the x-axis
-		-triangleSideLength_for_03_07,  triangleSideLength_for_03_07,               1.0f, 0.0f, 0.0f, 
-		 triangleSideLength_for_03_07,  triangleSideLength_for_03_07,               0.0f, 1.0f, 0.0f, 
-		 0.0f,                          triangleSideLength_for_03_07 * 2.0f,        0.0f, 0.0f, 1.0f, 
+		-triangleSideLength_for_03_07 / 2.0f,  triangleSideLength_for_03_07,        1.0f, 0.0f, 0.0f, 
+		 triangleSideLength_for_03_07 / 2.0f,  triangleSideLength_for_03_07,        0.0f, 1.0f, 0.0f, 
+		 0.0f,                                 triangleSideLength_for_03_07 * 2.0f, 0.0f, 0.0f, 1.0f, 
 		// second triangle, set to be below the x-axis
-		-triangleSideLength_for_03_07, -1.0f + triangleSideLength_for_03_07,        1.0f, 0.0f, 0.0f, 
-		 triangleSideLength_for_03_07, -1.0f + triangleSideLength_for_03_07,        0.0f, 1.0f, 0.0f, 
-		 0.0f,                         -1.0f + triangleSideLength_for_03_07 * 2.0f, 0.0f, 0.0f, 1.0f
+		 triangleSideLength_for_03_07 / 2.0f, -triangleSideLength_for_03_07,        0.0f, 1.0f, 0.0f, 
+		-triangleSideLength_for_03_07 / 2.0f, -triangleSideLength_for_03_07,        1.0f, 0.0f, 0.0f, 
+		 0.0f,                                -triangleSideLength_for_03_07 * 2.0f, 0.0f, 0.0f, 1.0f
 	};
 
 	unsigned int VAO;
@@ -89,7 +89,7 @@ int draw_vezbe_03_zadatak_07()
 	float movementOfTrianglesOnYAxis = 0.0f;
 	// Radius of the invinsible circle the triangles will move on.
 	// It has to be smaller than the minimal absolute y-coordinate of all vertices.
-	float r = 0.25f;
+	float r = 0.2f;
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput_for_vezbe_03_zadatak_07(window);
@@ -97,7 +97,7 @@ int draw_vezbe_03_zadatak_07()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		float time = static_cast<float>(glfwGetTime());
+		float time = static_cast<float>(1.25f * glfwGetTime());
 		movementOfTrianglesOnXAxis = r * cos(time);
 		movementOfTrianglesOnYAxis = r * sin(time);
 
