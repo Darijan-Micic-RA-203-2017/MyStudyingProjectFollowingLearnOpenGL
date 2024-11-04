@@ -137,6 +137,7 @@
     <ClInclude Include="Vezbe_03\Zadatak_05\vezbe_03_zadatak_05.h" />
     <ClInclude Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.h" />
     <ClInclude Include="Vezbe_03\Zadatak_07\vezbe_03_zadatak_07.h" />
+    <ClInclude Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Vezbe_03\Zadatak_05\vezbe_03_zadatak_05.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_07\vezbe_03_zadatak_07.cpp" />
+    <ClCompile Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Vezbe_03\Zadatak_01\vertex_shader_for_03_01.glsl" />
@@ -166,6 +168,8 @@
     <None Include="Vezbe_03\Zadatak_06\fragment_shader_for_03_06.glsl" />
     <None Include="Vezbe_03\Zadatak_07\vertex_shader_for_03_07.glsl" />
     <None Include="Vezbe_03\Zadatak_07\fragment_shader_for_03_07.glsl" />
+    <None Include="Vezbe_03\Zadatak_08\vertex_shader_for_03_08.glsl" />
+    <None Include="Vezbe_03\Zadatak_08\fragment_shader_for_03_08.glsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
