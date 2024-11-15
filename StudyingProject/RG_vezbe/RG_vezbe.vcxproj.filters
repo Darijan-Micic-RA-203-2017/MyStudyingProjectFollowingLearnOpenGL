@@ -46,6 +46,12 @@
     <ClInclude Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +82,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.cpp">

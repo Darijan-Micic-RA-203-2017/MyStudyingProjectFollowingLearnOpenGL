@@ -138,6 +138,8 @@
     <ClInclude Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.h" />
     <ClInclude Include="Vezbe_03\Zadatak_07\vezbe_03_zadatak_07.h" />
     <ClInclude Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.h" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +152,7 @@
     <ClCompile Include="Vezbe_03\Zadatak_06\vezbe_03_zadatak_06.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_07\vezbe_03_zadatak_07.cpp" />
     <ClCompile Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.cpp" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.cpp" />
   </ItemGroup>
   <ItemGroup>
