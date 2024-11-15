@@ -1,6 +1,6 @@
 // Number of discrete points the circle consists of. The circle is a set of connected points bounding the disc (plane area).
 // Judging from my own observations, the circle seems round to the eye when its resolution is greater than or equal to 24.
-#define RESOLUTION_OF_CIRCLE 30
+#define RESOLUTION_OF_CIRCLE 30u
 
 #include "vezbe_03_zadatak_08.h"
 
@@ -97,36 +97,36 @@ int draw_vezbe_03_zadatak_08()
 	{
 		processInput_for_vezbe_03_zadatak_08(window);
 
-		unsigned int time = static_cast<unsigned int>(glfwGetTime());
-		// The width of each odd ellipse and the height of each even ellipse has to be shrinked. I chose to use the loop
-		// so that I could use its iterator as the shrinking measure of new, smaller ellipses.
-		for (unsigned int i = 1u; i <= time / 3u + 1u; i++)
-		{
-			if (i == 1u)
-			{
-				continue;
-			}
+		// I decided to clear the color buffer after all, because it prevents the ellipses from having different centers
+		// and thus end up being drawn all over the screen space. This would happen in the previous solution of task 8
+		// of practice 3 on every change of the screen space's dimensions or position.
+		glClear(GL_COLOR_BUFFER_BIT);
 
+		unsigned int time = static_cast<unsigned int>(glfwGetTime());
+		// The height of each odd ellipse and the width of each even ellipse has to be shrinked. I chose to use the loop
+		// so that I could use its iterator as the shrinking measure of new, smaller ellipses.
+		for (unsigned int i = 0u; i <= time / 3u + 1u; i++)
+		{
 			if (i % 2u == 0u)
 			{
-				heightShrinkingFactor_for_03_08 = 1.0f / static_cast<float>(i);
-				color_for_03_08[1u] = 1.0f; color_for_03_08[2u] = 0.0f;
+				widthShrinkingFactor_for_03_08 = 1.0f / static_cast<float>(i + 1u);
+				color_for_03_08[1u] = 0.0f; color_for_03_08[2u] = 1.0f;
 			}
 			else
 			{
-				widthShrinkingFactor_for_03_08 = 1.0f / static_cast<float>(i);
-				color_for_03_08[1u] = 0.0f; color_for_03_08[2u] = 1.0f;
+				heightShrinkingFactor_for_03_08 = 1.0f / static_cast<float>(i + 1u);
+				color_for_03_08[1u] = 1.0f; color_for_03_08[2u] = 0.0f;
 			}
-		}
-		// Update ellipse width shrinking uniform.
-		shaderProgram.setFloatUniform("widthShrinkingFactor", widthShrinkingFactor_for_03_08);
-		// Update ellipse height shrinking uniform.
-		shaderProgram.setFloatUniform("heightShrinkingFactor", heightShrinkingFactor_for_03_08);
-		// Update ellipse color uniform.
-		shaderProgram.setFloatVec3Uniform("color", color_for_03_08[0u], color_for_03_08[1u], color_for_03_08[2u]);
+			// Update ellipse width shrinking uniform.
+			shaderProgram.setFloatUniform("widthShrinkingFactor", widthShrinkingFactor_for_03_08);
+			// Update ellipse height shrinking uniform.
+			shaderProgram.setFloatUniform("heightShrinkingFactor", heightShrinkingFactor_for_03_08);
+			// Update ellipse color uniform.
+			shaderProgram.setFloatVec3Uniform("color", color_for_03_08[0u], color_for_03_08[1u], color_for_03_08[2u]);
 
-		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
-		glDrawArrays(GL_TRIANGLE_FAN, 0, RESOLUTION_OF_CIRCLE + 2);
+			// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
+			glDrawArrays(GL_TRIANGLE_FAN, 0, RESOLUTION_OF_CIRCLE + 2);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
