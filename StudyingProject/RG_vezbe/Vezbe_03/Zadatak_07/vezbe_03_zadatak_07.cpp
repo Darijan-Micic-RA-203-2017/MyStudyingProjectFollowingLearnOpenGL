@@ -97,7 +97,7 @@ int draw_vezbe_03_zadatak_07()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		float time = static_cast<float>(1.25f * glfwGetTime());
+		float time = 1.25f * static_cast<float>(glfwGetTime());
 		movementOfTrianglesOnXAxis = r * cos(time);
 		movementOfTrianglesOnYAxis = r * sin(time);
 
