@@ -5,6 +5,8 @@ int window_height_for_06_01 = 600;
 
 float mixingFactor_for_06_01 = 1.0f;
 
+bool changeOfTexturesRequired_for_06_01 = false;
+
 float deltaTime_for_06_01 = 0.0f;
 float previousFrameTime_for_06_01 = 0.0f;
 
@@ -17,6 +19,8 @@ druga od dole ka gore. Strelicama (nagore i nadole) upravlja se stepenom mešanj
 Nadograditi rešenje zadatka 1 sa vežbi 5. Umesto celog kvadrata, nacrtati samo njegov donji levi trougao.
 1) U konzoli ispisati trenutnu poziciju kursora miša. Ako je pak kursor postavljen na gornje levo teme trougla, ispisati
 proizvoljan tekst.
+2) Obrnuti redosled tekstura na svaki levi klik, odnosno da ona tekstura koja se kretala s desna na levo počne da se
+kreće od dole ka gore i obrnuto. Ako se uz levi klik drži pritisnut taster "Shift", prozor treba da se zatvori.
 */
 int draw_vezbe_06_zadatak_01()
 {
@@ -43,6 +47,7 @@ int draw_vezbe_06_zadatak_01()
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_vezbe_06_zadatak_01);
 	glfwSetCursorPosCallback(window, cursor_pos_callback_for_vezbe_06_zadatak_01);
+	glfwSetMouseButtonCallback(window, mouse_button_callback_for_vezbe_06_zadatak_01);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
@@ -127,10 +132,20 @@ int draw_vezbe_06_zadatak_01()
 		// Update texture mixing factor uniform.
 		shaderProgram.setFloatUniform("mixingFactor", mixingFactor_for_06_01);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, checkerboardTexture.id);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, dragonTexture.id);
+		if (!changeOfTexturesRequired_for_06_01)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, checkerboardTexture.id);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, dragonTexture.id);
+		}
+		else
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, dragonTexture.id);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, checkerboardTexture.id);
+		}
 
 		glBindVertexArray(VAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
@@ -160,9 +175,32 @@ void cursor_pos_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, double xpos
 	if (abs(xPos - 100.0f) <= 5.0f && abs(yPos - 75.0f) <= 5.0f)
 	{
 		std::cout << "Cursor is pointing to the triangle's upper left vertex." << std::endl;
+
 		return;
 	}
+
 	std::cout << "Cursor position: (" << xPos << ", " << yPos << ")." << std::endl;
+}
+
+void mouse_button_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, int button, int action, int mods)
+{
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	float xPos = static_cast<float>(xpos);
+	float yPos = static_cast<float>(ypos);
+	if (abs(xPos - 100.0f) <= 5.0f && abs(yPos - 75.0f) <= 5.0f)
+	{
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		{
+			changeOfTexturesRequired_for_06_01 = !changeOfTexturesRequired_for_06_01;
+			if (mods == GLFW_MOD_SHIFT)
+			{
+				glfwSetWindowShouldClose(window, true);
+
+				return;
+			}
+		}
+	}
 }
 
 void processInput_for_vezbe_06_zadatak_01(GLFWwindow* window)

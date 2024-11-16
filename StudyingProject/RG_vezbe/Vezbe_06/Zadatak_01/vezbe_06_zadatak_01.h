@@ -8,4 +8,5 @@
 int draw_vezbe_06_zadatak_01();
 void framebuffer_size_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, int width, int height);
 void cursor_pos_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, double xpos, double ypos);
+void mouse_button_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, int button, int action, int mods);
 void processInput_for_vezbe_06_zadatak_01(GLFWwindow* window);
