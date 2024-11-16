@@ -179,6 +179,10 @@
     <None Include="Vezbe_05\Zadatak_01\fragment_shader_for_05_01.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\checkerboard_green_blue_and_yellow.png" />
+    <Image Include="resources\dragon_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
