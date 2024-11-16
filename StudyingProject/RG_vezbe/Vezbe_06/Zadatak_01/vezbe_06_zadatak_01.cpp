@@ -14,7 +14,9 @@ Tekst zadatka 1 sa vežbi 5:
 Nacrtati kvadrat i "obući ga" dvema teksturama. Tokom vremena, jedna tekstura treba da se kreće s desna na levo, a
 druga od dole ka gore. Strelicama (nagore i nadole) upravlja se stepenom mešanja dve teksture.
 -----------------------------------------------------------------------------------------------------------------------
-Nadograditi rešenje zadatka 1 sa vežbi 5.
+Nadograditi rešenje zadatka 1 sa vežbi 5. Umesto celog kvadrata, nacrtati samo njegov donji levi trougao.
+1) U konzoli ispisati trenutnu poziciju kursora miša. Ako je pak kursor postavljen na gornje levo teme trougla, ispisati
+proizvoljan tekst.
 */
 int draw_vezbe_06_zadatak_01()
 {
@@ -40,6 +42,9 @@ int draw_vezbe_06_zadatak_01()
 	glfwMakeContextCurrent(window);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_for_vezbe_06_zadatak_01);
+	glfwSetCursorPosCallback(window, cursor_pos_callback_for_vezbe_06_zadatak_01);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -62,8 +67,7 @@ int draw_vezbe_06_zadatak_01()
 		// position     // texture coordinates
 		-0.75f, -0.75f, 0.0f, 0.0f, 
 		 0.75f, -0.75f, 1.0f, 0.0f, 
-		-0.75f,  0.75f, 0.0f, 1.0f, 
-		 0.75f,  0.75f, 1.0f, 1.0f
+		-0.75f,  0.75f, 0.0f, 1.0f
 	};
 
 	unsigned int VAO;
@@ -130,7 +134,7 @@ int draw_vezbe_06_zadatak_01()
 
 		glBindVertexArray(VAO);
 		// Parameters: primitive, index of first vertex to be drawn, total number of vertices to be drawn.
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -147,6 +151,18 @@ void framebuffer_size_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, int w
 	window_height_for_06_01 = height;
 
 	glViewport(0, 0, width, height);
+}
+
+void cursor_pos_callback_for_vezbe_06_zadatak_01(GLFWwindow* window, double xpos, double ypos)
+{
+	float xPos = static_cast<float>(xpos);
+	float yPos = static_cast<float>(ypos);
+	if (abs(xPos - 100.0f) <= 5.0f && abs(yPos - 75.0f) <= 5.0f)
+	{
+		std::cout << "Cursor is pointing to the triangle's upper left vertex." << std::endl;
+		return;
+	}
+	std::cout << "Cursor position: (" << xPos << ", " << yPos << ")." << std::endl;
 }
 
 void processInput_for_vezbe_06_zadatak_01(GLFWwindow* window)
