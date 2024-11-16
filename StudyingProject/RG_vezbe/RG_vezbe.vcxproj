@@ -141,6 +141,7 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.h" />
+    <ClInclude Include="Vezbe_06\Zadatak_01\vezbe_06_zadatak_01.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="Vezbe_03\Zadatak_08\vezbe_03_zadatak_08.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vezbe_05\Zadatak_01\vezbe_05_zadatak_01.cpp" />
+    <ClCompile Include="Vezbe_06\Zadatak_01\vezbe_06_zadatak_01.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Vezbe_03\Zadatak_01\vertex_shader_for_03_01.glsl" />
@@ -177,6 +179,8 @@
     <None Include="Vezbe_03\Zadatak_08\fragment_shader_for_03_08.glsl" />
     <None Include="Vezbe_05\Zadatak_01\vertex_shader_for_05_01.glsl" />
     <None Include="Vezbe_05\Zadatak_01\fragment_shader_for_05_01.glsl" />
+    <None Include="Vezbe_06\Zadatak_01\vertex_shader_for_06_01.glsl" />
+    <None Include="Vezbe_06\Zadatak_01\fragment_shader_for_06_01.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\checkerboard_green_blue_and_yellow.png" />
